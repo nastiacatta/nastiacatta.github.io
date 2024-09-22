@@ -1,11 +1,12 @@
+import React from 'react';
+
 export default function About() {
-    return (
-      <section id="about" className="bg-white text-gray-900 py-20">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold">About Me</h2>
-          <p className="mt-4 text-lg">I am an aspiring Designer Engineer with a passion for innovative technologies and a background in economics...</p>
-        </div>
-      </section>
-    );
-  }
-  
+  return (
+    <section className="py-10 px-6">
+      <h1 className="text-4xl font-bold mb-4">Anastasia Cattaneo</h1>
+      <p className="text-lg">
+        I am a second-year MEng Design Engineering student at Imperial College London, with a keen interest in the innovative field of wearables. My passion lies in the fusion of electronics, AI, and fashion. I am driven by a commitment to integrating elegant design with robust engineering to develop solutions that are both functional and aesthetically pleasing.
+      </p>
+    </section>
+  );
+}

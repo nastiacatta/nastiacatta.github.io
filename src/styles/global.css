@@ -1,7 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Avenir:wght@400;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-html, body {
-  font-family: 'Avenir', sans-serif;
-  color: #333333;
-  background-color: #F9E0E7;
+/* Custom Global Styles */
+body {
+    @apply bg-pink-100; /* Light pink background */
+    color: #5a5252; /* Default text color black */
+    font-family: 'Avenir', sans-serif; /* Use Avenir font */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    @apply text-black transition-colors duration-300 ease; /* Titles are black by default with smooth transition */
+}
+
+h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover {
+    @apply text-pink-600; /* Titles turn pink on hover */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+    color: #fbeaf2; /* Change link color on hover */
+}
+
+/* Transparent box effect on hover */
+.project-box {
+    @apply bg-transparent border border-gray-200 rounded-lg p-4 transition-colors duration-300 ease-in-out;
+}
+
+.project-box:hover {
+    @apply bg-pink-200; /* Box changes color when hovering */
 }
