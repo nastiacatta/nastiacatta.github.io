@@ -14,9 +14,7 @@ export default function Home() {
           AI, and fashion. I am driven by a commitment to integrating elegant design with robust
           engineering to develop solutions that are both functional and aesthetically pleasing.
         </p>
-        <a href="#projects" className="mt-8 px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600">
-          Explore My Projects
-        </a>
+        <a href="#projects" className="mt-8 px-6 py-2 bg-pink-500 text-white rounded-full">Explore My Projects</a>
       </section>
 
       {/* Second Section: Projects */}
@@ -26,17 +24,17 @@ export default function Home() {
           <ul className="space-y-8">
             <li className="project-title text-2xl text-center">
               <Link href="/exoglove">
-                <a className="hover:text-pink-500 transition-colors duration-300">EXO GLOVE</a>
+                <a className="hover:text-pink-500">EXO GLOVE</a>
               </Link>
             </li>
             <li className="project-title text-2xl text-center">
               <Link href="/biomorphus">
-                <a className="hover:text-pink-500 transition-colors duration-300">BIOMORPHUS</a>
+                <a className="hover:text-pink-500">BIOMORPHUS</a>
               </Link>
             </li>
             <li className="project-title text-2xl text-center">
               <Link href="/innovice">
-                <a className="hover:text-pink-500 transition-colors duration-300">INNOVICE</a>
+                <a className="hover:text-pink-500">INNOVICE</a>
               </Link>
             </li>
           </ul>
