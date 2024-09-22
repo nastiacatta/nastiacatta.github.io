@@ -1,0 +1,45 @@
+{
+  "polyfillFiles": [
+    "static/chunks/polyfills-42372ed130431b0a.js"
+  ],
+  "devFiles": [],
+  "ampDevFiles": [],
+  "lowPriorityFiles": [
+    "static/F9IPw1LSW39C3hDHxleuH/_buildManifest.js",
+    "static/F9IPw1LSW39C3hDHxleuH/_ssgManifest.js"
+  ],
+  "rootMainFiles": [],
+  "pages": {
+    "/": [
+      "static/chunks/webpack-8fa1640cc84ba8fe.js",
+      "static/chunks/framework-64ad27b21261a9ce.js",
+      "static/chunks/main-e618b1edbb350739.js",
+      "static/chunks/pages/index-85a1a715e792d4a1.js"
+    ],
+    "/_app": [
+      "static/chunks/webpack-8fa1640cc84ba8fe.js",
+      "static/chunks/framework-64ad27b21261a9ce.js",
+      "static/chunks/main-e618b1edbb350739.js",
+      "static/chunks/pages/_app-753213cf38d40131.js"
+    ],
+    "/_error": [
+      "static/chunks/webpack-8fa1640cc84ba8fe.js",
+      "static/chunks/framework-64ad27b21261a9ce.js",
+      "static/chunks/main-e618b1edbb350739.js",
+      "static/chunks/pages/_error-77823ddac6993d35.js"
+    ],
+    "/biomorphus": [
+      "static/chunks/webpack-8fa1640cc84ba8fe.js",
+      "static/chunks/framework-64ad27b21261a9ce.js",
+      "static/chunks/main-e618b1edbb350739.js",
+      "static/chunks/pages/biomorphus-ce97ce51074f37ef.js"
+    ],
+    "/exoglove": [
+      "static/chunks/webpack-8fa1640cc84ba8fe.js",
+      "static/chunks/framework-64ad27b21261a9ce.js",
+      "static/chunks/main-e618b1edbb350739.js",
+      "static/chunks/pages/exoglove-15f66bf8e9c3626b.js"
+    ]
+  },
+  "ampFirstPages": []
+}
