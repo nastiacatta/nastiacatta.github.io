@@ -13,20 +13,10 @@ h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover {
   color: #f50057; /* Pink color when hovered */
 }
 
-.project-title {
-  background-color: transparent;
-  transition: background-color 0.3s ease;
+.project-title a {
+  transition: color 0.3s ease;
 }
 
-.project-title:hover {
-  background-color: rgba(245, 0, 87, 0.1); /* Light pink background on hover */
-}
-
-a {
-  text-decoration: none;
-  color: inherit; /* Makes sure the color stays as defined */
-}
-
-a:hover {
+.project-title a:hover {
   color: #f50057; /* Changes to pink on hover */
 }
