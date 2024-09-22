@@ -1,36 +1,32 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Custom Global Styles */
+/* global.css */
 body {
-    @apply bg-pink-100; /* Light pink background */
-    color: #5a5252; /* Default text color black */
-    font-family: 'Avenir', sans-serif; /* Use Avenir font */
+  font-family: 'Avenir', sans-serif;
+  background-color: #f7e1e3; /* Light pink background */
+  color: #333; /* Grey-black text */
 }
 
 h1, h2, h3, h4, h5, h6 {
-    @apply text-black transition-colors duration-300 ease; /* Titles are black by default with smooth transition */
+  color: #333; /* Default color for titles */
 }
 
 h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover {
-    @apply text-pink-600; /* Titles turn pink on hover */
+  color: #f50057; /* Pink color when hovered */
+}
+
+.project-title {
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.project-title:hover {
+  background-color: rgba(245, 0, 87, 0.1); /* Light pink background on hover */
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit; /* Makes sure the color stays as defined */
 }
 
 a:hover {
-    color: #fbeaf2; /* Change link color on hover */
-}
-
-/* Transparent box effect on hover */
-.project-box {
-    @apply bg-transparent border border-gray-200 rounded-lg p-4 transition-colors duration-300 ease-in-out;
-}
-
-.project-box:hover {
-    @apply bg-pink-200; /* Box changes color when hovering */
+  color: #f50057; /* Changes to pink on hover */
 }
