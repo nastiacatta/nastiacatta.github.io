@@ -8,21 +8,22 @@ export default function Projects() {
       
       <div className="project-title mb-4">
         <Link href="/exoglove">
-          <a className="text-2xl">EXO GLOVE</a>
+          <a className="text-2xl hover:text-pink-500 transition-colors duration-300">EXO GLOVE</a>
         </Link>
       </div>
       
       <div className="project-title mb-4">
         <Link href="/biomorphus">
-          <a className="text-2xl">BIOMORPHUS</a>
+          <a className="text-2xl hover:text-pink-500 transition-colors duration-300">BIOMORPHUS</a>
         </Link>
       </div>
       
       <div className="project-title mb-4">
         <Link href="/innovice">
-          <a className="text-2xl">INNOVICE</a>
+          <a className="text-2xl hover:text-pink-500 transition-colors duration-300">INNOVICE</a>
         </Link>
       </div>
     </div>
   );
 }
+
