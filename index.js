@@ -10,7 +10,7 @@ export default function Home() {
     <div>
       <Head>
         <title>[Your Name] - Portfolio</title>
-        <meta name="description" content="Portfolio of [Your Name], an aspiring Designer Engineer." />
+        <meta name="description" content="Portfolio of Anastasia, an aspiring Designer Engineer." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
