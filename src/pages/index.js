@@ -19,16 +19,26 @@ export default function Home() {
       });
     }
 
-    // Project card hover effect
+    // Project card 3D hover effect
     const cards = document.querySelectorAll('.project-card');
     cards.forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        card.classList.add('hovered');
-      });
-      card.addEventListener('mouseleave', () => {
-        card.classList.remove('hovered');
-      });
+      card.addEventListener('mousemove', handleMouseMove);
+      card.addEventListener('mouseleave', handleMouseLeave);
     });
+
+    function handleMouseMove(e) {
+      const card = e.currentTarget;
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const rotateX = (-y / 20).toFixed(2);
+      const rotateY = (x / 20).toFixed(2);
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+
+    function handleMouseLeave(e) {
+      e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    }
   }, []);
 
   return (
@@ -36,7 +46,7 @@ export default function Home() {
       <Header />
 
       {/* Section 1: Introduction */}
-      <section id="introduction" className="section bg-dark-grey text-light-pink text-left">
+      <section id="introduction" className="section">
         <h1 className="text-5xl font-bold mb-4">Hello!</h1>
         <p className="text-xl mb-6">
           I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
@@ -44,7 +54,7 @@ export default function Home() {
       </section>
 
       {/* Section 2: About Me */}
-      <section id="about" className="section bg-dark-grey text-light-pink text-left">
+      <section id="about" className="section">
         <h2 className="text-4xl font-bold mb-6">About Me</h2>
         <p className="text-lg">
           I am a third-year MEng Design Engineering student at Imperial College London. My passion lies in the fusion of electronics, AI, and fashion. I am driven by a commitment to integrating elegant design with robust engineering to develop solutions that are both functional and aesthetically pleasing. Beyond my core focus, I have a deep interest in the arts, literature, and architecture, which continually inspire my work.
@@ -52,8 +62,8 @@ export default function Home() {
       </section>
 
       {/* Section 3: Projects */}
-      <section id="projects" className="section bg-dark-grey text-light-pink">
-        <h2 className="text-4xl font-bold mb-6 text-left">Projects</h2>
+      <section id="projects" className="section">
+        <h2 className="text-4xl font-bold mb-6">Projects</h2>
         <div className="project-container">
           {/* Project Cards */}
           {/* Card 1 */}
@@ -95,7 +105,7 @@ export default function Home() {
       </section>
 
       {/* Section 4: Contact */}
-      <section id="contact" className="section bg-dark-grey text-light-pink text-left">
+      <section id="contact" className="section">
         <h2 className="text-4xl font-bold mb-6">Contact Me</h2>
         <p className="text-lg mb-4">
           Feel free to reach out to me at:

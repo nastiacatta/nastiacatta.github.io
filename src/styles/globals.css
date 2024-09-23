@@ -23,33 +23,98 @@ a:hover {
   color: #b19cd9; /* Lilac */
 }
 
+/* Header Styles */
 .header {
-  background-color: #1a1a1a;
+  background-color: #1a1a1a; /* Solid background */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* Section styles */
+.header .logo {
+  display: flex;
+  align-items: center;
+}
+
+.header .logo img {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+}
+
+.header nav ul {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+}
+
+.header nav ul li {
+  display: inline-block;
+}
+
+.header nav ul li a {
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.header nav ul li a:hover {
+  color: #b19cd9; /* Lilac on hover */
+}
+
+.header .resume-link {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  padding: 8px 16px;
+  border: 1px solid #F9E0E7;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.header .resume-link:hover {
+  background-color: #F9E0E7;
+  color: #1a1a1a;
+  transform: translate(-5px, -5px);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Section Styles */
 .section {
   min-height: 100vh;
-  padding: 120px 40px 80px 40px; /* Adjust padding for header */
+  padding: 160px 40px 80px 40px; /* Adjust padding for header */
 }
 
 .section h1,
 .section h2 {
-  margin-bottom: 24px;
+  margin-bottom: 40px; /* Increased space between title and text */
 }
 
 .section p {
   max-width: 800px;
-  margin-bottom: 16px;
-  line-height: 1.6;
+  margin-bottom: 24px;
+  line-height: 1.8;
 }
 
+/* Align text to the left */
+.section {
+  text-align: left;
+}
+
+/* Project Container */
 .project-container {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
+  perspective: 1000px;
 }
 
+/* Project Card Styles */
 .project-card {
   position: relative;
   width: 300px;
@@ -57,7 +122,8 @@ a:hover {
   background-color: #2d2d2d;
   border-radius: 15px;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.1s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
 }
 
 .project-card img {
@@ -77,11 +143,17 @@ a:hover {
   color: #F9E0E7;
 }
 
+/* Project Card Hover Effects */
+.project-card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
 .project-card.hovered {
-  transform: scale(1.05) translateY(-10px);
+  transform: translateY(-10px) scale(1.05);
   z-index: 10;
 }
 
+/* Email Vertical */
 .email-vertical {
   position: fixed;
   bottom: 20px;
@@ -107,22 +179,6 @@ a:hover {
   width: 1px;
   height: 100px;
   background-color: rgba(255, 255, 255, 0.5);
-}
-
-.resume-link {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-
-.resume-link:hover {
-  transform: translate(-5px, -5px);
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-}
-
-.logo img {
-  width: 100%;
-  height: 100%;
 }
 
 /* Smooth scrolling */
