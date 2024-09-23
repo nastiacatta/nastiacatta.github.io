@@ -2,20 +2,11 @@
 
 module.exports = {
   content: [
-    './src/pages/**/*.{js,jsx,ts,tsx}',
-    './src/components/**/*.{js,jsx,ts,tsx}',
+    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {
-      colors: {
-        lightPink: '#F9E0E7',
-        greyBlack: '#333333',
-        accentPink: '#FF8BA7',
-      },
-      fontFamily: {
-        avenir: ['Avenir', 'sans-serif'],
-      },
-    },
+    extend: {},
   },
   plugins: [],
-};
+}
