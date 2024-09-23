@@ -2,7 +2,6 @@
 
 const nextConfig = {
     output: 'export',
-    basePath: '/nastiacatta.github.io',
     images: {
       unoptimized: true,
     },

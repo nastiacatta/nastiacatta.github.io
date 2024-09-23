@@ -17,7 +17,9 @@ export default function Home() {
           AI, and fashion. I am driven by a commitment to integrating elegant design with robust
           engineering to develop solutions that are both functional and aesthetically pleasing.
         </p>
-        <a href="#projects" className="mt-8 px-6 py-2 bg-pink-500 text-white rounded-full">Explore My Projects</a>
+        <a href="#projects" className="mt-8 px-6 py-2 bg-pink-500 text-white rounded-full">
+          Explore My Projects
+        </a>
       </section>
 
       {/* Second Section: Projects */}

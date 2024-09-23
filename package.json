@@ -1,3 +1,5 @@
+
+
 {
   "name": "my-portfolio",
   "version": "1.0.0",
@@ -5,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "deploy": "next build && touch out/.nojekyll && gh-pages -d out"
+    "deploy": "next build && rm -rf docs && mv out docs && touch docs/.nojekyll && git add docs && git commit -m 'Deploy to GitHub Pages' && git push origin main"
   },
   "dependencies": {
     "autoprefixer": "^10.4.20",
@@ -15,7 +17,5 @@
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.12"
   },
-  "devDependencies": {
-    "gh-pages": "^5.0.0"
-  }
+  "devDependencies": {}
 }
