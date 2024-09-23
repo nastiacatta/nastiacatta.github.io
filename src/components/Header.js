@@ -1,5 +1,3 @@
-// src/components/Header.js
-
 import React from 'react';
 import Link from 'next/link';
 
@@ -12,17 +10,17 @@ export default function Header() {
           <ul className="flex space-x-4">
             <li>
               <Link href="#about">
-                About Me
+                <a className="hover:text-pink-500">01. About Me</a>
               </Link>
             </li>
             <li>
               <Link href="#projects">
-                Projects
+                <a className="hover:text-pink-500">02. Projects</a>
               </Link>
             </li>
             <li>
               <Link href="#contact">
-                Contact
+                <a className="hover:text-pink-500">03. Contact</a>
               </Link>
             </li>
           </ul>
