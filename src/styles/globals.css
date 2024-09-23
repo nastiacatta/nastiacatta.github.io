@@ -23,4 +23,18 @@ a:hover {
   color: #FF8BA7; /* Accent pink on hover */
 }
 
-/* Add any additional global styles here */
+/* Project links at the bottom of the page */
+.project-title a {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #FF8BA7; /* Pink background for project links */
+  border-radius: 8px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.project-title a:hover {
+  background-color: #FFB3C1; /* Lighter pink on hover */
+  transform: scale(1.1); /* Enlarge slightly on hover */
+}
+
+/* Any additional global styles */
