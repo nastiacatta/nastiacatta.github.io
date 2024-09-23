@@ -1,9 +1,10 @@
 // next.config.js
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
     output: 'export',
     images: {
-      unoptimized: true,
+      unoptimized: true, // Since you're exporting static HTML
     },
   };
   

@@ -1,17 +1,19 @@
+// src/pages/biomorphus.js
+
 import React from 'react';
-import Header from '../components/Header'; // Assuming Header is a shared component
+import Header from '../components/Header';
 
 export default function Biomorphus() {
   return (
     <div>
       <Header />
-      <div className="py-10 px-6">
-        <h1 className="text-4xl font-bold mb-4">BIOMORPHUS</h1>
-        <img src="/images/biomorphus.png" alt="Biomorphus" className="w-full mb-4" />
+      <section className="min-h-screen p-8">
+        <h1 className="text-4xl font-bold mb-4">Biomorphus</h1>
         <p className="text-lg">
-          This project unveils a conceptual, biomimicry-inspired dress that blends fashion with technology, reacting to environmental changes like natural organisms...
+          {/* Content about the Biomorphus project */}
         </p>
-      </div>
+        {/* Include images, links, etc., as needed */}
+      </section>
     </div>
   );
 }
