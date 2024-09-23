@@ -1,9 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
+import Header from '../components/Header'; // Assuming you put the Header component in src/components
 
 export default function Home() {
   return (
     <div>
+      <Header />
       {/* First Section: Introduction */}
       <section className="min-h-screen flex flex-col justify-center items-center bg-pink-100 text-center">
         <h1 className="text-5xl font-bold mb-4">Hi, I'm Anastasia</h1>
