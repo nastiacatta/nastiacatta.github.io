@@ -1,0 +1,26 @@
+/* src/styles/globals.css */
+
+/* Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles */
+body {
+  font-family: 'Avenir', sans-serif;
+  background-color: #F9E0E7; /* Light pink background */
+  color: #333333; /* Grey-black text */
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #333333; /* Grey-black links */
+  text-decoration: none;
+}
+
+a:hover {
+  color: #FF8BA7; /* Accent pink on hover */
+}
+
+/* Add any additional global styles here */

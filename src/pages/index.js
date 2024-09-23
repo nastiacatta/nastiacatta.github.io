@@ -1,9 +1,7 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
+// src/pages/index.js
 
-ReactDOM.render(<App />, document.getElementById("root"));
-
+import Header from '../components/Header';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -28,18 +26,18 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-center mb-10">My Projects</h2>
           <ul className="space-y-8">
             <li className="project-title text-2xl text-center">
-              <Link href="/exoglove">
-                <a className="hover:text-pink-500">EXO GLOVE</a>
+              <Link href="/exoglove" className="hover:text-pink-500">
+                EXO GLOVE
               </Link>
             </li>
             <li className="project-title text-2xl text-center">
-              <Link href="/biomorphus">
-                <a className="hover:text-pink-500">BIOMORPHUS</a>
+              <Link href="/biomorphus" className="hover:text-pink-500">
+                BIOMORPHUS
               </Link>
             </li>
             <li className="project-title text-2xl text-center">
-              <Link href="/innovice">
-                <a className="hover:text-pink-500">INNOVICE</a>
+              <Link href="/innovice" className="hover:text-pink-500">
+                INNOVICE
               </Link>
             </li>
           </ul>
