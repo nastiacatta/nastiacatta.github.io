@@ -1,6 +1,8 @@
-import React from 'react';
-import Link from 'next/link';
-import Header from '../components/Header'; // Assuming you put the Header component in src/components
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+
+ReactDOM.render(<App />, document.getElementById("root"));
 
 
 export default function Home() {

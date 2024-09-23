@@ -1,4 +1,4 @@
-// pages/projects/innovice.js
+import React from 'react';
 import Link from 'next/link';
 
 export default function Innovice() {
@@ -13,10 +13,6 @@ export default function Innovice() {
         <img src="/images/innovice.jpg" alt="Innovice AI Platform" className="w-full mb-8 rounded shadow-lg" />
         <h2 className="text-3xl font-semibold mb-4">Overview</h2>
         <p className="mb-6">Innovice focuses on reducing furniture waste by introducing AI-powered solutions for furniture repair...</p>
-
-        <h2 className="text-3xl font-semibold mb-4">Technical Details</h2>
-        <p className="mb-6">The platform uses AI to analyze damage and suggest repair strategies...</p>
-
         <Link href="/">
           <a className="text-accentPink hover:underline">← Back to Home</a>
         </Link>
