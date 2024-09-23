@@ -23,7 +23,6 @@ a:hover {
   color: #FF8BA7; /* Accent pink on hover */
 }
 
-/* Project Container Styling */
 .project-container {
   display: flex;
   justify-content: space-around;
@@ -33,7 +32,6 @@ a:hover {
   padding: 20px;
 }
 
-/* Project Card Styling */
 .project-card {
   position: relative;
   width: 250px;
@@ -51,7 +49,7 @@ a:hover {
 }
 
 .project-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
