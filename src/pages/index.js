@@ -1,5 +1,4 @@
 // src/pages/index.js
-
 import Header from '../components/Header';
 import Link from 'next/link';
 
@@ -26,31 +25,39 @@ export default function Home() {
       <section id="projects" className="min-h-screen py-16 bg-gray-50">
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-10">My Projects</h2>
-          <ul className="flex justify-center space-x-8">
-            <li className="project-title text-2xl">
-              <Link href="/exoglove">
-                <a className="hover:bg-pink-700 bg-pink-500 text-white px-4 py-2 rounded transition-transform transform hover:scale-110">
-                  EXO GLOVE
-                </a>
-              </Link>
-            </li>
-            <li className="project-title text-2xl">
-              <Link href="/biomorphus">
-                <a className="hover:bg-pink-700 bg-pink-500 text-white px-4 py-2 rounded transition-transform transform hover:scale-110">
-                  BIOMORPHUS
-                </a>
-              </Link>
-            </li>
-            <li className="project-title text-2xl">
-              <Link href="/innovice">
-                <a className="hover:bg-pink-700 bg-pink-500 text-white px-4 py-2 rounded transition-transform transform hover:scale-110">
-                  INNOVICE
-                </a>
-              </Link>
-            </li>
-          </ul>
+          <div className="project-container">
+            <div className="project-card">
+              <img src="project-image1.jpg" alt="EXO GLOVE" />
+              <div className="project-info">
+                <h3>EXO GLOVE</h3>
+                <p>A wearable glove for enhancing hand strength.</p>
+              </div>
+            </div>
+            <div className="project-card">
+              <img src="project-image2.jpg" alt="BIOMORPHUS" />
+              <div className="project-info">
+                <h3>BIOMORPHUS</h3>
+                <p>A project integrating biomorphic design with AI.</p>
+              </div>
+            </div>
+            <div className="project-card">
+              <img src="project-image3.jpg" alt="INNOVICE" />
+              <div className="project-info">
+                <h3>INNOVICE</h3>
+                <p>Innovative solutions in ice management systems.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Footer Section: Contact Info */}
+      <footer id="contact" className="bg-gray-900 text-white p-4 text-center">
+        <div className="container mx-auto">
+          <p className="text-xl">Contact Me</p>
+          <p>Email: <a href="mailto:aac522@ic.ac.uk" className="text-pink-500 hover:text-pink-300">aac522@ic.ac.uk</a></p>
+        </div>
+      </footer>
     </div>
   );
 }
