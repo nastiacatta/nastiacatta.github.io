@@ -5,66 +5,62 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Color Variables */
-:root {
-  --dark-grey: #1a1a1a;        /* User-friendly black */
-  --light-pink: #ffccdd;       /* Light pink */
-  --lilac: #c8a2c8;            /* Lilac */
-  --baby-blue: #89CFF0;        /* Baby light blue */
-  --white: #ffffff;            /* White */
-}
-
-/* Global Styles */
+/* Custom global styles */
 body {
   font-family: 'Avenir', sans-serif;
-  background-color: var(--dark-grey);
-  color: var(--light-pink);
+  background-color: #1a1a1a; /* Dark grey background */
+  color: #F9E0E7; /* Light pink text */
   margin: 0;
   padding: 0;
 }
 
+/* Section Styles */
+.section {
+  min-height: 100vh; /* Full viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center vertically */
+  align-items: center;     /* Center horizontally */
+  padding: 80px 20px;
+  box-sizing: border-box;
+  margin-left: 12rem; /* Adjust for the sidebar */
+}
+
+.section h1,
+.section h2 {
+  margin-bottom: 24px;
+}
+
+.section p {
+  max-width: 800px;
+  margin-bottom: 16px;
+  text-align: center;
+  line-height: 1.6;
+}
+
 a {
-  color: var(--light-pink);
+  color: #F9E0E7; /* Light pink links */
   text-decoration: none;
 }
 
 a:hover {
-  color: var(--lilac);
-}
-
-.section {
-  padding: 80px 20px;
-}
-
-h1, h2, h3 {
-  color: var(--light-pink);
-}
-
-p {
-  color: var(--light-pink);
-}
-
-.header {
-  background-color: var(--dark-grey);
+  color: #b19cd9; /* Lilac on hover */
 }
 
 .project-container {
+  perspective: 1000px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
+  gap: 20px;
 }
 
 .project-card {
-  position: relative;
   width: 300px;
   height: 400px;
-  margin: 0 10px;
-  background-color: var(--dark-grey);
+  background-color: #2d2d2d; /* Slightly lighter dark grey */
   border-radius: 15px;
   overflow: hidden;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
 }
 
 .project-card img {
@@ -73,79 +69,44 @@ p {
   object-fit: cover;
 }
 
-.project-info {
+.project-card .project-info {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  transition: background-color 0.3s ease;
+}
+
+.project-card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+.project-card:hover .project-info h3 {
+  color: #b19cd9; /* Lilac on hover */
 }
 
 .project-info h3 {
   margin: 0;
-  font-size: 24px;
-  color: var(--light-pink);
+  color: #F9E0E7; /* Light pink */
 }
 
-/* Hover Effects */
-.project-card:hover {
-  transform: scaleX(1.1);
-  z-index: 10;
+.project-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #F9E0E7; /* Light pink */
 }
 
-.project-card:not(:hover) {
-  transform: scaleX(0.9);
+/* Adjust padding-top to account for the header height */
+.section {
+  padding-top: 80px; /* Adjust if header height changes */
 }
 
-.project-card:hover ~ .project-card {
-  transform: translateX(50px) scaleX(0.9);
-}
-
-#card1:hover ~ #card2,
-#card1:hover ~ #card3 {
-  transform: translateX(100px) scaleX(0.8);
-}
-
-#card3:hover ~ #card2,
-#card3:hover ~ #card1 {
-  transform: translateX(-100px) scaleX(0.8);
-}
-
-#card2:hover ~ #card3 {
-  transform: translateX(100px) scaleX(0.8);
-}
-
-#card2:hover ~ #card1 {
-  transform: translateX(-100px) scaleX(0.8);
-}
-
-/* Contact Section */
-.contact-section {
-  background-color: var(--dark-grey);
-  color: var(--light-pink);
-  text-align: center;
-}
-
-/* Smooth Scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .project-container {
-    flex-direction: column;
-  }
-  
-  .project-card {
-    width: 80%;
-    margin-bottom: 20px;
-    transform: none !important;
-  }
-  
-  .project-card:hover {
-    transform: none;
-  }
-  
-  .project-card:not(:hover) {
-    transform: none;
-  }
+/* Resume Icon Hover Effect */
+a img:hover {
+  filter: brightness(0.8);
 }
