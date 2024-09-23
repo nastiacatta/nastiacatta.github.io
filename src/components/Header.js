@@ -1,36 +1,43 @@
 // src/components/Header.js
 
 import React from 'react';
+import Link from 'next/link';
 
 export default function Header() {
   return (
-    <header className="fixed top-0 left-0 h-full bg-dark-grey bg-opacity-90 text-light-pink p-4 z-50 w-48">
-      <div className="flex flex-col h-full justify-between">
-        <div>
-          <h1 className="text-2xl font-bold mb-8">Anastasia's Portfolio</h1>
-          <nav>
-            <ul className="flex flex-col space-y-6">
-              <li>
-                <a href="#introduction" className="hover:text-lilac">01. Home</a>
-              </li>
-              <li>
-                <a href="#about" className="hover:text-lilac">02. About Me</a>
-              </li>
-              <li>
-                <a href="#projects" className="hover:text-lilac">03. Projects</a>
-              </li>
-              <li>
-                <a href="#contact" className="hover:text-lilac">04. Contact</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        <div className="mb-4">
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
-            <img src="/icons/resume-icon.svg" alt="Resume" className="w-8 h-8 hover:text-lilac" />
+    <header className="fixed top-0 left-0 w-full bg-dark-grey bg-opacity-90 text-light-pink p-4 z-50 flex justify-between items-center">
+      <div className="flex items-center">
+        <Link href="/">
+          <a className="flex items-center">
+            <div className="logo w-8 h-8 mr-2">
+              {/* Replace with your logo image or SVG */}
+              <img src="/icons/logo.svg" alt="Logo" className="w-full h-full" />
+            </div>
+            <span className="text-2xl font-bold">Anastasia's Portfolio</span>
           </a>
-        </div>
+        </Link>
       </div>
+      <nav>
+        <ul className="flex space-x-6 items-center">
+          <li>
+            <a href="#introduction" className="hover:text-lilac">Home</a>
+          </li>
+          <li>
+            <a href="#about" className="hover:text-lilac">About Me</a>
+          </li>
+          <li>
+            <a href="#projects" className="hover:text-lilac">Projects</a>
+          </li>
+          <li>
+            <a href="#contact" className="hover:text-lilac">Contact</a>
+          </li>
+          <li>
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-link px-4 py-2 bg-transparent border border-light-pink rounded hover:bg-light-pink hover:text-dark-grey transition-all">
+              Resume
+            </a>
+          </li>
+        </ul>
+      </nav>
     </header>
   );
 }
