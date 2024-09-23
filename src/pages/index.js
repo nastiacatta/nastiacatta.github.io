@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Header from '../components/Header'; // Assuming you put the Header component in src/components
 
+
 export default function Home() {
   return (
     <div>

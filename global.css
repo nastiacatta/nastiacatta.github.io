@@ -1,0 +1,60 @@
+/* global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    font-family: 'Avenir', sans-serif;
+    background-color: #fce4ec; /* Light pink background */
+    color: #333; /* Grey-black text */
+    margin: 0;
+    padding: 0;
+  }
+  
+  a {
+    color: #333; /* Grey-black links */
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: #e91e63; /* Pink on hover */
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #333; /* Grey-black for all headings */
+  }
+  
+  section {
+    padding: 2rem;
+  }
+  
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  
+  .intro-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .project-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .project-list li {
+    padding: 1rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .project-list li:hover {
+    border-color: #e91e63;
+    background-color: #f8bbd0; /* Light pink for hover */
+    cursor: pointer;
+  }
+  
