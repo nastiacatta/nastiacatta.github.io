@@ -34,18 +34,20 @@ export default function Header() {
 
   return (
     <header className="header flex items-center justify-between p-4 bg-gray-800 dark:bg-gray-900 fixed w-full top-0 z-50">
-      {/* Skip to main content for accessibility */}
+      {/* Skip Navigation Link for Accessibility */}
       <a href="#main-content" className="sr-only focus:not-sr-only">
         Skip to main content
       </a>
 
-      {/* Logo Section */}
+      {/* Logo and Title */}
       <div className="logo flex items-center">
         <Link href="/">
           <a className="flex items-center">
             {/* Replace with your actual logo if available */}
             <img src="/logo.png" alt="Logo" className="w-8 h-8 mr-2" />
-            <span className="text-white dark:text-gray-800 font-semibold text-xl hover:text-lilac transition-colors">Anastasia's Portfolio</span>
+            <span className="text-white dark:text-gray-800 font-semibold text-2xl hover:text-lilac transition-colors">
+              Anastasia's Portfolio
+            </span>
           </a>
         </Link>
       </div>
@@ -64,6 +66,7 @@ export default function Header() {
         <Link href="/#contact">
           <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac">Contact</a>
         </Link>
+        {/* Resume Link with Hover Effect */}
         <div className="relative group">
           <Link href="/resume">
             <a className="text-gray-200 hover:text-lilac transition-colors flex items-center px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-lilac">
@@ -71,10 +74,14 @@ export default function Header() {
             </a>
           </Link>
           {/* Hover Effect: Rounded Box with Shadow Moving to Top Left */}
-          <div className="absolute inset-0 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform -translate-x-1 -translate-y-1 pointer-events-none"></div>
+          <div className="absolute inset-0 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform -translate-x-1 -translate-y-1 pointer-events-none bg-gray-700 dark:bg-gray-200"></div>
         </div>
-        {/* Dark/Light Mode Toggle Button for Desktop */}
-        <button onClick={toggleDarkMode} className="ml-4 focus:outline-none" aria-label="Toggle Dark Mode">
+        {/* Dark/Light Mode Toggle Button */}
+        <button
+          onClick={toggleDarkMode}
+          className="ml-4 focus:outline-none focus:ring-2 focus:ring-lilac rounded-full p-1"
+          aria-label="Toggle Dark Mode"
+        >
           {darkMode ? (
             <SunIcon className="w-6 h-6 text-yellow-400" />
           ) : (
@@ -83,10 +90,14 @@ export default function Header() {
         </button>
       </nav>
 
-      {/* Mobile Menu Button and Dark/Light Toggle */}
+      {/* Mobile Menu Toggle and Dark/Light Mode Button */}
       <div className="flex items-center md:hidden">
-        {/* Dark/Light Mode Toggle Button for Mobile */}
-        <button onClick={toggleDarkMode} className="mr-2 focus:outline-none" aria-label="Toggle Dark Mode">
+        {/* Dark/Light Mode Toggle Button */}
+        <button
+          onClick={toggleDarkMode}
+          className="mr-2 focus:outline-none focus:ring-2 focus:ring-lilac rounded-full p-1"
+          aria-label="Toggle Dark Mode"
+        >
           {darkMode ? (
             <SunIcon className="w-6 h-6 text-yellow-400" />
           ) : (
@@ -109,24 +120,33 @@ export default function Header() {
           <ul className="flex flex-col p-4 space-y-2">
             <li>
               <Link href="/#introduction">
-                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>Home</a>
+                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>
+                  Home
+                </a>
               </Link>
             </li>
             <li>
               <Link href="/#about">
-                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>About</a>
+                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>
+                  About
+                </a>
               </Link>
             </li>
             <li>
               <Link href="/#projects">
-                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>Projects</a>
+                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>
+                  Projects
+                </a>
               </Link>
             </li>
             <li>
               <Link href="/#contact">
-                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>Contact</a>
+                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>
+                  Contact
+                </a>
               </Link>
             </li>
+            {/* Resume Link with Hover Effect */}
             <li className="relative group">
               <Link href="/resume">
                 <a className="text-gray-200 hover:text-lilac transition-colors flex items-center px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>
@@ -134,7 +154,7 @@ export default function Header() {
                 </a>
               </Link>
               {/* Hover Effect: Rounded Box with Shadow Moving to Top Left */}
-              <div className="absolute inset-0 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform -translate-x-1 -translate-y-1 pointer-events-none"></div>
+              <div className="absolute inset-0 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform -translate-x-1 -translate-y-1 pointer-events-none bg-gray-700 dark:bg-gray-200"></div>
             </li>
           </ul>
         </nav>

@@ -65,7 +65,7 @@ export default function Projects() {
                   <div className="absolute inset-0 bg-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                   {/* Project Title Inside the Card at the Top */}
                   <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black via-transparent to-transparent p-4">
-                    <h3 className="text-center text-sm text-white dark:text-dark-grey group-hover:text-lilac transition-colors">
+                    <h3 className="text-center text-sm text-white dark:text-gray-800 group-hover:text-lilac transition-colors">
                       {project.title}
                     </h3>
                   </div>
