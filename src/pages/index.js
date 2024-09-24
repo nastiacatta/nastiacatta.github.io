@@ -2,20 +2,22 @@
 
 import { useEffect } from 'react';
 import Header from '../components/Header';
-import Link from 'next/link';
+import Projects from '../components/Projects'; // Import the Projects component
 
 export default function Home() {
   useEffect(() => {
-    // Smooth scrolling
+    // Smooth scrolling for anchor links
     const links = document.querySelectorAll('a[href^="#"]');
     for (const link of links) {
       link.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }
       });
     }
 
@@ -39,6 +41,17 @@ export default function Home() {
     function handleMouseLeave(e) {
       e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
     }
+
+    // Cleanup event listeners on unmount
+    return () => {
+      for (const link of links) {
+        link.removeEventListener('click', () => {});
+      }
+      cards.forEach(card => {
+        card.removeEventListener('mousemove', handleMouseMove);
+        card.removeEventListener('mouseleave', handleMouseLeave);
+      });
+    };
   }, []);
 
   return (
@@ -63,45 +76,7 @@ export default function Home() {
 
       {/* Section 3: Projects */}
       <section id="projects" className="section">
-        <h2 className="text-4xl font-bold mb-6">Projects</h2>
-        <div className="project-container">
-          {/* Project Cards */}
-          {/* Card 1 */}
-          <div className="project-card">
-            <Link href="/exoglove">
-              <a>
-                <img src="/images/exoglove.jpg" alt="EXO GLOVE" />
-                <div className="project-info">
-                  <h3>EXO GLOVE</h3>
-                </div>
-              </a>
-            </Link>
-          </div>
-
-          {/* Card 2 */}
-          <div className="project-card">
-            <Link href="/biomorphus">
-              <a>
-                <img src="/images/biomorphus.jpg" alt="BIOMORPHUS" />
-                <div className="project-info">
-                  <h3>BIOMORPHUS</h3>
-                </div>
-              </a>
-            </Link>
-          </div>
-
-          {/* Card 3 */}
-          <div className="project-card">
-            <Link href="/innovice">
-              <a>
-                <img src="/images/innovice.jpg" alt="INNOVICE" />
-                <div className="project-info">
-                  <h3>INNOVICE</h3>
-                </div>
-              </a>
-            </Link>
-          </div>
-        </div>
+        <Projects /> {/* Integrate the Projects component */}
       </section>
 
       {/* Section 4: Contact */}
