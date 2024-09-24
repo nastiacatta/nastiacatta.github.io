@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Tilt from 'react-parallax-tilt';
 
 export default function Projects() {
   const projects = [
@@ -45,17 +46,29 @@ export default function Projects() {
         {projects.map((project) => (
           <Link href={project.href} key={project.title}>
             <a className="relative group">
-              <div className="overflow-hidden rounded-lg shadow-lg transition-transform duration-700 transform hover:scale-105 hover:rotate-3 hover:translate-y-1">
-                <Image
-                  src={project.imageSrc}
-                  alt={`${project.title} Image`}
-                  width={400}
-                  height={300}
-                  className="object-cover"
-                />
-                {/* Pink filter overlay */}
-                <div className="absolute inset-0 bg-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-              </div>
+              <Tilt
+                glareEnable={false}
+                tiltMaxAngleX={10}
+                tiltMaxAngleY={10}
+                transitionSpeed={700}
+                className="rounded-lg shadow-lg"
+              >
+                <div className="relative w-full h-64 overflow-hidden rounded-lg">
+                  <Image
+                    src={project.imageSrc}
+                    alt={`${project.title} Image`}
+                    layout="fill"
+                    objectFit="cover"
+                    className="transition-transform duration-700 transform group-hover:scale-105"
+                  />
+                  {/* Pink filter overlay */}
+                  <div className="absolute inset-0 bg-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                </div>
+              </Tilt>
+              {/* Project Title */}
+              <h3 className="mt-4 text-center text-lg font-semibold text-white dark:text-dark-grey">
+                {project.title}
+              </h3>
             </a>
           </Link>
         ))}

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { SunIcon, MoonIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'; // Correct icons for v2
+import { SunIcon, MoonIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 
 export default function Header() {
   const [darkMode, setDarkMode] = useState(false);
@@ -48,39 +48,22 @@ export default function Header() {
         <ul className="flex space-x-4">
           <li>
             <Link href="/#introduction">
-              <a className="text-gray-200 hover:text-pink-400 transition-colors">Home</a>
+              <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac">Home</a>
             </Link>
           </li>
           <li>
             <Link href="/#about">
-              <a className="text-gray-200 hover:text-pink-400 transition-colors">About</a>
+              <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac">About</a>
             </Link>
           </li>
           <li>
             <Link href="/#projects">
-              <a className="text-gray-200 hover:text-pink-400 transition-colors">Projects</a>
+              <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac">Projects</a>
             </Link>
           </li>
           <li>
             <Link href="/#contact">
-              <a className="text-gray-200 hover:text-pink-400 transition-colors">Contact</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/resume">
-              <a className="text-gray-200 hover:text-pink-400 transition-colors flex items-center group">
-                Resume
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
+              <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac">Contact</a>
             </Link>
           </li>
         </ul>
@@ -108,44 +91,45 @@ export default function Header() {
           <ul className="flex flex-col p-4 space-y-2">
             <li>
               <Link href="/#introduction">
-                <a className="text-gray-200 hover:text-pink-400 transition-colors" onClick={toggleMobileMenu}>Home</a>
+                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>Home</a>
               </Link>
             </li>
             <li>
               <Link href="/#about">
-                <a className="text-gray-200 hover:text-pink-400 transition-colors" onClick={toggleMobileMenu}>About</a>
+                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>About</a>
               </Link>
             </li>
             <li>
               <Link href="/#projects">
-                <a className="text-gray-200 hover:text-pink-400 transition-colors" onClick={toggleMobileMenu}>Projects</a>
+                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>Projects</a>
               </Link>
             </li>
             <li>
               <Link href="/#contact">
-                <a className="text-gray-200 hover:text-pink-400 transition-colors" onClick={toggleMobileMenu}>Contact</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/resume">
-                <a className="text-gray-200 hover:text-pink-400 transition-colors flex items-center group">
-                  Resume
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </a>
+                <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>Contact</a>
               </Link>
             </li>
           </ul>
         </nav>
       )}
+      {/* Floating Resume Link */}
+      <div className="fixed top-4 left-4">
+        <Link href="/resume">
+          <a className="flex items-center bg-gray-700 dark:bg-gray-300 text-gray-200 dark:text-dark-grey px-4 py-2 rounded-lg shadow-lg transition-transform duration-300 hover:shadow-2xl hover:scale-105 group relative focus:outline-none focus:ring-2 focus:ring-lilac">
+            Resume
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </Link>
+      </div>
     </header>
   );
 }
