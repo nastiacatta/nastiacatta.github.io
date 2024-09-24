@@ -41,8 +41,8 @@ export default function Projects() {
 
   return (
     <div className="py-10 px-6">
-      {/* Removed the Projects title as per request */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12"> {/* Increased gap for more space */}
+      {/* Projects Grid */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
         {projects.map((project) => (
           <Link href={project.href} key={project.title}>
             <a className="relative group block">

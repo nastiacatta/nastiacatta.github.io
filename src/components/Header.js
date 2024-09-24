@@ -34,6 +34,7 @@ export default function Header() {
 
   return (
     <header className="header flex items-center justify-between p-4 bg-gray-800 dark:bg-gray-900 fixed w-full top-0 z-50">
+      {/* Logo Section */}
       <div className="logo flex items-center">
         <Link href="/">
           <a className="flex items-center">
@@ -43,9 +44,10 @@ export default function Header() {
           </a>
         </Link>
       </div>
+
       {/* Desktop Navigation */}
-      <nav className="hidden md:block">
-        <ul className="flex space-x-4">
+      <nav className="hidden md:flex">
+        <ul className="flex space-x-6 items-center">
           <li>
             <Link href="/#introduction">
               <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac">Home</a>
@@ -70,25 +72,17 @@ export default function Header() {
             <Link href="/resume">
               <a className="text-gray-200 hover:text-lilac transition-colors flex items-center px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-lilac">
                 Resume
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
               </a>
             </Link>
-            {/* Pop-up Box Shadow on Hover */}
-            <div className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none transform -translate-x-1 -translate-y-1"></div>
+            {/* Hover Effect: Rounded Box with Shadow Moving to Top Left */}
+            <div className="absolute inset-0 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform -translate-x-1 -translate-y-1 pointer-events-none"></div>
           </li>
         </ul>
       </nav>
+
       {/* Dark/Light Mode Toggle and Mobile Menu Button */}
-      <div className="md:hidden flex items-center">
+      <div className="flex items-center md:hidden">
+        {/* Dark/Light Mode Toggle Button */}
         <button onClick={toggleDarkMode} className="mr-2 focus:outline-none" aria-label="Toggle Dark Mode">
           {darkMode ? (
             <SunIcon className="w-6 h-6 text-yellow-400" />
@@ -96,6 +90,7 @@ export default function Header() {
             <MoonIcon className="w-6 h-6 text-gray-200" />
           )}
         </button>
+        {/* Mobile Menu Toggle Button */}
         <button onClick={toggleMobileMenu} className="focus:outline-none" aria-label="Toggle Mobile Menu">
           {isMobileMenuOpen ? (
             <XMarkIcon className="w-6 h-6 text-gray-200" />
@@ -104,6 +99,7 @@ export default function Header() {
           )}
         </button>
       </div>
+
       {/* Mobile Navigation Menu */}
       {isMobileMenuOpen && (
         <nav className="absolute top-16 right-4 bg-gray-800 dark:bg-gray-900 rounded-lg shadow-lg md:hidden">
@@ -132,20 +128,10 @@ export default function Header() {
               <Link href="/resume">
                 <a className="text-gray-200 hover:text-lilac transition-colors flex items-center px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>
                   Resume
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
                 </a>
               </Link>
-              {/* Pop-up Box Shadow on Hover */}
-              <div className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none transform -translate-x-1 -translate-y-1"></div>
+              {/* Hover Effect: Rounded Box with Shadow Moving to Top Left */}
+              <div className="absolute inset-0 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform -translate-x-1 -translate-y-1 pointer-events-none"></div>
             </li>
           </ul>
         </nav>

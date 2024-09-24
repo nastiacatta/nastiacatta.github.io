@@ -16,7 +16,7 @@ body {
 }
 
 .dark body {
-  background-color: #ffffff; /* White background in light mode */
+  background-color: #F9E0E7; /* Light pink background in light mode */
   color: #1a1a1a; /* Dark grey text in light mode */
 }
 
@@ -35,11 +35,11 @@ a:hover {
 
 /* Header Styles */
 .header {
-  background-color: #1a1a1a; /* Solid background */
+  background-color: #1a1a1a; /* Dark grey background */
 }
 
 .dark .header {
-  background-color: #ffffff; /* White background in light mode */
+  background-color: #F9E0E7; /* Light pink background in light mode */
 }
 
 .header .logo img {
@@ -134,5 +134,16 @@ html {
 /* Focus Styles for Accessibility */
 a:focus {
   outline: none;
-  ring: 2px solid #b19cd9; /* Lilac ring */
+  box-shadow: 0 0 0 4px rgba(177, 156, 217, 0.5); /* Lilac ring */
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .section h1 {
+    font-size: 3xl;
+  }
+  
+  .section h2 {
+    font-size: 2xl;
+  }
 }
