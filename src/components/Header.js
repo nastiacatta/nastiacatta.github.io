@@ -66,6 +66,25 @@ export default function Header() {
               <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac">Contact</a>
             </Link>
           </li>
+          <li className="relative group">
+            <Link href="/resume">
+              <a className="text-gray-200 hover:text-lilac transition-colors flex items-center px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-lilac">
+                Resume
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </Link>
+            {/* Pop-up Box Shadow on Hover */}
+            <div className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+          </li>
         </ul>
       </nav>
       {/* Mobile Menu Button */}
@@ -109,27 +128,28 @@ export default function Header() {
                 <a className="text-gray-200 hover:text-lilac transition-colors focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>Contact</a>
               </Link>
             </li>
+            <li className="relative group">
+              <Link href="/resume">
+                <a className="text-gray-200 hover:text-lilac transition-colors flex items-center px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-lilac">
+                  Resume
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </a>
+              </Link>
+              {/* Pop-up Box Shadow on Hover */}
+              <div className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+            </li>
           </ul>
         </nav>
       )}
-      {/* Floating Resume Link */}
-      <div className="fixed top-4 left-4">
-        <Link href="/resume">
-          <a className="flex items-center bg-gray-700 dark:bg-gray-300 text-gray-200 dark:text-dark-grey px-4 py-2 rounded-lg shadow-lg transition-transform duration-300 hover:shadow-2xl hover:scale-105 group relative focus:outline-none focus:ring-2 focus:ring-lilac">
-            Resume
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-        </Link>
-      </div>
     </header>
   );
 }

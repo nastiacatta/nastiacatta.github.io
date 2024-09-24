@@ -34,7 +34,7 @@ export default function Projects() {
     },
     {
       title: 'PROJECT 6',
-      href: '/project6',
+      href: '/project6', // Correctly closed string
       imageSrc: '/project6.jpeg',
     },
   ];
@@ -63,12 +63,14 @@ export default function Projects() {
                   />
                   {/* Pink filter overlay */}
                   <div className="absolute inset-0 bg-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                  {/* Project Title Inside the Card */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent p-4">
+                    <h3 className="text-center text-sm text-white dark:text-dark-grey group-hover:text-lilac transition-colors">
+                      {project.title}
+                    </h3>
+                  </div>
                 </div>
               </Tilt>
-              {/* Project Title */}
-              <h3 className="mt-4 text-center text-lg font-semibold text-white dark:text-dark-grey">
-                {project.title}
-              </h3>
             </a>
           </Link>
         ))}
