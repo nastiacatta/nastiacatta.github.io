@@ -12,8 +12,8 @@ export default function Home() {
       <main id="main-content">
         {/* Section 1: Introduction */}
         <section id="introduction" className="section">
-          <h1 className="text-5xl font-normal mb-4 hover:text-lilac transition-colors">Hello!</h1>
-          <p className="text-xl mb-6">
+          <h1 className="text-6xl font-semibold mb-4 hover:text-lilac transition-colors text-center sm:text-left">Anastasia's Portfolio</h1>
+          <p className="text-xl mb-6 text-center sm:text-left">
             I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
           </p>
         </section>
