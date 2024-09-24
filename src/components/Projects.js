@@ -8,17 +8,17 @@ export default function Projects() {
     {
       title: 'EXO GLOVE',
       href: '/exoglove',
-      imageSrc: '/images/exoglove.jpg', // Path relative to the public folder
+      imageSrc: '/exoglove.jpg', // Path relative to the public folder
     },
     {
       title: 'BIOMORPHUS',
       href: '/biomorphus',
-      imageSrc: '/images/biomorphus.jpg', // Path relative to the public folder
+      imageSrc: '/biomorphus.jpg', // Path relative to the public folder
     },
     {
       title: 'INNOVICE',
       href: '/innovice',
-      imageSrc: '/images/innovice.jpg', // Path relative to the public folder
+      imageSrc: '/innovice.jpg', // Path relative to the public folder
     },
   ];
 
