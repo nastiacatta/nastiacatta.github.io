@@ -9,8 +9,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'light-pink': '#F9E0E7', // Define light-pink color
-        'dark-grey': '#2d2d2d',  // Define dark-grey color
+        'light-pink': '#F9E0E7',
+        'dark-grey': '#2d2d2d',
+        'lilac': '#b19cd9',
       },
     },
   },

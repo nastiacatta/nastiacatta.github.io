@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { SunIcon, MoonIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'; // Updated import paths
+import { SunIcon, MoonIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'; // Correct icons for v2
 
 export default function Header() {
   const [darkMode, setDarkMode] = useState(false);
@@ -35,9 +35,13 @@ export default function Header() {
   return (
     <header className="header flex items-center justify-between p-4 bg-gray-800 dark:bg-gray-900 fixed w-full top-0 z-50">
       <div className="logo flex items-center">
-        {/* Replace with your actual logo if available */}
-        <img src="/logo.png" alt="Logo" className="w-8 h-8 mr-2" />
-        <span className="text-white dark:text-gray-200 font-semibold text-lg">Anastasia's Portfolio</span>
+        <Link href="/">
+          <a className="flex items-center">
+            {/* Replace with your actual logo if available */}
+            <img src="/logo.png" alt="Logo" className="w-8 h-8 mr-2" />
+            <span className="text-white dark:text-gray-200 font-semibold text-lg">Anastasia's Portfolio</span>
+          </a>
+        </Link>
       </div>
       {/* Desktop Navigation */}
       <nav className="hidden md:block">

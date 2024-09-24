@@ -131,23 +131,6 @@ a:hover {
   z-index: 10;
 }
 
-.project-card .project-info {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  z-index: 1; /* Ensure text appears above the image */
-}
-
-.project-card .project-info h3 {
-  margin: 0;
-  color: #F9E0E7;
-  font-size: 1.5rem; /* Adjust as needed */
-}
-
-.dark .project-card .project-info h3 {
-  color: #1a1a1a;
-}
-
 /* Email Vertical */
 .email-vertical {
   position: fixed;
