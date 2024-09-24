@@ -89,14 +89,14 @@ export default function Header() {
       </nav>
       {/* Mobile Menu Button */}
       <div className="md:hidden flex items-center">
-        <button onClick={toggleDarkMode} className="mr-2 focus:outline-none">
+        <button onClick={toggleDarkMode} className="mr-2 focus:outline-none" aria-label="Toggle Dark Mode">
           {darkMode ? (
             <SunIcon className="w-6 h-6 text-yellow-400" />
           ) : (
             <MoonIcon className="w-6 h-6 text-gray-200" />
           )}
         </button>
-        <button onClick={toggleMobileMenu} className="focus:outline-none">
+        <button onClick={toggleMobileMenu} className="focus:outline-none" aria-label="Toggle Mobile Menu">
           {isMobileMenuOpen ? (
             <XMarkIcon className="w-6 h-6 text-gray-200" />
           ) : (
@@ -130,7 +130,7 @@ export default function Header() {
             </li>
             <li className="relative group">
               <Link href="/resume">
-                <a className="text-gray-200 hover:text-lilac transition-colors flex items-center px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-lilac">
+                <a className="text-gray-200 hover:text-lilac transition-colors flex items-center px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-lilac" onClick={toggleMobileMenu}>
                   Resume
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

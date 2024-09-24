@@ -34,7 +34,7 @@ export default function Projects() {
     },
     {
       title: 'PROJECT 6',
-      href: '/project6', // Correctly closed string
+      href: '/project6',
       imageSrc: '/project6.jpeg',
     },
   ];
@@ -42,18 +42,18 @@ export default function Projects() {
   return (
     <div className="py-10 px-6">
       {/* Removed the Projects title as per request */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12"> {/* Increased gap for more space */}
         {projects.map((project) => (
           <Link href={project.href} key={project.title}>
-            <a className="relative group">
+            <a className="relative group block">
               <Tilt
                 glareEnable={false}
                 tiltMaxAngleX={10}
                 tiltMaxAngleY={10}
                 transitionSpeed={700}
-                className="rounded-lg shadow-lg"
+                className="rounded-lg shadow-lg overflow-hidden"
               >
-                <div className="relative w-full h-64 overflow-hidden rounded-lg">
+                <div className="relative w-full h-64">
                   <Image
                     src={project.imageSrc}
                     alt={`${project.title} Image`}
@@ -63,8 +63,8 @@ export default function Projects() {
                   />
                   {/* Pink filter overlay */}
                   <div className="absolute inset-0 bg-pink-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                  {/* Project Title Inside the Card */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent p-4">
+                  {/* Project Title Inside the Card at the Top */}
+                  <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black via-transparent to-transparent p-4">
                     <h3 className="text-center text-sm text-white dark:text-dark-grey group-hover:text-lilac transition-colors">
                       {project.title}
                     </h3>
