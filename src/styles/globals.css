@@ -12,6 +12,7 @@ body {
   color: #F9E0E7; /* Light pink text */
   margin: 0;
   padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .dark body {
@@ -54,12 +55,13 @@ a:hover {
 /* Section Styles */
 .section {
   min-height: 100vh;
-  padding: 160px 40px 80px 40px; /* Adjust padding for header */
-  background-color: #1a1a1a; /* Consistent background color */
+  padding: 160px 60px 80px 60px; /* Increased horizontal padding */
+  background-color: #1a1a1a; /* Dark grey background */
+  transition: background-color 0.3s ease;
 }
 
 .dark .section {
-  background-color: #ffffff; /* Consistent background color in light mode */
+  background-color: #F9E0E7; /* Light pink background in light mode */
 }
 
 @media (max-width: 768px) {

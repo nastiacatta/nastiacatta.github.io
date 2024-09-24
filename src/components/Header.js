@@ -83,11 +83,11 @@ export default function Header() {
               </a>
             </Link>
             {/* Pop-up Box Shadow on Hover */}
-            <div className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+            <div className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none transform -translate-x-1 -translate-y-1"></div>
           </li>
         </ul>
       </nav>
-      {/* Mobile Menu Button */}
+      {/* Dark/Light Mode Toggle and Mobile Menu Button */}
       <div className="md:hidden flex items-center">
         <button onClick={toggleDarkMode} className="mr-2 focus:outline-none" aria-label="Toggle Dark Mode">
           {darkMode ? (
@@ -145,7 +145,7 @@ export default function Header() {
                 </a>
               </Link>
               {/* Pop-up Box Shadow on Hover */}
-              <div className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div className="absolute top-0 left-0 w-full h-full rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none transform -translate-x-1 -translate-y-1"></div>
             </li>
           </ul>
         </nav>
