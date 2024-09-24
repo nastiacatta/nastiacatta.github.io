@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Header from '../components/Header';
-import Projects from '../components/Projects'; // Import the Projects component
+import Link from 'next/link';
 
 export default function Home() {
   useEffect(() => {
@@ -76,7 +76,104 @@ export default function Home() {
 
       {/* Section 3: Projects */}
       <section id="projects" className="section">
-        <Projects /> {/* Integrate the Projects component */}
+        <h2 className="text-4xl font-bold mb-6 text-center">Projects</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Project Card 1 */}
+          <div className="project-card">
+            <Link href="/exoglove">
+              <a className="block relative">
+                <img
+                  src="/images/exoglove.jpg"
+                  alt="EXO GLOVE"
+                  className="w-full h-64 object-cover rounded-lg transition-transform duration-300 transform hover:scale-105 filter hover:brightness-75 hover:sepia hover:saturate-150"
+                />
+                <div className="project-info absolute bottom-4 left-4 bg-pink-500 bg-opacity-50 p-2 rounded">
+                  <h3 className="text-white text-xl font-semibold">EXO GLOVE</h3>
+                </div>
+              </a>
+            </Link>
+          </div>
+
+          {/* Project Card 2 */}
+          <div className="project-card">
+            <Link href="/biomorphus">
+              <a className="block relative">
+                <img
+                  src="/images/biomorphus.jpg"
+                  alt="BIOMORPHUS"
+                  className="w-full h-64 object-cover rounded-lg transition-transform duration-300 transform hover:scale-105 filter hover:brightness-75 hover:sepia hover:saturate-150"
+                />
+                <div className="project-info absolute bottom-4 left-4 bg-pink-500 bg-opacity-50 p-2 rounded">
+                  <h3 className="text-white text-xl font-semibold">BIOMORPHUS</h3>
+                </div>
+              </a>
+            </Link>
+          </div>
+
+          {/* Project Card 3 */}
+          <div className="project-card">
+            <Link href="/innovice">
+              <a className="block relative">
+                <img
+                  src="/images/innovice.jpg"
+                  alt="INNOVICE"
+                  className="w-full h-64 object-cover rounded-lg transition-transform duration-300 transform hover:scale-105 filter hover:brightness-75 hover:sepia hover:saturate-150"
+                />
+                <div className="project-info absolute bottom-4 left-4 bg-pink-500 bg-opacity-50 p-2 rounded">
+                  <h3 className="text-white text-xl font-semibold">INNOVICE</h3>
+                </div>
+              </a>
+            </Link>
+          </div>
+
+          {/* Project Card 4 */}
+          <div className="project-card">
+            <Link href="/project4">
+              <a className="block relative">
+                <img
+                  src="/images/project4.jpg"
+                  alt="PROJECT 4"
+                  className="w-full h-64 object-cover rounded-lg transition-transform duration-300 transform hover:scale-105 filter hover:brightness-75 hover:sepia hover:saturate-150"
+                />
+                <div className="project-info absolute bottom-4 left-4 bg-pink-500 bg-opacity-50 p-2 rounded">
+                  <h3 className="text-white text-xl font-semibold">PROJECT 4</h3>
+                </div>
+              </a>
+            </Link>
+          </div>
+
+          {/* Project Card 5 */}
+          <div className="project-card">
+            <Link href="/project5">
+              <a className="block relative">
+                <img
+                  src="/images/project5.jpg"
+                  alt="PROJECT 5"
+                  className="w-full h-64 object-cover rounded-lg transition-transform duration-300 transform hover:scale-105 filter hover:brightness-75 hover:sepia hover:saturate-150"
+                />
+                <div className="project-info absolute bottom-4 left-4 bg-pink-500 bg-opacity-50 p-2 rounded">
+                  <h3 className="text-white text-xl font-semibold">PROJECT 5</h3>
+                </div>
+              </a>
+            </Link>
+          </div>
+
+          {/* Project Card 6 */}
+          <div className="project-card">
+            <Link href="/project6">
+              <a className="block relative">
+                <img
+                  src="/images/project6.jpg"
+                  alt="PROJECT 6"
+                  className="w-full h-64 object-cover rounded-lg transition-transform duration-300 transform hover:scale-105 filter hover:brightness-75 hover:sepia hover:saturate-150"
+                />
+                <div className="project-info absolute bottom-4 left-4 bg-pink-500 bg-opacity-50 p-2 rounded">
+                  <h3 className="text-white text-xl font-semibold">PROJECT 6</h3>
+                </div>
+              </a>
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* Section 4: Contact */}
@@ -86,7 +183,7 @@ export default function Home() {
           Feel free to reach out to me at:
         </p>
         <p className="text-lg">
-          <a href="mailto:anastasia.cattaneo@gmail.com" className="underline hover:text-lilac">anastasia.cattaneo@gmail.com</a>
+          <a href="mailto:anastasia.cattaneo@gmail.com" className="underline hover:text-pink-400">anastasia.cattaneo@gmail.com</a>
         </p>
       </section>
 

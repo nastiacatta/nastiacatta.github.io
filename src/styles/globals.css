@@ -1,6 +1,6 @@
 /* src/styles/globals.css */
 
-/* Tailwind CSS directives (if you're using Tailwind) */
+/* Tailwind CSS directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,6 +14,11 @@ body {
   padding: 0;
 }
 
+.dark body {
+  background-color: #ffffff; /* White background in light mode */
+  color: #1a1a1a; /* Dark grey text in light mode */
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -23,23 +28,17 @@ a:hover {
   color: #b19cd9; /* Lilac */
 }
 
+.dark a:hover {
+  color: #ff69b4; /* Hot pink in light mode */
+}
+
 /* Header Styles */
 .header {
   background-color: #1a1a1a; /* Solid background */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 50;
-  padding: 20px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
-.header .logo {
-  display: flex;
-  align-items: center;
+.dark .header {
+  background-color: #ffffff; /* White background in light mode */
 }
 
 .header .logo img {
@@ -48,23 +47,8 @@ a:hover {
   margin-right: 10px;
 }
 
-.header nav ul {
-  display: flex;
-  gap: 20px;
-  list-style: none;
-}
-
-.header nav ul li {
-  display: inline-block;
-}
-
 .header nav ul li a {
   font-size: 16px;
-  transition: color 0.3s;
-}
-
-.header nav ul li a:hover {
-  color: #b19cd9; /* Lilac on hover */
 }
 
 .header .resume-link {
@@ -77,6 +61,10 @@ a:hover {
   transition: all 0.3s ease;
 }
 
+.dark .header .resume-link {
+  border-color: #1a1a1a;
+}
+
 .header .resume-link:hover {
   background-color: #F9E0E7;
   color: #1a1a1a;
@@ -84,10 +72,22 @@ a:hover {
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
+.dark .header .resume-link:hover {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
 /* Section Styles */
 .section {
   min-height: 100vh;
   padding: 160px 40px 80px 40px; /* Adjust padding for header */
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 120px 20px 60px 20px;
+  }
 }
 
 .section h1,
@@ -108,27 +108,27 @@ a:hover {
 
 /* Project Container */
 .project-container {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  perspective: 1000px; /* Enables 3D effects */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
 }
 
 /* Project Card Styles */
 .project-card {
   position: relative; /* Required for Image with layout="fill" */
-  width: 300px;
-  height: 400px;
-  background-color: #2d2d2d;
+  width: 100%;
+  height: 0;
+  padding-bottom: 66.666%; /* 3:2 Aspect Ratio */
   border-radius: 15px;
   overflow: hidden;
-  transition: transform 0.1s ease, box-shadow 0.3s ease;
-  transform-style: preserve-3d;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer; /* Indicates clickable area */
 }
 
-.project-card .project-image {
-  /* No additional styles needed as Image component handles positioning */
+.project-card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-10px) scale(1.05);
+  z-index: 10;
 }
 
 .project-card .project-info {
@@ -144,11 +144,8 @@ a:hover {
   font-size: 1.5rem; /* Adjust as needed */
 }
 
-/* Project Card Hover Effects */
-.project-card:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  transform: translateY(-10px) scale(1.05);
-  z-index: 10;
+.dark .project-card .project-info h3 {
+  color: #1a1a1a;
 }
 
 /* Email Vertical */
@@ -165,7 +162,11 @@ a:hover {
 
 .email-link {
   color: #F9E0E7;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.dark .email-link {
+  color: #1a1a1a;
 }
 
 .email-link:hover {
@@ -173,10 +174,18 @@ a:hover {
   color: #b19cd9;
 }
 
+.dark .email-link:hover {
+  color: #ff69b4;
+}
+
 .vertical-line {
   width: 1px;
   height: 100px;
   background-color: rgba(255, 255, 255, 0.5);
+}
+
+.dark .vertical-line {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Smooth scrolling */

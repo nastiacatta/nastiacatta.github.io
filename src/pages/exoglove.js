@@ -4,9 +4,9 @@ import Header from '../components/Header';
 
 export default function ExoGlove() {
   return (
-    <div>
+    <div className="bg-dark-grey text-light-pink min-h-screen">
       <Header />
-      <section className="section bg-dark-grey text-light-pink">
+      <section className="section">
         <div className="container mx-auto py-16 px-6">
           <h1 className="text-5xl font-bold mb-4">EXO GLOVE</h1>
           <p className="text-lg mb-6">
