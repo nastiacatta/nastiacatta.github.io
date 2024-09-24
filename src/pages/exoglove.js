@@ -4,7 +4,7 @@ import Header from '../components/Header';
 
 export default function ExoGlove() {
   return (
-    <div className="bg-dark-grey text-light-pink min-h-screen">
+    <div className="bg-dark-grey text-light-pink dark:bg-white dark:text-dark-grey min-h-screen">
       <Header />
       <section className="section">
         <div className="container mx-auto py-16 px-6">

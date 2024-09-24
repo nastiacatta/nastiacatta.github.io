@@ -51,37 +51,15 @@ a:hover {
   font-size: 16px;
 }
 
-.header .resume-link {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-  padding: 8px 16px;
-  border: 1px solid #F9E0E7;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.dark .header .resume-link {
-  border-color: #1a1a1a;
-}
-
-.header .resume-link:hover {
-  background-color: #F9E0E7;
-  color: #1a1a1a;
-  transform: translate(-5px, -5px);
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-}
-
-.dark .header .resume-link:hover {
-  background-color: #1a1a1a;
-  color: #ffffff;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-}
-
 /* Section Styles */
 .section {
   min-height: 100vh;
   padding: 160px 40px 80px 40px; /* Adjust padding for header */
+  background-color: #1a1a1a; /* Consistent background color */
+}
+
+.dark .section {
+  background-color: #ffffff; /* Consistent background color in light mode */
 }
 
 @media (max-width: 768px) {
@@ -127,7 +105,7 @@ a:hover {
 
 .project-card:hover {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  transform: translateY(-10px) scale(1.05);
+  transform: translateY(-10px) scale(1.05) rotate(3deg); /* 3D effect */
   z-index: 10;
 }
 

@@ -36,7 +36,7 @@ export default function Home() {
           Feel free to reach out to me at:
         </p>
         <p className="text-lg">
-          <a href="mailto:anastasia.cattaneo@gmail.com" className="underline hover:text-lilac">anastasia.cattaneo@gmail.com</a>
+          <a href="mailto:anastasia.cattaneo@gmail.com" className="underline hover:text-pink-400">anastasia.cattaneo@gmail.com</a>
         </p>
       </section>
 
@@ -48,4 +48,3 @@ export default function Home() {
     </div>
   );
 }
-

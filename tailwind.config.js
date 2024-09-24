@@ -9,9 +9,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'light-pink': '#F9E0E7',
-        'dark-grey': '#2d2d2d',
-        'lilac': '#b19cd9',
+        'light-pink': '#F9E0E7', // Define light-pink color
+        'dark-grey': '#1a1a1a',  // Define dark-grey color
+      },
+      rotate: {
+        '3': '3deg',
+        '-3': '-3deg',
+      },
+      translate: {
+        '1': '0.25rem',
       },
     },
   },
