@@ -3,16 +3,27 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+// Import OrbitControls dynamically
+import dynamic from 'next/dynamic';
+const OrbitControls = dynamic(
+  () => import('three/examples/jsm/controls/OrbitControls').then((mod) => mod.OrbitControls),
+  { ssr: false }
+);
+
 export default function Hero() {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    let controls;
+    let animationFrameId;
+
     // Ensure the canvas element is available
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     // Set up the scene, camera, and renderer
     const scene = new THREE.Scene();
+
     const camera = new THREE.PerspectiveCamera(
       75,
       canvas.clientWidth / canvas.clientHeight,
@@ -21,9 +32,17 @@ export default function Hero() {
     );
     camera.position.z = 5;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
+
+    // Add OrbitControls
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableRotate = true;
+    controls.enableZoom = false; // Disable zoom if desired
+    controls.enablePan = false; // Disable panning
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -40,12 +59,12 @@ export default function Hero() {
     petalShape.bezierCurveTo(-0.5, 2, -0.5, 0, 0, 0);
 
     const extrudeSettings = {
-      depth: 0.1,
+      depth: 0.05,
       bevelEnabled: true,
       bevelSegments: 2,
       steps: 2,
-      bevelSize: 0.05,
-      bevelThickness: 0.05,
+      bevelSize: 0.02,
+      bevelThickness: 0.02,
     };
 
     const petalGeometry = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
@@ -75,20 +94,26 @@ export default function Hero() {
     // Apply bending to the petal geometry
     bendGeometry(petalGeometry, 0.3); // Adjust bendAmount as needed
 
-    // Petal Material
+    // Petal Material with bright electric lilac color and increased transparency
     const petalMaterial = new THREE.MeshPhongMaterial({
-      color: 0xff69b4,
+      color: 0xB666D2, // Bright electric lilac
       side: THREE.DoubleSide,
       shininess: 100,
+      opacity: 0.5,
+      transparent: true,
     });
 
     const OPEN_ROTATION = 0;
     const CLOSED_ROTATION = -Math.PI / 4; // Negative to rotate forward
-    const ROTATION_SPEED = 0.1;
+    const BASE_ROTATION_SPEED = 0.01; // Slower speed for smoother motion
 
     const petals = [];
-    const numPetals = 6; // Adjust for more or fewer petals
+    const numPetals = 8; // Adjust for more or fewer petals
     const petalAngle = (Math.PI * 2) / numPetals;
+
+    // Create a group for the entire flower
+    const flowerGroup = new THREE.Group();
+    scene.add(flowerGroup);
 
     for (let i = 0; i < numPetals; i++) {
       const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
@@ -113,19 +138,23 @@ export default function Hero() {
       // Add rotation properties to the group
       petalGroup.userData.targetRotationX = OPEN_ROTATION;
 
-      scene.add(petalGroup);
+      // Assign a random rotation speed variation
+      petalGroup.userData.rotationSpeed = BASE_ROTATION_SPEED + Math.random() * 0.005;
+
       petals.push(petalGroup);
+      flowerGroup.add(petalGroup);
     }
 
     // Add a center sphere
-    const centerGeometry = new THREE.SphereGeometry(0.3, 32, 32);
-    const centerMaterial = new THREE.MeshPhongMaterial({ color: 0xffff00 }); // Yellow color
+    const centerGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+    const centerMaterial = new THREE.MeshPhongMaterial({ color: 0xffffcc }); // Light yellow color
     const center = new THREE.Mesh(centerGeometry, centerMaterial);
-    scene.add(center);
+    flowerGroup.add(center);
 
     // Raycaster and mouse for interaction
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
+    let isHovering = false;
 
     function onMouseMove(event) {
       const rect = canvas.getBoundingClientRect();
@@ -138,17 +167,20 @@ export default function Hero() {
     window.addEventListener('mousemove', onMouseMove, false);
 
     // Animation loop
+    const clock = new THREE.Clock();
+
     function animate() {
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
+
+      const elapsedTime = clock.getElapsedTime();
 
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(scene.children, true);
+      const intersects = raycaster.intersectObject(flowerGroup, true);
 
-      const isHovering = intersects.some(
-        (intersect) => petals.includes(intersect.object.parent)
-      );
+      // Check if mouse is over the flower
+      isHovering = intersects.length > 0;
 
-      petals.forEach((petalGroup) => {
+      petals.forEach((petalGroup, index) => {
         const petalMesh = petalGroup.children[0]; // Get the petal mesh
 
         if (isHovering) {
@@ -159,8 +191,34 @@ export default function Hero() {
 
         // Smoothly interpolate the petal's rotation towards the target rotation
         petalMesh.rotation.x +=
-          (petalGroup.userData.targetRotationX - petalMesh.rotation.x) * ROTATION_SPEED;
+          (petalGroup.userData.targetRotationX - petalMesh.rotation.x) *
+          petalGroup.userData.rotationSpeed;
+
+        // Add subtle trembling to petals
+        petalMesh.rotation.z =
+          Math.sin(elapsedTime * 2 + petalGroup.position.x * 2) * 0.01;
+
+        // Petals oscillate slightly in position
+        petalGroup.position.y =
+          Math.sin(elapsedTime * 1.5 + petalGroup.position.x * 2) * 0.02;
+
+        // Petals gently sway
+        petalGroup.rotation.z =
+          Math.sin(elapsedTime + petalGroup.position.x) * 0.02;
       });
+
+      // Make the flower oscillate slightly
+      flowerGroup.position.y = Math.sin(elapsedTime * 0.5) * 0.05;
+
+      // Update controls only when hovering over the flower
+      if (isHovering) {
+        controls.enabled = true;
+      } else {
+        controls.enabled = false;
+        // Smoothly return to original rotation
+        flowerGroup.rotation.y += (0 - flowerGroup.rotation.y) * 0.02;
+      }
+      controls.update();
 
       renderer.render(scene, camera);
     }
@@ -182,16 +240,40 @@ export default function Hero() {
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('resize', onWindowResize);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      if (controls) controls.dispose();
     };
   }, []);
 
   return (
-    <section id="hero" className="relative h-screen">
+    <section
+      id="hero"
+      className="relative h-screen flex items-center justify-center text-center text-white"
+    >
+      {/* Canvas for Three.js animation */}
       <canvas
         ref={canvasRef}
         id="bg"
         className="absolute top-0 left-0 w-full h-full"
       ></canvas>
+
+      {/* Text content overlaid on the animation */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+        <h1 className="text-5xl font-bold">Hello!</h1>
+        <p className="text-xl mt-4">
+          I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
+        </p>
+        <div className="mt-8">
+          <a
+            href="#projects"
+            className="px-6 py-3 bg-white text-indigo-600 rounded-md hover:bg-gray-200"
+          >
+            View My Work
+          </a>
+        </div>
+      </div>
     </section>
   );
 }

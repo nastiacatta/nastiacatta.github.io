@@ -7,26 +7,12 @@ import Projects from '../components/Projects';
 export default function Home() {
   return (
     <div>
+      <Header /> {/* Top menu restored */}
+
       <Hero />
 
       {/* Main Content */}
       <main id="main-content">
-        {/* Introduction Section */}
-        <section id="introduction" className="section text-center">
-          <h1 className="text-5xl font-bold">Hello!</h1>
-          <p className="text-xl mt-4">
-            I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
-          </p>
-          <div className="mt-8">
-            <a
-              href="#projects"
-              className="px-6 py-3 bg-white text-indigo-600 rounded-md hover:bg-gray-200"
-            >
-              View My Work
-            </a>
-          </div>
-        </section>
-
         {/* Section 2: About Me */}
         <section id="about" className="section">
           <h2 className="text-4xl font-normal mb-6 hover:text-lilac transition-colors">
