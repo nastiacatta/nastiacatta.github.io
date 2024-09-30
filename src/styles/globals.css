@@ -131,11 +131,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Focus Styles for Accessibility */
-a:focus {
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(177, 156, 217, 0.5); /* Lilac ring */
-}
+
 
 /* Responsive Typography */
 @media (max-width: 768px) {
