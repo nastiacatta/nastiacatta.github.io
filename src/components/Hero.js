@@ -95,6 +95,8 @@ export default function Hero() {
       // Petal Material with bright electric lilac color and increased transparency
       const petalMaterial = new THREE.MeshPhongMaterial({
         color: 0xB666D2, // Bright electric lilac
+        emissive: 0xB666D2, // Add emissive color for glow effect
+        emissiveIntensity: 0.5,
         side: THREE.DoubleSide,
         shininess: 100,
         opacity: 0.5,
@@ -102,7 +104,7 @@ export default function Hero() {
       });
 
       const OPEN_ROTATION = 0;
-      const CLOSED_ROTATION = -Math.PI / 4; // Negative to rotate forward
+      const CLOSED_ROTATION = Math.PI / 2; // Adjusted to rotate petals upward when closing
       const BASE_ROTATION_SPEED = 0.01; // Slower speed for smoother motion
 
       const petals = [];
@@ -112,6 +114,9 @@ export default function Hero() {
       // Create a group for the entire flower
       const flowerGroup = new THREE.Group();
       scene.add(flowerGroup);
+
+      // Increase the size of the flower
+      flowerGroup.scale.set(1.5, 1.5, 1.5); // Make the flower bigger
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
@@ -149,20 +154,38 @@ export default function Hero() {
       const center = new THREE.Mesh(centerGeometry, centerMaterial);
       flowerGroup.add(center);
 
+      // Add a glow effect around the flower using shaders
+      const glowVertexShader = `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize( normalMatrix * normal );
+          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+        }
+      `;
+
+      const glowFragmentShader = `
+        varying vec3 vNormal;
+        void main() {
+          float intensity = pow( 0.6 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 2.0 );
+          gl_FragColor = vec4( 182.0/255.0, 102.0/255.0, 210.0/255.0, 1.0 ) * intensity;
+        }
+      `;
+
+      const glowMaterial = new THREE.ShaderMaterial({
+        vertexShader: glowVertexShader,
+        fragmentShader: glowFragmentShader,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+      });
+
+      const glowGeometry = new THREE.SphereGeometry(2.5, 32, 32);
+      const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+      flowerGroup.add(glowMesh);
+
       // Raycaster and mouse for interaction
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
-      let isHovering = false;
-
-      function onMouseMove(event) {
-        const rect = canvas.getBoundingClientRect();
-
-        // Calculate mouse position relative to the canvas
-        mouse.x = ((event.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
-        mouse.y = -((event.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
-      }
-
-      window.addEventListener('mousemove', onMouseMove, false);
 
       // Animation loop
       const clock = new THREE.Clock();
@@ -172,20 +195,16 @@ export default function Hero() {
 
         const elapsedTime = clock.getElapsedTime();
 
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObject(flowerGroup, true);
-
-        // Check if mouse is over the flower
-        isHovering = intersects.length > 0;
+        // Gradually close the flower over time
+        const closingDuration = 10; // Duration in seconds for the flower to close
+        let closingProgress = Math.min(elapsedTime / closingDuration, 1); // 0 to 1
 
         petals.forEach((petalGroup) => {
-          const petalMesh = petalGroup.children[0]; // Get the petal mesh
+          const petalMesh = petalGroup.children[0];
 
-          if (isHovering) {
-            petalGroup.userData.targetRotationX = CLOSED_ROTATION;
-          } else {
-            petalGroup.userData.targetRotationX = OPEN_ROTATION;
-          }
+          // Compute the target rotation based on progress
+          petalGroup.userData.targetRotationX =
+            OPEN_ROTATION + closingProgress * (CLOSED_ROTATION - OPEN_ROTATION);
 
           // Smoothly interpolate the petal's rotation towards the target rotation
           petalMesh.rotation.x +=
@@ -201,21 +220,13 @@ export default function Hero() {
             Math.sin(elapsedTime * 1.5 + petalGroup.position.x * 2) * 0.02;
 
           // Petals gently sway
-          petalGroup.rotation.z =
-            Math.sin(elapsedTime + petalGroup.position.x) * 0.02;
+          petalGroup.rotation.z = Math.sin(elapsedTime + petalGroup.position.x) * 0.02;
         });
 
         // Make the flower oscillate slightly
         flowerGroup.position.y = Math.sin(elapsedTime * 0.5) * 0.05;
 
-        // Update controls only when hovering over the flower
-        if (isHovering) {
-          controls.enabled = true;
-        } else {
-          controls.enabled = false;
-          // Smoothly return to original rotation
-          flowerGroup.rotation.y += (0 - flowerGroup.rotation.y) * 0.02;
-        }
+        // Update controls to allow rotation at any time
         controls.update();
 
         renderer.render(scene, camera);
@@ -236,7 +247,6 @@ export default function Hero() {
 
       // Cleanup event listeners on component unmount
       return () => {
-        window.removeEventListener('mousemove', onMouseMove);
         window.removeEventListener('resize', onWindowResize);
         if (animationFrameId) {
           cancelAnimationFrame(animationFrameId);
@@ -260,14 +270,31 @@ export default function Hero() {
 
       {/* Text content overlaid on the animation */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-        <h1 className="text-5xl font-bold">Hello!</h1>
-        <p className="text-xl mt-4">
+        <h1
+          className="text-7xl font-bold"
+          style={{
+            background: 'linear-gradient(90deg, rgba(182,102,210,1) 0%, rgba(255,255,255,1) 100%)',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
+            textShadow: '0 0 10px rgba(182,102,210,0.7)',
+          }}
+        >
+          Hello!
+        </h1>
+        <p
+          className="text-xl mt-4"
+          style={{
+            background: 'linear-gradient(90deg, rgba(182,102,210,1) 0%, rgba(255,255,255,1) 100%)',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
+          }}
+        >
           I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
         </p>
         <div className="mt-8">
           <a
             href="#projects"
-            className="px-6 py-3 bg-white text-indigo-600 rounded-md hover:bg-gray-200"
+            className="px-6 py-3 text-indigo-600 font-bold text-xl hover:text-indigo-400"
           >
             View My Work
           </a>
