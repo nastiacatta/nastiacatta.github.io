@@ -1,3 +1,5 @@
+// src/components/Hero.js
+
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
@@ -21,6 +23,7 @@ export default function Hero() {
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -41,11 +44,14 @@ export default function Hero() {
       bevelEnabled: true,
       bevelSegments: 2,
       steps: 2,
-      bevelSize: 0.1,
-      bevelThickness: 0.1,
+      bevelSize: 0.05,
+      bevelThickness: 0.05,
     };
 
     const petalGeometry = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
+
+    // Adjust the geometry to rotate around the base of the petal
+    petalGeometry.translate(0, -1.5, 0); // Move geometry so pivot is at base
 
     // Function to bend geometry along the Y-axis
     function bendGeometry(geometry, bendAmount) {
@@ -67,46 +73,48 @@ export default function Hero() {
     }
 
     // Apply bending to the petal geometry
-    bendGeometry(petalGeometry, 0.5); // Adjust bendAmount as needed
+    bendGeometry(petalGeometry, 0.3); // Adjust bendAmount as needed
 
-    // Load a texture for the petals (optional)
-    const textureLoader = new THREE.TextureLoader();
-    // const petalTexture = textureLoader.load('path/to/your/petalTexture.png'); // Replace with your texture path
-
+    // Petal Material
     const petalMaterial = new THREE.MeshPhongMaterial({
       color: 0xff69b4,
       side: THREE.DoubleSide,
       shininess: 100,
-      // map: petalTexture, // Uncomment if using a texture
     });
 
     const OPEN_ROTATION = 0;
-    const CLOSED_ROTATION = Math.PI / 4; // Adjusted for smoother closing
-    const ROTATION_SPEED = 0.05;
+    const CLOSED_ROTATION = -Math.PI / 4; // Negative to rotate forward
+    const ROTATION_SPEED = 0.1;
 
     const petals = [];
     const numPetals = 6; // Adjust for more or fewer petals
     const petalAngle = (Math.PI * 2) / numPetals;
 
     for (let i = 0; i < numPetals; i++) {
-      const petal = new THREE.Mesh(petalGeometry, petalMaterial.clone());
+      const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
 
-      // Position the petal around the circle
+      // Create a group for each petal
+      const petalGroup = new THREE.Group();
+      petalGroup.add(petalMesh);
+
+      // Position the petal group around the circle
       const angle = i * petalAngle;
       const radius = 1;
 
-      petal.position.x = radius * Math.sin(angle);
-      petal.position.z = radius * Math.cos(angle);
+      petalGroup.position.x = radius * Math.sin(angle);
+      petalGroup.position.z = radius * Math.cos(angle);
 
-      // Rotate the petal to face outward
-      petal.rotation.y = angle;
+      // Rotate the petal group to face outward
+      petalGroup.rotation.y = angle;
 
-      // Set initial rotation for opening/closing
-      petal.userData.baseRotationX = OPEN_ROTATION;
-      petal.userData.targetRotationX = OPEN_ROTATION;
+      // Set initial rotation for the petal mesh
+      petalMesh.rotation.x = OPEN_ROTATION;
 
-      scene.add(petal);
-      petals.push(petal);
+      // Add rotation properties to the group
+      petalGroup.userData.targetRotationX = OPEN_ROTATION;
+
+      scene.add(petalGroup);
+      petals.push(petalGroup);
     }
 
     // Add a center sphere
@@ -134,20 +142,24 @@ export default function Hero() {
       requestAnimationFrame(animate);
 
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(petals);
+      const intersects = raycaster.intersectObjects(scene.children, true);
 
-      const isHovering = intersects.length > 0;
+      const isHovering = intersects.some(
+        (intersect) => petals.includes(intersect.object.parent)
+      );
 
-      petals.forEach((petal) => {
+      petals.forEach((petalGroup) => {
+        const petalMesh = petalGroup.children[0]; // Get the petal mesh
+
         if (isHovering) {
-          petal.userData.targetRotationX = CLOSED_ROTATION;
+          petalGroup.userData.targetRotationX = CLOSED_ROTATION;
         } else {
-          petal.userData.targetRotationX = OPEN_ROTATION;
+          petalGroup.userData.targetRotationX = OPEN_ROTATION;
         }
 
         // Smoothly interpolate the petal's rotation towards the target rotation
-        petal.rotation.x +=
-          (petal.userData.targetRotationX - petal.rotation.x) * ROTATION_SPEED;
+        petalMesh.rotation.x +=
+          (petalGroup.userData.targetRotationX - petalMesh.rotation.x) * ROTATION_SPEED;
       });
 
       renderer.render(scene, camera);
@@ -174,30 +186,12 @@ export default function Hero() {
   }, []);
 
   return (
-    <section
-      id="hero"
-      className="relative h-screen flex items-center justify-center text-center text-white"
-    >
+    <section id="hero" className="relative h-screen">
       <canvas
         ref={canvasRef}
         id="bg"
         className="absolute top-0 left-0 w-full h-full"
       ></canvas>
-
-      <div className="relative z-10 hero-content">
-        <h1 className="text-5xl font-bold">Hello!</h1>
-        <p className="text-xl mt-4">
-          I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
-        </p>
-        <div className="mt-8">
-          <a
-            href="#projects"
-            className="px-6 py-3 bg-white text-indigo-600 rounded-md hover:bg-gray-200"
-          >
-            View My Work
-          </a>
-        </div>
-      </div>
     </section>
   );
 }
