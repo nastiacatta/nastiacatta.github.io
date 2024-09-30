@@ -10,7 +10,6 @@ export default function Hero() {
 
     const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#bg'), alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -49,7 +48,6 @@ export default function Hero() {
     const mouse = new THREE.Vector2();
 
     function onMouseMove(event) {
-      // Normalize mouse coordinates between -1 and 1
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
@@ -59,6 +57,8 @@ export default function Hero() {
     // Animation loop
     function animate() {
       requestAnimationFrame(animate);
+
+      console.log("Rendering scene...");
 
       // Update raycaster with the current mouse position and camera
       raycaster.setFromCamera(mouse, camera);
@@ -111,4 +111,3 @@ export default function Hero() {
     </section>
   );
 }
-
