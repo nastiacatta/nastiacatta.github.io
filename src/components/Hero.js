@@ -23,20 +23,30 @@ export default function Hero() {
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 10, 7.5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(0, 1, 1);
     scene.add(directionalLight);
 
-    // Create petal geometry and material
-    const petalGeometry = new THREE.PlaneGeometry(1, 2);
+    // Create a petal shape
+    const petalShape = new THREE.Shape();
+    petalShape.moveTo(0, 0);
+    petalShape.quadraticCurveTo(0.5, 1.5, 0, 2);
+    petalShape.quadraticCurveTo(-0.5, 1.5, 0, 0);
+
+    const extrudeSettings = {
+      depth: 0.1,
+      bevelEnabled: false,
+    };
+
+    const petalGeometry = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
+
     const petalMaterial = new THREE.MeshPhongMaterial({
       color: 0xff69b4, // Light pink
-      transparent: true,
-      opacity: 0.7,
       side: THREE.DoubleSide,
+      shininess: 100,
     });
 
     const OPEN_ROTATION = 0;
@@ -44,11 +54,26 @@ export default function Hero() {
     const ROTATION_SPEED = 0.05;
 
     const petals = [];
-    for (let i = 0; i < 5; i++) {
+    const numPetals = 5; // Adjust for more or fewer petals
+    const petalAngle = (Math.PI * 2) / numPetals;
+
+    for (let i = 0; i < numPetals; i++) {
       const petal = new THREE.Mesh(petalGeometry, petalMaterial.clone());
-      petal.position.set((i - 2) * 1.5, 0, 0); // Positioning the petals
-      petal.rotation.x = OPEN_ROTATION;
-      petal.userData.targetRotation = OPEN_ROTATION;
+
+      // Position the petal around the circle
+      const angle = i * petalAngle;
+      const radius = 1.5;
+
+      petal.position.x = radius * Math.sin(angle);
+      petal.position.y = radius * Math.cos(angle);
+
+      // Rotate the petal to face outward
+      petal.rotation.z = angle;
+
+      // Set initial rotation for opening/closing
+      petal.userData.baseRotationX = OPEN_ROTATION;
+      petal.userData.targetRotationX = OPEN_ROTATION;
+
       scene.add(petal);
       petals.push(petal);
     }
@@ -71,22 +96,20 @@ export default function Hero() {
     function animate() {
       requestAnimationFrame(animate);
 
-      console.log('Animating...'); // Optional: For debugging
-
       // Update raycaster with the current mouse position and camera
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(petals);
 
       petals.forEach((petal) => {
         if (intersects.find((intersect) => intersect.object === petal)) {
-          petal.userData.targetRotation = CLOSED_ROTATION;
+          petal.userData.targetRotationX = CLOSED_ROTATION;
         } else {
-          petal.userData.targetRotation = OPEN_ROTATION;
+          petal.userData.targetRotationX = OPEN_ROTATION;
         }
 
         // Smoothly interpolate the petal's rotation towards the target rotation
         petal.rotation.x +=
-          (petal.userData.targetRotation - petal.rotation.x) * ROTATION_SPEED;
+          (petal.userData.targetRotationX - petal.rotation.x) * ROTATION_SPEED;
       });
 
       renderer.render(scene, camera);
