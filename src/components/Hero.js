@@ -3,13 +3,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-// Import OrbitControls dynamically
-import dynamic from 'next/dynamic';
-const OrbitControls = dynamic(
-  () => import('three/examples/jsm/controls/OrbitControls').then((mod) => mod.OrbitControls),
-  { ssr: false }
-);
-
 export default function Hero() {
   const canvasRef = useRef(null);
 
@@ -17,234 +10,240 @@ export default function Hero() {
     let controls;
     let animationFrameId;
 
-    // Ensure the canvas element is available
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    // Ensure the code runs only on the client side
+    if (typeof window !== 'undefined') {
+      // Import OrbitControls inside useEffect
+      const { OrbitControls } = require('three/examples/jsm/controls/OrbitControls');
 
-    // Set up the scene, camera, and renderer
-    const scene = new THREE.Scene();
+      // Ensure the canvas element is available
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      canvas.clientWidth / canvas.clientHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 5;
+      // Set up the scene, camera, and renderer
+      const scene = new THREE.Scene();
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        canvas.clientWidth / canvas.clientHeight,
+        0.1,
+        1000
+      );
+      camera.position.z = 5;
 
-    // Add OrbitControls
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableRotate = true;
-    controls.enableZoom = false; // Disable zoom if desired
-    controls.enablePan = false; // Disable panning
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
+      // Add OrbitControls
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.enableRotate = true;
+      controls.enableZoom = false; // Disable zoom if desired
+      controls.enablePan = false; // Disable panning
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(0, 1, 1);
-    scene.add(directionalLight);
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      scene.add(ambientLight);
 
-    // Create a custom petal shape
-    const petalShape = new THREE.Shape();
-    petalShape.moveTo(0, 0);
-    petalShape.bezierCurveTo(0.5, 0, 0.5, 2, 0, 3);
-    petalShape.bezierCurveTo(-0.5, 2, -0.5, 0, 0, 0);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+      directionalLight.position.set(0, 1, 1);
+      scene.add(directionalLight);
 
-    const extrudeSettings = {
-      depth: 0.05,
-      bevelEnabled: true,
-      bevelSegments: 2,
-      steps: 2,
-      bevelSize: 0.02,
-      bevelThickness: 0.02,
-    };
+      // Create a custom petal shape
+      const petalShape = new THREE.Shape();
+      petalShape.moveTo(0, 0);
+      petalShape.bezierCurveTo(0.5, 0, 0.5, 2, 0, 3);
+      petalShape.bezierCurveTo(-0.5, 2, -0.5, 0, 0, 0);
 
-    const petalGeometry = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
+      const extrudeSettings = {
+        depth: 0.05,
+        bevelEnabled: true,
+        bevelSegments: 2,
+        steps: 2,
+        bevelSize: 0.02,
+        bevelThickness: 0.02,
+      };
 
-    // Adjust the geometry to rotate around the base of the petal
-    petalGeometry.translate(0, -1.5, 0); // Move geometry so pivot is at base
+      const petalGeometry = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
 
-    // Function to bend geometry along the Y-axis
-    function bendGeometry(geometry, bendAmount) {
-      const positionAttribute = geometry.attributes.position;
+      // Adjust the geometry to rotate around the base of the petal
+      petalGeometry.translate(0, -1.5, 0); // Move geometry so pivot is at base
 
-      for (let i = 0; i < positionAttribute.count; i++) {
-        const y = positionAttribute.getY(i);
-        const z = positionAttribute.getZ(i);
+      // Function to bend geometry along the Y-axis
+      function bendGeometry(geometry, bendAmount) {
+        const positionAttribute = geometry.attributes.position;
 
-        const theta = y * bendAmount;
-        const sinTheta = Math.sin(theta);
-        const cosTheta = Math.cos(theta);
+        for (let i = 0; i < positionAttribute.count; i++) {
+          const y = positionAttribute.getY(i);
+          const z = positionAttribute.getZ(i);
 
-        positionAttribute.setZ(i, z * cosTheta - y * sinTheta);
-        positionAttribute.setY(i, z * sinTheta + y * cosTheta);
-      }
+          const theta = y * bendAmount;
+          const sinTheta = Math.sin(theta);
+          const cosTheta = Math.cos(theta);
 
-      geometry.computeVertexNormals();
-    }
-
-    // Apply bending to the petal geometry
-    bendGeometry(petalGeometry, 0.3); // Adjust bendAmount as needed
-
-    // Petal Material with bright electric lilac color and increased transparency
-    const petalMaterial = new THREE.MeshPhongMaterial({
-      color: 0xB666D2, // Bright electric lilac
-      side: THREE.DoubleSide,
-      shininess: 100,
-      opacity: 0.5,
-      transparent: true,
-    });
-
-    const OPEN_ROTATION = 0;
-    const CLOSED_ROTATION = -Math.PI / 4; // Negative to rotate forward
-    const BASE_ROTATION_SPEED = 0.01; // Slower speed for smoother motion
-
-    const petals = [];
-    const numPetals = 8; // Adjust for more or fewer petals
-    const petalAngle = (Math.PI * 2) / numPetals;
-
-    // Create a group for the entire flower
-    const flowerGroup = new THREE.Group();
-    scene.add(flowerGroup);
-
-    for (let i = 0; i < numPetals; i++) {
-      const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
-
-      // Create a group for each petal
-      const petalGroup = new THREE.Group();
-      petalGroup.add(petalMesh);
-
-      // Position the petal group around the circle
-      const angle = i * petalAngle;
-      const radius = 1;
-
-      petalGroup.position.x = radius * Math.sin(angle);
-      petalGroup.position.z = radius * Math.cos(angle);
-
-      // Rotate the petal group to face outward
-      petalGroup.rotation.y = angle;
-
-      // Set initial rotation for the petal mesh
-      petalMesh.rotation.x = OPEN_ROTATION;
-
-      // Add rotation properties to the group
-      petalGroup.userData.targetRotationX = OPEN_ROTATION;
-
-      // Assign a random rotation speed variation
-      petalGroup.userData.rotationSpeed = BASE_ROTATION_SPEED + Math.random() * 0.005;
-
-      petals.push(petalGroup);
-      flowerGroup.add(petalGroup);
-    }
-
-    // Add a center sphere
-    const centerGeometry = new THREE.SphereGeometry(0.2, 32, 32);
-    const centerMaterial = new THREE.MeshPhongMaterial({ color: 0xffffcc }); // Light yellow color
-    const center = new THREE.Mesh(centerGeometry, centerMaterial);
-    flowerGroup.add(center);
-
-    // Raycaster and mouse for interaction
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    let isHovering = false;
-
-    function onMouseMove(event) {
-      const rect = canvas.getBoundingClientRect();
-
-      // Calculate mouse position relative to the canvas
-      mouse.x = ((event.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
-      mouse.y = -((event.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
-    }
-
-    window.addEventListener('mousemove', onMouseMove, false);
-
-    // Animation loop
-    const clock = new THREE.Clock();
-
-    function animate() {
-      animationFrameId = requestAnimationFrame(animate);
-
-      const elapsedTime = clock.getElapsedTime();
-
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObject(flowerGroup, true);
-
-      // Check if mouse is over the flower
-      isHovering = intersects.length > 0;
-
-      petals.forEach((petalGroup, index) => {
-        const petalMesh = petalGroup.children[0]; // Get the petal mesh
-
-        if (isHovering) {
-          petalGroup.userData.targetRotationX = CLOSED_ROTATION;
-        } else {
-          petalGroup.userData.targetRotationX = OPEN_ROTATION;
+          positionAttribute.setZ(i, z * cosTheta - y * sinTheta);
+          positionAttribute.setY(i, z * sinTheta + y * cosTheta);
         }
 
-        // Smoothly interpolate the petal's rotation towards the target rotation
-        petalMesh.rotation.x +=
-          (petalGroup.userData.targetRotationX - petalMesh.rotation.x) *
-          petalGroup.userData.rotationSpeed;
+        geometry.computeVertexNormals();
+      }
 
-        // Add subtle trembling to petals
-        petalMesh.rotation.z =
-          Math.sin(elapsedTime * 2 + petalGroup.position.x * 2) * 0.01;
+      // Apply bending to the petal geometry
+      bendGeometry(petalGeometry, 0.3); // Adjust bendAmount as needed
 
-        // Petals oscillate slightly in position
-        petalGroup.position.y =
-          Math.sin(elapsedTime * 1.5 + petalGroup.position.x * 2) * 0.02;
-
-        // Petals gently sway
-        petalGroup.rotation.z =
-          Math.sin(elapsedTime + petalGroup.position.x) * 0.02;
+      // Petal Material with bright electric lilac color and increased transparency
+      const petalMaterial = new THREE.MeshPhongMaterial({
+        color: 0xB666D2, // Bright electric lilac
+        side: THREE.DoubleSide,
+        shininess: 100,
+        opacity: 0.5,
+        transparent: true,
       });
 
-      // Make the flower oscillate slightly
-      flowerGroup.position.y = Math.sin(elapsedTime * 0.5) * 0.05;
+      const OPEN_ROTATION = 0;
+      const CLOSED_ROTATION = -Math.PI / 4; // Negative to rotate forward
+      const BASE_ROTATION_SPEED = 0.01; // Slower speed for smoother motion
 
-      // Update controls only when hovering over the flower
-      if (isHovering) {
-        controls.enabled = true;
-      } else {
-        controls.enabled = false;
-        // Smoothly return to original rotation
-        flowerGroup.rotation.y += (0 - flowerGroup.rotation.y) * 0.02;
+      const petals = [];
+      const numPetals = 8; // Adjust for more or fewer petals
+      const petalAngle = (Math.PI * 2) / numPetals;
+
+      // Create a group for the entire flower
+      const flowerGroup = new THREE.Group();
+      scene.add(flowerGroup);
+
+      for (let i = 0; i < numPetals; i++) {
+        const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
+
+        // Create a group for each petal
+        const petalGroup = new THREE.Group();
+        petalGroup.add(petalMesh);
+
+        // Position the petal group around the circle
+        const angle = i * petalAngle;
+        const radius = 1;
+
+        petalGroup.position.x = radius * Math.sin(angle);
+        petalGroup.position.z = radius * Math.cos(angle);
+
+        // Rotate the petal group to face outward
+        petalGroup.rotation.y = angle;
+
+        // Set initial rotation for the petal mesh
+        petalMesh.rotation.x = OPEN_ROTATION;
+
+        // Add rotation properties to the group
+        petalGroup.userData.targetRotationX = OPEN_ROTATION;
+
+        // Assign a random rotation speed variation
+        petalGroup.userData.rotationSpeed = BASE_ROTATION_SPEED + Math.random() * 0.005;
+
+        petals.push(petalGroup);
+        flowerGroup.add(petalGroup);
       }
-      controls.update();
 
-      renderer.render(scene, camera);
-    }
+      // Add a center sphere
+      const centerGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+      const centerMaterial = new THREE.MeshPhongMaterial({ color: 0xffffcc }); // Light yellow color
+      const center = new THREE.Mesh(centerGeometry, centerMaterial);
+      flowerGroup.add(center);
 
-    animate();
+      // Raycaster and mouse for interaction
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      let isHovering = false;
 
-    function onWindowResize() {
-      if (!canvasRef.current) return;
-      const canvas = canvasRef.current;
+      function onMouseMove(event) {
+        const rect = canvas.getBoundingClientRect();
 
-      camera.aspect = canvas.clientWidth / canvas.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    }
-
-    window.addEventListener('resize', onWindowResize, false);
-
-    // Cleanup event listeners on component unmount
-    return () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('resize', onWindowResize);
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
+        // Calculate mouse position relative to the canvas
+        mouse.x = ((event.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
       }
-      if (controls) controls.dispose();
-    };
+
+      window.addEventListener('mousemove', onMouseMove, false);
+
+      // Animation loop
+      const clock = new THREE.Clock();
+
+      function animate() {
+        animationFrameId = requestAnimationFrame(animate);
+
+        const elapsedTime = clock.getElapsedTime();
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(flowerGroup, true);
+
+        // Check if mouse is over the flower
+        isHovering = intersects.length > 0;
+
+        petals.forEach((petalGroup) => {
+          const petalMesh = petalGroup.children[0]; // Get the petal mesh
+
+          if (isHovering) {
+            petalGroup.userData.targetRotationX = CLOSED_ROTATION;
+          } else {
+            petalGroup.userData.targetRotationX = OPEN_ROTATION;
+          }
+
+          // Smoothly interpolate the petal's rotation towards the target rotation
+          petalMesh.rotation.x +=
+            (petalGroup.userData.targetRotationX - petalMesh.rotation.x) *
+            petalGroup.userData.rotationSpeed;
+
+          // Add subtle trembling to petals
+          petalMesh.rotation.z =
+            Math.sin(elapsedTime * 2 + petalGroup.position.x * 2) * 0.01;
+
+          // Petals oscillate slightly in position
+          petalGroup.position.y =
+            Math.sin(elapsedTime * 1.5 + petalGroup.position.x * 2) * 0.02;
+
+          // Petals gently sway
+          petalGroup.rotation.z =
+            Math.sin(elapsedTime + petalGroup.position.x) * 0.02;
+        });
+
+        // Make the flower oscillate slightly
+        flowerGroup.position.y = Math.sin(elapsedTime * 0.5) * 0.05;
+
+        // Update controls only when hovering over the flower
+        if (isHovering) {
+          controls.enabled = true;
+        } else {
+          controls.enabled = false;
+          // Smoothly return to original rotation
+          flowerGroup.rotation.y += (0 - flowerGroup.rotation.y) * 0.02;
+        }
+        controls.update();
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      function onWindowResize() {
+        if (!canvasRef.current) return;
+        const canvas = canvasRef.current;
+
+        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+      }
+
+      window.addEventListener('resize', onWindowResize, false);
+
+      // Cleanup event listeners on component unmount
+      return () => {
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('resize', onWindowResize);
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+        if (controls) controls.dispose();
+      };
+    }
   }, []);
 
   return (
