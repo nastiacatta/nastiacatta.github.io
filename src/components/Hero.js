@@ -104,9 +104,9 @@ export default function Hero() {
       });
 
       // Adjusted rotation angles
-      const OPEN_ROTATION = Math.PI / 6; // Smaller angle to prevent over-opening
-      const CLOSED_ROTATION = Math.PI / 2; // Adjusted to rotate petals upward when closing
-      const BASE_ROTATION_SPEED = 0.05; // Adjusted speed for smoother motion
+      const OPEN_ROTATION = -Math.PI / 2; // Petals pointing down when fully open
+      const CLOSED_ROTATION = 0; // Petals pointing upwards when closed
+      const BASE_ROTATION_SPEED = 0.02; // Adjusted speed for smoother motion
 
       const petals = [];
       const numPetals = 8; // Adjust for more or fewer petals
@@ -116,8 +116,8 @@ export default function Hero() {
       const flowerGroup = new THREE.Group();
       scene.add(flowerGroup);
 
-      // Increase the size of the flower
-      flowerGroup.scale.set(1.5, 1.5, 1.5); // Make the flower bigger
+      // Reduce the size of the flower
+      flowerGroup.scale.set(0.8, 0.8, 0.8); // Adjusted scale to make the flower smaller
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
@@ -180,7 +180,7 @@ export default function Hero() {
         transparent: true,
       });
 
-      const glowGeometry = new THREE.SphereGeometry(2.5, 32, 32);
+      const glowGeometry = new THREE.SphereGeometry(1.5, 32, 32);
       const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
       flowerGroup.add(glowMesh);
 
@@ -275,17 +275,17 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="hero" className="relative h-screen">
+    <section id="hero" className="relative h-screen flex flex-col items-center">
       {/* Canvas for Three.js animation */}
       <canvas
         ref={canvasRef}
         id="bg"
-        className="absolute top-0 left-0 w-full h-full"
+        className="w-full h-2/3"
       ></canvas>
 
       {/* Text content below the animation */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center text-white mt-8">
-        <h1 className="text-5xl font-bold">Hello!</h1>
+      <div className="flex flex-col items-center justify-center text-center text-white mt-8">
+        <h1 className="text-5xl font-bold mt-8">Hello!</h1>
         <p className="text-xl mt-4">
           I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
         </p>
