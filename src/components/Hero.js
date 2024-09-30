@@ -103,9 +103,10 @@ export default function Hero() {
         transparent: true,
       });
 
-      const OPEN_ROTATION = 0;
+      // Adjusted rotation angles
+      const OPEN_ROTATION = Math.PI / 6; // Smaller angle to prevent over-opening
       const CLOSED_ROTATION = Math.PI / 2; // Adjusted to rotate petals upward when closing
-      const BASE_ROTATION_SPEED = 0.01; // Slower speed for smoother motion
+      const BASE_ROTATION_SPEED = 0.05; // Adjusted speed for smoother motion
 
       const petals = [];
       const numPetals = 8; // Adjust for more or fewer petals
@@ -142,15 +143,15 @@ export default function Hero() {
         petalGroup.userData.targetRotationX = OPEN_ROTATION;
 
         // Assign a random rotation speed variation
-        petalGroup.userData.rotationSpeed = BASE_ROTATION_SPEED + Math.random() * 0.005;
+        petalGroup.userData.rotationSpeed = BASE_ROTATION_SPEED + Math.random() * 0.01;
 
         petals.push(petalGroup);
         flowerGroup.add(petalGroup);
       }
 
-      // Add a center sphere
+      // Add a center sphere with lilac color
       const centerGeometry = new THREE.SphereGeometry(0.2, 32, 32);
-      const centerMaterial = new THREE.MeshPhongMaterial({ color: 0xffffcc }); // Light yellow color
+      const centerMaterial = new THREE.MeshPhongMaterial({ color: 0xB666D2 }); // Lilac color
       const center = new THREE.Mesh(centerGeometry, centerMaterial);
       flowerGroup.add(center);
 
@@ -186,6 +187,17 @@ export default function Hero() {
       // Raycaster and mouse for interaction
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
+      let isHovering = false;
+
+      function onMouseMove(event) {
+        const rect = canvas.getBoundingClientRect();
+
+        // Calculate mouse position relative to the canvas
+        mouse.x = ((event.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
+      }
+
+      window.addEventListener('mousemove', onMouseMove, false);
 
       // Animation loop
       const clock = new THREE.Clock();
@@ -195,16 +207,21 @@ export default function Hero() {
 
         const elapsedTime = clock.getElapsedTime();
 
-        // Gradually close the flower over time
-        const closingDuration = 10; // Duration in seconds for the flower to close
-        let closingProgress = Math.min(elapsedTime / closingDuration, 1); // 0 to 1
+        // Update raycaster
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(flowerGroup, true);
+
+        // Check if mouse is over the flower
+        isHovering = intersects.length > 0;
 
         petals.forEach((petalGroup) => {
-          const petalMesh = petalGroup.children[0];
+          const petalMesh = petalGroup.children[0]; // Get the petal mesh
 
-          // Compute the target rotation based on progress
-          petalGroup.userData.targetRotationX =
-            OPEN_ROTATION + closingProgress * (CLOSED_ROTATION - OPEN_ROTATION);
+          if (isHovering) {
+            petalGroup.userData.targetRotationX = CLOSED_ROTATION;
+          } else {
+            petalGroup.userData.targetRotationX = OPEN_ROTATION;
+          }
 
           // Smoothly interpolate the petal's rotation towards the target rotation
           petalMesh.rotation.x +=
@@ -247,6 +264,7 @@ export default function Hero() {
 
       // Cleanup event listeners on component unmount
       return () => {
+        window.removeEventListener('mousemove', onMouseMove);
         window.removeEventListener('resize', onWindowResize);
         if (animationFrameId) {
           cancelAnimationFrame(animationFrameId);
@@ -257,10 +275,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section
-      id="hero"
-      className="relative h-screen flex items-center justify-center text-center text-white"
-    >
+    <section id="hero" className="relative h-screen">
       {/* Canvas for Three.js animation */}
       <canvas
         ref={canvasRef}
@@ -268,33 +283,16 @@ export default function Hero() {
         className="absolute top-0 left-0 w-full h-full"
       ></canvas>
 
-      {/* Text content overlaid on the animation */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-        <h1
-          className="text-7xl font-bold"
-          style={{
-            background: 'linear-gradient(90deg, rgba(182,102,210,1) 0%, rgba(255,255,255,1) 100%)',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-            textShadow: '0 0 10px rgba(182,102,210,0.7)',
-          }}
-        >
-          Hello!
-        </h1>
-        <p
-          className="text-xl mt-4"
-          style={{
-            background: 'linear-gradient(90deg, rgba(182,102,210,1) 0%, rgba(255,255,255,1) 100%)',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-          }}
-        >
+      {/* Text content below the animation */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center text-white mt-8">
+        <h1 className="text-5xl font-bold">Hello!</h1>
+        <p className="text-xl mt-4">
           I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
         </p>
         <div className="mt-8">
           <a
             href="#projects"
-            className="px-6 py-3 text-indigo-600 font-bold text-xl hover:text-indigo-400"
+            className="px-6 py-3 text-white font-bold text-xl hover:text-gray-300"
           >
             View My Work
           </a>
