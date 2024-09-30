@@ -30,31 +30,62 @@ export default function Hero() {
     directionalLight.position.set(0, 1, 1);
     scene.add(directionalLight);
 
-    // Create a petal shape
+    // Create a custom petal shape
     const petalShape = new THREE.Shape();
     petalShape.moveTo(0, 0);
-    petalShape.quadraticCurveTo(0.5, 1.5, 0, 2);
-    petalShape.quadraticCurveTo(-0.5, 1.5, 0, 0);
+    petalShape.bezierCurveTo(0.5, 0, 0.5, 2, 0, 3);
+    petalShape.bezierCurveTo(-0.5, 2, -0.5, 0, 0, 0);
 
     const extrudeSettings = {
       depth: 0.1,
-      bevelEnabled: false,
+      bevelEnabled: true,
+      bevelSegments: 2,
+      steps: 2,
+      bevelSize: 0.1,
+      bevelThickness: 0.1,
     };
 
     const petalGeometry = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
 
+    // Function to bend geometry along the Y-axis
+    function bendGeometry(geometry, bendAmount) {
+      const positionAttribute = geometry.attributes.position;
+
+      for (let i = 0; i < positionAttribute.count; i++) {
+        const y = positionAttribute.getY(i);
+        const z = positionAttribute.getZ(i);
+
+        const theta = y * bendAmount;
+        const sinTheta = Math.sin(theta);
+        const cosTheta = Math.cos(theta);
+
+        positionAttribute.setZ(i, z * cosTheta - y * sinTheta);
+        positionAttribute.setY(i, z * sinTheta + y * cosTheta);
+      }
+
+      geometry.computeVertexNormals();
+    }
+
+    // Apply bending to the petal geometry
+    bendGeometry(petalGeometry, 0.5); // Adjust bendAmount as needed
+
+    // Load a texture for the petals (optional)
+    const textureLoader = new THREE.TextureLoader();
+    // const petalTexture = textureLoader.load('path/to/your/petalTexture.png'); // Replace with your texture path
+
     const petalMaterial = new THREE.MeshPhongMaterial({
-      color: 0xff69b4, // Light pink
+      color: 0xff69b4,
       side: THREE.DoubleSide,
       shininess: 100,
+      // map: petalTexture, // Uncomment if using a texture
     });
 
     const OPEN_ROTATION = 0;
-    const CLOSED_ROTATION = Math.PI / 2;
+    const CLOSED_ROTATION = Math.PI / 4; // Adjusted for smoother closing
     const ROTATION_SPEED = 0.05;
 
     const petals = [];
-    const numPetals = 5; // Adjust for more or fewer petals
+    const numPetals = 6; // Adjust for more or fewer petals
     const petalAngle = (Math.PI * 2) / numPetals;
 
     for (let i = 0; i < numPetals; i++) {
@@ -62,13 +93,13 @@ export default function Hero() {
 
       // Position the petal around the circle
       const angle = i * petalAngle;
-      const radius = 1.5;
+      const radius = 1;
 
       petal.position.x = radius * Math.sin(angle);
-      petal.position.y = radius * Math.cos(angle);
+      petal.position.z = radius * Math.cos(angle);
 
       // Rotate the petal to face outward
-      petal.rotation.z = angle;
+      petal.rotation.y = angle;
 
       // Set initial rotation for opening/closing
       petal.userData.baseRotationX = OPEN_ROTATION;
@@ -77,6 +108,12 @@ export default function Hero() {
       scene.add(petal);
       petals.push(petal);
     }
+
+    // Add a center sphere
+    const centerGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+    const centerMaterial = new THREE.MeshPhongMaterial({ color: 0xffff00 }); // Yellow color
+    const center = new THREE.Mesh(centerGeometry, centerMaterial);
+    scene.add(center);
 
     // Raycaster and mouse for interaction
     const raycaster = new THREE.Raycaster();
@@ -96,12 +133,13 @@ export default function Hero() {
     function animate() {
       requestAnimationFrame(animate);
 
-      // Update raycaster with the current mouse position and camera
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(petals);
 
+      const isHovering = intersects.length > 0;
+
       petals.forEach((petal) => {
-        if (intersects.find((intersect) => intersect.object === petal)) {
+        if (isHovering) {
           petal.userData.targetRotationX = CLOSED_ROTATION;
         } else {
           petal.userData.targetRotationX = OPEN_ROTATION;
