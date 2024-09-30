@@ -99,14 +99,14 @@ export default function Hero() {
         emissiveIntensity: 0.5,
         side: THREE.DoubleSide,
         shininess: 100,
-        opacity: 0.5,
+        opacity: 0.6,
         transparent: true,
       });
 
       // Adjusted rotation angles
-      const OPEN_ROTATION = -Math.PI / 2; // Petals pointing down when fully open
-      const CLOSED_ROTATION = 0; // Petals pointing upwards when closed
-      const BASE_ROTATION_SPEED = 0.02; // Adjusted speed for smoother motion
+      const OPEN_ROTATION = Math.PI / 2; // Petals pointing upwards when open
+      const CLOSED_ROTATION = 0; // Petals pointing inward when closed
+      const BASE_ROTATION_SPEED = 0.05; // Adjusted speed for smoother motion
 
       const petals = [];
       const numPetals = 8; // Adjust for more or fewer petals
@@ -116,8 +116,8 @@ export default function Hero() {
       const flowerGroup = new THREE.Group();
       scene.add(flowerGroup);
 
-      // Reduce the size of the flower
-      flowerGroup.scale.set(0.8, 0.8, 0.8); // Adjusted scale to make the flower smaller
+      // Adjust the size of the flower
+      flowerGroup.scale.set(1.2, 1.2, 1.2); // Adjusted scale to make the flower more noticeable
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
@@ -180,9 +180,12 @@ export default function Hero() {
         transparent: true,
       });
 
-      const glowGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+      const glowGeometry = new THREE.SphereGeometry(1.8, 32, 32);
       const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
       flowerGroup.add(glowMesh);
+
+      // Position the flower slightly higher
+      flowerGroup.position.y = 1;
 
       // Raycaster and mouse for interaction
       const raycaster = new THREE.Raycaster();
@@ -241,7 +244,7 @@ export default function Hero() {
         });
 
         // Make the flower oscillate slightly
-        flowerGroup.position.y = Math.sin(elapsedTime * 0.5) * 0.05;
+        flowerGroup.position.y += Math.sin(elapsedTime * 0.5) * 0.001;
 
         // Update controls to allow rotation at any time
         controls.update();
@@ -284,19 +287,21 @@ export default function Hero() {
       ></canvas>
 
       {/* Text content below the animation */}
-      <div className="flex flex-col items-center justify-center text-center text-white mt-8">
-        <h1 className="text-5xl font-bold mt-8">Hello!</h1>
+      <div className="flex flex-col items-center justify-center text-center text-white mt-4">
+        <h1 className="text-5xl font-bold mt-4">Hello!</h1>
         <p className="text-xl mt-4">
           I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
         </p>
-        <div className="mt-8">
-          <a
-            href="#projects"
-            className="px-6 py-3 text-white font-bold text-xl hover:text-gray-300"
-          >
-            View My Work
-          </a>
-        </div>
+      </div>
+
+      {/* "View My Work" button under the flower animation */}
+      <div className="mt-6">
+        <a
+          href="#projects"
+          className="px-6 py-3 text-white text-xl hover:text-gray-300"
+        >
+          View My Work
+        </a>
       </div>
     </section>
   );
