@@ -50,11 +50,13 @@ export default function Hero() {
       directionalLight.position.set(0, 1, 1);
       scene.add(directionalLight);
 
-      // Create a custom petal shape
+      // Create a custom petal shape resembling a blossom
       const petalShape = new THREE.Shape();
+
+      // Define blossom-like petal shape
       petalShape.moveTo(0, 0);
-      petalShape.bezierCurveTo(0.5, 0, 0.5, 2, 0, 3);
-      petalShape.bezierCurveTo(-0.5, 2, -0.5, 0, 0, 0);
+      petalShape.quadraticCurveTo(0.5, 0.5, 0, 1);
+      petalShape.quadraticCurveTo(-0.5, 0.5, 0, 0);
 
       const extrudeSettings = {
         depth: 0.05,
@@ -68,7 +70,7 @@ export default function Hero() {
       const petalGeometry = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
 
       // Adjust the geometry to rotate around the base of the petal
-      petalGeometry.translate(0, -1.5, 0); // Move geometry so pivot is at base
+      petalGeometry.translate(0, -0.5, 0); // Adjusted for new petal shape
 
       // Function to bend geometry along the Y-axis
       function bendGeometry(geometry, bendAmount) {
@@ -90,34 +92,36 @@ export default function Hero() {
       }
 
       // Apply bending to the petal geometry
-      bendGeometry(petalGeometry, 0.3); // Adjust bendAmount as needed
+      bendGeometry(petalGeometry, 0.5); // Adjust bendAmount as needed
 
-      // Petal Material with bright electric lilac color and increased transparency
+      // Load texture for petals
+      const textureLoader = new THREE.TextureLoader();
+      const petalTexture = textureLoader.load('/textures/petal_texture.jpg');
+
+      // Petal Material with gradient and texture
       const petalMaterial = new THREE.MeshPhongMaterial({
-        color: 0xB666D2, // Bright electric lilac
-        emissive: 0xB666D2, // Add emissive color for glow effect
-        emissiveIntensity: 0.5,
+        map: petalTexture,
         side: THREE.DoubleSide,
         shininess: 100,
-        opacity: 0.6,
+        opacity: 0.8,
         transparent: true,
       });
 
       // Adjusted rotation angles
-      const OPEN_ROTATION = Math.PI / 6; // Petals slightly open
-      const CLOSED_ROTATION = -Math.PI / 2; // Petals closed upwards
-      const BASE_ROTATION_SPEED = 0.02; // Adjusted speed for smoother motion
+      const OPEN_ROTATION = Math.PI / 4; // Petals slightly open
+      const CLOSED_ROTATION = 0; // Petals closed upwards
+      const BASE_ROTATION_SPEED = 0.005; // Slower speed for smoother motion
 
       const petals = [];
-      const numPetals = 8; // Adjust for more or fewer petals
+      const numPetals = 12; // Increased number of petals for blossom effect
       const petalAngle = (Math.PI * 2) / numPetals;
 
       // Create a group for the entire flower
       const flowerGroup = new THREE.Group();
       scene.add(flowerGroup);
 
-      // Adjust the size of the flower
-      flowerGroup.scale.set(0.6, 0.6, 0.6); // Adjusted scale to make the animation smaller
+      // Adjust the size of the flower (increase by 20%)
+      flowerGroup.scale.set(0.72, 0.72, 0.72); // Adjusted scale
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
@@ -143,7 +147,7 @@ export default function Hero() {
         petalGroup.userData.targetRotationX = OPEN_ROTATION;
 
         // Assign a random rotation speed variation
-        petalGroup.userData.rotationSpeed = BASE_ROTATION_SPEED + Math.random() * 0.01;
+        petalGroup.userData.rotationSpeed = BASE_ROTATION_SPEED + Math.random() * 0.002;
 
         petals.push(petalGroup);
         flowerGroup.add(petalGroup);
@@ -165,7 +169,7 @@ export default function Hero() {
         varying vec3 vNormal;
         void main() {
           float intensity = pow( 0.6 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 2.0 );
-          gl_FragColor = vec4( 182.0/255.0, 102.0/255.0, 210.0/255.0, 1.0 ) * intensity;
+          gl_FragColor = vec4( 182.0/255.0, 102.0/255.0, 210.0/255.0, 0.3 ) * intensity;
         }
       `;
 
@@ -237,18 +241,20 @@ export default function Hero() {
 
           // Add subtle trembling to petals
           petalMesh.rotation.z =
-            Math.sin(elapsedTime * 2 + petalGroup.position.x * 2) * 0.01;
+            Math.sin(elapsedTime * 2 + petalGroup.position.x * 2) * 0.005;
 
           // Petals oscillate slightly in position
           petalGroup.position.y =
-            Math.sin(elapsedTime * 1.5 + petalGroup.position.x * 2) * 0.02;
+            Math.sin(elapsedTime * 1.5 + petalGroup.position.x * 2) * 0.01;
 
           // Petals gently sway
-          petalGroup.rotation.z = Math.sin(elapsedTime + petalGroup.position.x) * 0.02;
+          petalGroup.rotation.z = Math.sin(elapsedTime + petalGroup.position.x) * 0.01;
         });
 
-        // Make the flower oscillate slightly
-        flowerGroup.position.y += Math.sin(elapsedTime * 0.5) * 0.001;
+        // Add glitter effect (simple sparkle)
+        const sparkleIntensity = Math.abs(Math.sin(elapsedTime * 5)) * 0.5 + 0.5;
+        petalMaterial.emissive = new THREE.Color(0xFFFFFF);
+        petalMaterial.emissiveIntensity = sparkleIntensity * 0.2;
 
         // Update controls to allow rotation at any time
         controls.update();
@@ -293,6 +299,10 @@ export default function Hero() {
       {/* Text content below the animation */}
       <div className="flex flex-col items-center justify-center text-center text-white mt-4">
         <h1 className="text-5xl font-bold mt-4">Hello!</h1>
+      </div>
+
+      {/* Intro text positioned lower on the page */}
+      <div className="flex flex-col items-center justify-center text-center text-white mt-12">
         <p className="text-xl mt-4">
           I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
         </p>
