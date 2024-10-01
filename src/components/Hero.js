@@ -104,9 +104,9 @@ export default function Hero() {
       });
 
       // Adjusted rotation angles
-      const OPEN_ROTATION = Math.PI / 2; // Petals pointing upwards when open
-      const CLOSED_ROTATION = 0; // Petals pointing inward when closed
-      const BASE_ROTATION_SPEED = 0.05; // Adjusted speed for smoother motion
+      const OPEN_ROTATION = Math.PI / 6; // Petals slightly open
+      const CLOSED_ROTATION = -Math.PI / 2; // Petals closed upwards
+      const BASE_ROTATION_SPEED = 0.02; // Adjusted speed for smoother motion
 
       const petals = [];
       const numPetals = 8; // Adjust for more or fewer petals
@@ -117,7 +117,7 @@ export default function Hero() {
       scene.add(flowerGroup);
 
       // Adjust the size of the flower
-      flowerGroup.scale.set(1.2, 1.2, 1.2); // Adjusted scale to make the flower more noticeable
+      flowerGroup.scale.set(0.6, 0.6, 0.6); // Adjusted scale to make the animation smaller
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
@@ -149,11 +149,8 @@ export default function Hero() {
         flowerGroup.add(petalGroup);
       }
 
-      // Add a center sphere with lilac color
-      const centerGeometry = new THREE.SphereGeometry(0.2, 32, 32);
-      const centerMaterial = new THREE.MeshPhongMaterial({ color: 0xB666D2 }); // Lilac color
-      const center = new THREE.Mesh(centerGeometry, centerMaterial);
-      flowerGroup.add(center);
+      // Remove the center sphere (central ball)
+      // flowerGroup.add(center); // Commented out to remove the center sphere
 
       // Add a glow effect around the flower using shaders
       const glowVertexShader = `
@@ -180,12 +177,12 @@ export default function Hero() {
         transparent: true,
       });
 
-      const glowGeometry = new THREE.SphereGeometry(1.8, 32, 32);
+      const glowGeometry = new THREE.SphereGeometry(1.2, 32, 32);
       const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
       flowerGroup.add(glowMesh);
 
       // Position the flower slightly higher
-      flowerGroup.position.y = 1;
+      flowerGroup.position.y = 0.8;
 
       // Raycaster and mouse for interaction
       const raycaster = new THREE.Raycaster();
@@ -230,6 +227,13 @@ export default function Hero() {
           petalMesh.rotation.x +=
             (petalGroup.userData.targetRotationX - petalMesh.rotation.x) *
             petalGroup.userData.rotationSpeed;
+
+          // Ensure petals do not over-rotate to prevent intersection
+          petalMesh.rotation.x = THREE.MathUtils.clamp(
+            petalMesh.rotation.x,
+            CLOSED_ROTATION,
+            OPEN_ROTATION
+          );
 
           // Add subtle trembling to petals
           petalMesh.rotation.z =
@@ -283,7 +287,7 @@ export default function Hero() {
       <canvas
         ref={canvasRef}
         id="bg"
-        className="w-full h-2/3"
+        className="w-full h-1/2"
       ></canvas>
 
       {/* Text content below the animation */}
@@ -294,8 +298,8 @@ export default function Hero() {
         </p>
       </div>
 
-      {/* "View My Work" button under the flower animation */}
-      <div className="mt-6">
+      {/* "View My Work" button under the text */}
+      <div className="mt-6 mb-4">
         <a
           href="#projects"
           className="px-6 py-3 text-white text-xl hover:text-gray-300"
