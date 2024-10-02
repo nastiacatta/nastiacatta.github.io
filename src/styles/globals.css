@@ -86,6 +86,84 @@ a:hover {
   text-align: left;
 }
 
+/* Typewriter Effect */
+.typewriter {
+  display: inline-block;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  vertical-align: bottom; /* Adjust this to align the text properly */
+}
+
+.typewriter-text {
+  display: inline-block;
+  white-space: nowrap; /* Keeps the content on a single line */
+  border-right: 0.15em solid #FFC0CB; /* The typewriter cursor */
+  animation: typing 8s steps(40, end) infinite, blink-caret 0.75s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  0% {
+    width: 0;
+  }
+  10% {
+    width: 0;
+  }
+  20% {
+    width: 2em; /* Width of "AI" */
+  }
+  30% {
+    width: 2em;
+  }
+  40% {
+    width: 0;
+  }
+  50% {
+    width: 0;
+  }
+  60% {
+    width: 9em; /* Width of "AI, wearables" */
+  }
+  70% {
+    width: 9em;
+  }
+  80% {
+    width: 0;
+  }
+  90% {
+    width: 0;
+  }
+  100% {
+    width: 21em; /* Width of "AI, wearables, fashion." */
+  }
+}
+
+/* The cursor effect */
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #FFC0CB;
+  }
+}
+
+/* Neon Effect */
+.neon {
+  color: #FFC0CB; /* Baby pink color */
+  text-shadow:
+    0 0 1px #FFC0CB,
+    0 0 2px #FFC0CB;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.neon:hover {
+  color: #FFB6C1; /* Light pink on hover */
+  text-shadow:
+    0 0 2px #FFB6C1,
+    0 0 4px #FFB6C1;
+}
+
 /* Email Vertical */
 .email-vertical {
   position: fixed;
@@ -131,8 +209,6 @@ html {
   scroll-behavior: smooth;
 }
 
-
-
 /* Responsive Typography */
 @media (max-width: 768px) {
   .section h1 {
@@ -143,6 +219,7 @@ html {
     font-size: 2xl;
   }
 }
+
 #bg {
   position: absolute;
   top: 0;
@@ -150,16 +227,6 @@ html {
   width: 100%;
   height: 100%;
   z-index: 0; /* Ensure it's behind the text content */
-}
-/* Ensure the canvas is behind other elements */
-/* Ensure the canvas is behind other elements */
-#bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
 }
 
 /* Ensure the hero content is above the canvas */

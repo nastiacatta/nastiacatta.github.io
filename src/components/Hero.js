@@ -30,7 +30,11 @@ export default function Hero() {
       );
       camera.position.z = 5;
 
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+      });
       renderer.setSize(canvas.clientWidth, canvas.clientHeight);
       renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -38,9 +42,16 @@ export default function Hero() {
       controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
-      controls.enableRotate = true;
-      controls.enableZoom = false; // Disable zoom if desired
       controls.enablePan = false; // Disable panning
+      controls.enableZoom = false; // Disable zoom if desired
+
+      // Limit vertical rotation to prevent moving animation around vertically
+      controls.minPolarAngle = Math.PI / 2 - 0.5; // Adjust angle as needed
+      controls.maxPolarAngle = Math.PI / 2 + 0.5;
+
+      // Limit horizontal rotation to prevent moving animation around horizontally
+      controls.minAzimuthAngle = -0.5; // Adjust angle as needed
+      controls.maxAzimuthAngle = 0.5;
 
       // Lighting
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -65,7 +76,10 @@ export default function Hero() {
         bevelThickness: 0.02,
       };
 
-      const petalGeometry = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
+      const petalGeometry = new THREE.ExtrudeGeometry(
+        petalShape,
+        extrudeSettings
+      );
 
       // Adjust the geometry to rotate around the base of the petal
       petalGeometry.translate(0, -1.5, 0); // Move geometry so pivot is at base
@@ -94,8 +108,8 @@ export default function Hero() {
 
       // Petal Material with light pink color and increased transparency
       const petalMaterial = new THREE.MeshPhongMaterial({
-        color: 0xFFC0CB, // Light pink color
-        emissive: 0xFFC0CB, // Add emissive color for glow effect
+        color: 0xffc0cb, // Light pink color
+        emissive: 0xffc0cb, // Add emissive color for glow effect
         emissiveIntensity: 0.2,
         side: THREE.DoubleSide,
         shininess: 100,
@@ -117,10 +131,13 @@ export default function Hero() {
       scene.add(flowerGroup);
 
       // Adjust the size of the flower
-      flowerGroup.scale.set(0.6, 0.6, 0.6); // Adjusted scale to make the animation smaller
+      flowerGroup.scale.set(0.8, 0.8, 0.8); // Adjusted scale to make the animation bigger
 
       for (let i = 0; i < numPetals; i++) {
-        const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
+        const petalMesh = new THREE.Mesh(
+          petalGeometry,
+          petalMaterial.clone()
+        );
 
         // Create a group for each petal
         const petalGroup = new THREE.Group();
@@ -128,7 +145,7 @@ export default function Hero() {
 
         // Position the petal group around the circle
         const angle = i * petalAngle;
-        const radius = 1;
+        const radius = 1.2;
 
         petalGroup.position.x = radius * Math.sin(angle);
         petalGroup.position.z = radius * Math.cos(angle);
@@ -143,14 +160,12 @@ export default function Hero() {
         petalGroup.userData.targetRotationX = OPEN_ROTATION;
 
         // Assign a random rotation speed variation
-        petalGroup.userData.rotationSpeed = BASE_ROTATION_SPEED + Math.random() * 0.005;
+        petalGroup.userData.rotationSpeed =
+          BASE_ROTATION_SPEED + Math.random() * 0.005;
 
         petals.push(petalGroup);
         flowerGroup.add(petalGroup);
       }
-
-      // Remove the center sphere (central ball)
-      // flowerGroup.add(center); // Commented out to remove the center sphere
 
       // Add a glow effect around the flower using shaders
       const glowVertexShader = `
@@ -177,7 +192,7 @@ export default function Hero() {
         transparent: true,
       });
 
-      const glowGeometry = new THREE.SphereGeometry(1.2, 32, 32);
+      const glowGeometry = new THREE.SphereGeometry(1.5, 32, 32);
       const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
       flowerGroup.add(glowMesh);
 
@@ -244,13 +259,14 @@ export default function Hero() {
             Math.sin(elapsedTime * 1.5 + petalGroup.position.x * 2) * 0.02;
 
           // Petals gently sway
-          petalGroup.rotation.z = Math.sin(elapsedTime + petalGroup.position.x) * 0.02;
+          petalGroup.rotation.z =
+            Math.sin(elapsedTime + petalGroup.position.x) * 0.02;
         });
 
-        // Make the flower oscillate slightly
-        flowerGroup.position.y += Math.sin(elapsedTime * 0.5) * 0.001;
+        // Make the flower rotate slowly
+        flowerGroup.rotation.y += 0.005;
 
-        // Update controls to allow rotation at any time
+        // Update controls
         controls.update();
 
         renderer.render(scene, camera);
@@ -282,30 +298,41 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="hero" className="relative h-screen flex flex-col items-center">
-      {/* Canvas for Three.js animation */}
-      <canvas
-        ref={canvasRef}
-        id="bg"
-        className="w-full h-1/2"
-      ></canvas>
+    <section
+      id="hero"
+      className="relative h-screen flex items-center justify-center"
+    >
+      <div className="flex flex-col md:flex-row items-center w-full h-full px-8">
+        {/* Left Column - Intro Text */}
+        <div className="md:w-1/2 flex flex-col items-start justify-center">
+          <h1 className="text-6xl neon mt-4">Anastasia</h1>
+          <p className="text-2xl mt-4">
+            Design Engineering with a passion for{' '}
+            <span className="typewriter">
+              <span className="typewriter-text">
+                AI, wearables, fashion.
+              </span>
+            </span>
+          </p>
+          {/* "View My Work" button */}
+          <div className="mt-6">
+            <a
+              href="#projects"
+              className="px-6 py-3 text-xl neon transition-transform transform hover:scale-105"
+            >
+              View My Work
+            </a>
+          </div>
+        </div>
 
-      {/* Text content below the animation */}
-      <div className="flex flex-col items-center justify-center text-center text-white mt-12">
-        <h1 className="text-5xl font-bold mt-4">Hello!</h1>
-        <p className="text-xl mt-4">
-          I'm Anastasia, a Design Engineering student with a passion for wearables, AI, and fashion.
-        </p>
-      </div>
-
-      {/* "View My Work" button under the text */}
-      <div className="mt-6 mb-4">
-        <a
-          href="#projects"
-          className="px-6 py-3 text-white text-xl hover:text-gray-300"
-        >
-          View My Work
-        </a>
+        {/* Right Column - Animation */}
+        <div className="md:w-1/2 flex justify-center">
+          <canvas
+            ref={canvasRef}
+            id="bg"
+            className="w-full h-64 md:h-full"
+          ></canvas>
+        </div>
       </div>
     </section>
   );
