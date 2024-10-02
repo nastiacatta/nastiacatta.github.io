@@ -57,7 +57,6 @@ export default function Hero() {
     };
   }, []);
 
-  // Three.js Animation
   useEffect(() => {
     let controls;
     let animationFrameId;
@@ -94,13 +93,11 @@ export default function Hero() {
       controls.enablePan = false; // Disable panning
       controls.enableZoom = false; // Disable zoom if desired
 
-      // Limit vertical rotation to prevent moving animation around vertically
-      controls.minPolarAngle = Math.PI / 2 - 0.1; // Slight adjustment
-      controls.maxPolarAngle = Math.PI / 2 + 0.1;
-
-      // Limit horizontal rotation to prevent moving animation around horizontally
-      controls.minAzimuthAngle = -0.1; // Slight adjustment
-      controls.maxAzimuthAngle = 0.1;
+      // Lock vertical and horizontal rotation
+      controls.minPolarAngle = Math.PI / 2;
+      controls.maxPolarAngle = Math.PI / 2;
+      controls.minAzimuthAngle = 0;
+      controls.maxAzimuthAngle = 0;
 
       // Lighting
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -168,8 +165,8 @@ export default function Hero() {
 
       // Adjusted rotation angles
       const OPEN_ROTATION = Math.PI / 6; // Petals slightly open
-      const CLOSED_ROTATION = -Math.PI / 2.5; // Adjusted to close petals fully without intersecting
-      const BASE_ROTATION_SPEED = 0.02; // Slightly faster for smoother motion
+      const CLOSED_ROTATION = -Math.PI / 2; // Petals closed upwards
+      const BASE_ROTATION_SPEED = 0.01; // Slower speed for smoother motion
 
       const petals = [];
       const numPetals = 8; // Adjust for more or fewer petals
@@ -180,7 +177,7 @@ export default function Hero() {
       scene.add(flowerGroup);
 
       // Adjust the size of the flower
-      flowerGroup.scale.set(1.5, 1.5, 1.5); // Increased scale to make the animation bigger
+      flowerGroup.scale.set(0.8, 0.8, 0.8); // Adjusted scale to make the animation bigger
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(
@@ -216,21 +213,37 @@ export default function Hero() {
         flowerGroup.add(petalGroup);
       }
 
-      // Add background circle
-      const circleGeometry = new THREE.CircleGeometry(3, 64);
-      const circleMaterial = new THREE.MeshBasicMaterial({
-        color: 0x222222,
-        opacity: 0.5,
-        transparent: true,
-        side: THREE.DoubleSide,
-      });
-      const circle = new THREE.Mesh(circleGeometry, circleMaterial);
-      circle.rotation.x = -Math.PI / 2;
-      circle.position.y = -1; // Adjust position as needed
-      scene.add(circle);
+      // Add a glow effect around the flower using shaders
+      const glowVertexShader = `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize( normalMatrix * normal );
+          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+        }
+      `;
 
-      // Ensure the scene's background is transparent
-      renderer.setClearColor(0x000000, 0); // Fully transparent background
+      const glowFragmentShader = `
+        varying vec3 vNormal;
+        void main() {
+          float intensity = pow( 0.6 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 2.0 );
+          gl_FragColor = vec4( 255.0/255.0, 192.0/255.0, 203.0/255.0, 0.5 ) * intensity;
+        }
+      `;
+
+      const glowMaterial = new THREE.ShaderMaterial({
+        vertexShader: glowVertexShader,
+        fragmentShader: glowFragmentShader,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+      });
+
+      const glowGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+      const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+      flowerGroup.add(glowMesh);
+
+      // Position the flower slightly higher
+      flowerGroup.position.y = 1; // Increased to move the flower higher
 
       // Raycaster and mouse for interaction
       const raycaster = new THREE.Raycaster();
@@ -340,7 +353,7 @@ export default function Hero() {
         <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center">
           <h1 className="text-6xl neon mt-4">Anastasia</h1>
           <p className="text-2xl mt-4 text-center md:text-left">
-            Design Engineer with a passion for{' '}
+            Design Engineering with a passion for{' '}
             <span className="typewriter">
               {text}
               <span className="typewriter-cursor">|</span>
@@ -361,7 +374,7 @@ export default function Hero() {
             <Link href="/#projects" scroll={false}>
               <a
                 className="px-6 py-3 text-xl transition-transform transform hover:scale-105 view-my-work-button"
-                style={{ fontSize: '24px', marginTop: '16px' }} // Increase the font size and adjust margin
+                style={{ fontSize: '24px', marginTop: '16px' }}
               >
                 View My Work
               </a>
