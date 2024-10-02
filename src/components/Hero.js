@@ -1,21 +1,68 @@
 // src/components/Hero.js
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import Link from 'next/link';
 
 export default function Hero() {
   const canvasRef = useRef(null);
+  const [text, setText] = useState('');
+  const phrases = ['AI', 'wearables', 'fashion'];
+  const typingSpeed = 150; // Milliseconds per character
+  const deletingSpeed = 100; // Milliseconds per character when deleting
+  const pauseDuration = 1000; // Milliseconds to pause at the end of each phrase
+
+  useEffect(() => {
+    let currentPhraseIndex = 0;
+    let currentCharIndex = 0;
+    let isDeleting = false;
+    let timeoutId;
+
+    function type() {
+      const currentPhrase = phrases[currentPhraseIndex];
+
+      if (!isDeleting) {
+        // Typing
+        setText(currentPhrase.substring(0, currentCharIndex + 1));
+        currentCharIndex++;
+
+        if (currentCharIndex === currentPhrase.length) {
+          // Pause at the end of the phrase
+          timeoutId = setTimeout(() => {
+            isDeleting = true;
+            timeoutId = setTimeout(type, pauseDuration);
+          }, pauseDuration);
+          return;
+        }
+      } else {
+        // Deleting
+        setText(currentPhrase.substring(0, currentCharIndex - 1));
+        currentCharIndex--;
+
+        if (currentCharIndex === 0) {
+          // Move to next phrase
+          isDeleting = false;
+          currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+        }
+      }
+
+      timeoutId = setTimeout(type, isDeleting ? deletingSpeed : typingSpeed);
+    }
+
+    type();
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
   useEffect(() => {
     let controls;
     let animationFrameId;
 
-    // Ensure the code runs only on the client side
     if (typeof window !== 'undefined') {
-      // Import OrbitControls inside useEffect
       const { OrbitControls } = require('three/examples/jsm/controls/OrbitControls');
 
-      // Ensure the canvas element is available
       const canvas = canvasRef.current;
       if (!canvas) return;
 
@@ -119,8 +166,8 @@ export default function Hero() {
 
       // Adjusted rotation angles
       const OPEN_ROTATION = Math.PI / 6; // Petals slightly open
-      const CLOSED_ROTATION = -Math.PI / 2; // Petals closed upwards
-      const BASE_ROTATION_SPEED = 0.01; // Slower speed for smoother motion
+      const CLOSED_ROTATION = -Math.PI / 2.5; // Adjusted to close petals fully without intersecting
+      const BASE_ROTATION_SPEED = 0.02; // Slightly faster for smoother motion
 
       const petals = [];
       const numPetals = 8; // Adjust for more or fewer petals
@@ -167,52 +214,9 @@ export default function Hero() {
         flowerGroup.add(petalGroup);
       }
 
-      // Add a glow effect around the flower using shaders
-      const glowVertexShader = `
-        varying vec3 vNormal;
-        void main() {
-          vNormal = normalize( normalMatrix * normal );
-          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-        }
-      `;
-
-      const glowFragmentShader = `
-        varying vec3 vNormal;
-        void main() {
-          float intensity = pow( 0.6 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 2.0 );
-          gl_FragColor = vec4( 255.0/255.0, 192.0/255.0, 203.0/255.0, 0.5 ) * intensity;
-        }
-      `;
-
-      const glowMaterial = new THREE.ShaderMaterial({
-        vertexShader: glowVertexShader,
-        fragmentShader: glowFragmentShader,
-        side: THREE.BackSide,
-        blending: THREE.AdditiveBlending,
-        transparent: true,
-      });
-
-      const glowGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-      const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
-      flowerGroup.add(glowMesh);
-
-      // Position the flower slightly higher
-      flowerGroup.position.y = 1; // Increased to move the flower higher
-
-      // Raycaster and mouse for interaction
-      const raycaster = new THREE.Raycaster();
-      const mouse = new THREE.Vector2();
-      let isHovering = false;
-
-      function onMouseMove(event) {
-        const rect = canvas.getBoundingClientRect();
-
-        // Calculate mouse position relative to the canvas
-        mouse.x = ((event.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
-        mouse.y = -((event.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
-      }
-
-      window.addEventListener('mousemove', onMouseMove, false);
+      // Remove any unnecessary geometry that might cause the glitch
+      // Ensure the scene's background is transparent
+      renderer.setClearColor(0x000000, 0); // Fully transparent background
 
       // Animation loop
       const clock = new THREE.Clock();
@@ -222,21 +226,8 @@ export default function Hero() {
 
         const elapsedTime = clock.getElapsedTime();
 
-        // Update raycaster
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObject(flowerGroup, true);
-
-        // Check if mouse is over the flower
-        isHovering = intersects.length > 0;
-
         petals.forEach((petalGroup) => {
           const petalMesh = petalGroup.children[0]; // Get the petal mesh
-
-          if (isHovering) {
-            petalGroup.userData.targetRotationX = CLOSED_ROTATION;
-          } else {
-            petalGroup.userData.targetRotationX = OPEN_ROTATION;
-          }
 
           // Smoothly interpolate the petal's rotation towards the target rotation
           petalMesh.rotation.x +=
@@ -287,7 +278,6 @@ export default function Hero() {
 
       // Cleanup event listeners on component unmount
       return () => {
-        window.removeEventListener('mousemove', onMouseMove);
         window.removeEventListener('resize', onWindowResize);
         if (animationFrameId) {
           cancelAnimationFrame(animationFrameId);
@@ -304,34 +294,36 @@ export default function Hero() {
     >
       <div className="flex flex-col md:flex-row items-center w-full h-full px-8">
         {/* Left Column - Intro Text */}
-        <div className="md:w-1/2 flex flex-col items-start justify-center">
+        <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center">
           <h1 className="text-6xl neon mt-4">Anastasia</h1>
-          <p className="text-2xl mt-4">
+          <p className="text-2xl mt-4 text-center md:text-left">
             Design Engineering with a passion for{' '}
             <span className="typewriter">
-              <span className="typewriter-text">
-                AI, wearables, fashion.
-              </span>
+              {text}
+              <span className="typewriter-cursor">|</span>
             </span>
           </p>
-          {/* "View My Work" button */}
-          <div className="mt-6">
-            <a
-              href="#projects"
-              className="px-6 py-3 text-xl neon transition-transform transform hover:scale-105"
-            >
-              View My Work
-            </a>
-          </div>
         </div>
 
         {/* Right Column - Animation */}
-        <div className="md:w-1/2 flex justify-center">
+        <div className="md:w-1/2 flex flex-col items-center justify-center">
           <canvas
             ref={canvasRef}
             id="bg"
             className="w-full h-64 md:h-full"
           ></canvas>
+
+          {/* "View My Work" button under the animation */}
+          <div className="mt-6">
+            <Link href="/#projects" scroll={false}>
+              <a
+                className="px-6 py-3 text-xl transition-transform transform hover:scale-105 view-my-work-button"
+                style={{ fontSize: '24px' }} // Increase the font size
+              >
+                View My Work
+              </a>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

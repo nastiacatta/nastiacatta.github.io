@@ -30,7 +30,7 @@ a:hover {
 }
 
 .dark a:hover {
-  color: #b19cd9; /* lilac in light mode */
+  color: #ff69b4; /* Hot pink in light mode */
 }
 
 /* Header Styles */
@@ -89,24 +89,6 @@ a:hover {
 /* Typewriter Effect */
 .typewriter {
   display: inline-block;
-  overflow: hidden; /* Ensures the content is not revealed until the animation */
-  vertical-align: bottom; /* Adjust this to align the text properly */
-}
-
-.typewriter-text {
-  display: inline-block;
-  white-space: nowrap; /* Keeps the content on a single line */
-  border-right: 0.15em solid #FFC0CB; /* The typewriter cursor */
-  animation: typing 8s steps(40, end) infinite, blink-caret 0.75s step-end infinite;
-}
-
-/* src/styles/globals.css */
-
-/* Existing styles... */
-
-/* Typewriter Effect */
-.typewriter {
-  display: inline-block;
 }
 
 .typewriter-cursor {
@@ -129,24 +111,23 @@ a:hover {
 /* Adjust the "View My Work" button */
 .view-my-work-button {
   font-size: 24px; /* Make the button text larger */
+  color: #FFC0CB; /* Match the neon color */
+  text-shadow:
+    0 0 1px #FFC0CB,
+    0 0 2px #FFC0CB;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.view-my-work-button:hover {
+  color: #FFB6C1; /* Light pink on hover */
+  text-shadow:
+    0 0 2px #FFB6C1,
+    0 0 4px #FFB6C1;
 }
 
 /* Ensure smooth scrolling */
 html {
   scroll-behavior: smooth;
-}
-
-/* Rest of your existing CSS... */
-
-/* The cursor effect */
-@keyframes blink-caret {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: #FFC0CB;
-  }
 }
 
 /* Neon Effect */
@@ -222,16 +203,9 @@ html {
 }
 
 #bg {
-  position: absolute;
-  top: 0;
-  left: 0;
+  /* Ensure the canvas doesn't overlap other elements */
+  position: relative;
   width: 100%;
   height: 100%;
-  z-index: 0; /* Ensure it's behind the text content */
 }
 
-/* Ensure the hero content is above the canvas */
-.hero-content {
-  position: relative;
-  z-index: 1;
-}
