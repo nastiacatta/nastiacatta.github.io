@@ -7,7 +7,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Anastasia's Portfolio</title>
+        <title>Portfolio</title>
         <meta name="description" content="Anastasia's Design Engineering Portfolio showcasing projects in wearables, AI, and fashion." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Open Graph Meta Tags */}
