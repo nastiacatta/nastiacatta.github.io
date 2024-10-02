@@ -12,6 +12,7 @@ export default function Hero() {
   const deletingSpeed = 100; // Milliseconds per character when deleting
   const pauseDuration = 1000; // Milliseconds to pause at the end of each phrase
 
+  // Typewriter Effect
   useEffect(() => {
     let currentPhraseIndex = 0;
     let currentCharIndex = 0;
@@ -56,6 +57,7 @@ export default function Hero() {
     };
   }, []);
 
+  // Three.js Animation
   useEffect(() => {
     let controls;
     let animationFrameId;
@@ -93,12 +95,12 @@ export default function Hero() {
       controls.enableZoom = false; // Disable zoom if desired
 
       // Limit vertical rotation to prevent moving animation around vertically
-      controls.minPolarAngle = Math.PI / 2 - 0.5; // Adjust angle as needed
-      controls.maxPolarAngle = Math.PI / 2 + 0.5;
+      controls.minPolarAngle = Math.PI / 2 - 0.1; // Slight adjustment
+      controls.maxPolarAngle = Math.PI / 2 + 0.1;
 
       // Limit horizontal rotation to prevent moving animation around horizontally
-      controls.minAzimuthAngle = -0.5; // Adjust angle as needed
-      controls.maxAzimuthAngle = 0.5;
+      controls.minAzimuthAngle = -0.1; // Slight adjustment
+      controls.maxAzimuthAngle = 0.1;
 
       // Lighting
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -178,7 +180,7 @@ export default function Hero() {
       scene.add(flowerGroup);
 
       // Adjust the size of the flower
-      flowerGroup.scale.set(0.8, 0.8, 0.8); // Adjusted scale to make the animation bigger
+      flowerGroup.scale.set(1.5, 1.5, 1.5); // Increased scale to make the animation bigger
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(
@@ -214,9 +216,36 @@ export default function Hero() {
         flowerGroup.add(petalGroup);
       }
 
-      // Remove any unnecessary geometry that might cause the glitch
+      // Add background circle
+      const circleGeometry = new THREE.CircleGeometry(3, 64);
+      const circleMaterial = new THREE.MeshBasicMaterial({
+        color: 0x222222,
+        opacity: 0.5,
+        transparent: true,
+        side: THREE.DoubleSide,
+      });
+      const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+      circle.rotation.x = -Math.PI / 2;
+      circle.position.y = -1; // Adjust position as needed
+      scene.add(circle);
+
       // Ensure the scene's background is transparent
       renderer.setClearColor(0x000000, 0); // Fully transparent background
+
+      // Raycaster and mouse for interaction
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      let isHovering = false;
+
+      function onMouseMove(event) {
+        const rect = canvas.getBoundingClientRect();
+
+        // Calculate mouse position relative to the canvas
+        mouse.x = ((event.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
+      }
+
+      window.addEventListener('mousemove', onMouseMove, false);
 
       // Animation loop
       const clock = new THREE.Clock();
@@ -226,8 +255,21 @@ export default function Hero() {
 
         const elapsedTime = clock.getElapsedTime();
 
+        // Update raycaster
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(flowerGroup, true);
+
+        // Check if mouse is over the flower
+        isHovering = intersects.length > 0;
+
         petals.forEach((petalGroup) => {
           const petalMesh = petalGroup.children[0]; // Get the petal mesh
+
+          if (isHovering) {
+            petalGroup.userData.targetRotationX = CLOSED_ROTATION;
+          } else {
+            petalGroup.userData.targetRotationX = OPEN_ROTATION;
+          }
 
           // Smoothly interpolate the petal's rotation towards the target rotation
           petalMesh.rotation.x +=
@@ -278,6 +320,7 @@ export default function Hero() {
 
       // Cleanup event listeners on component unmount
       return () => {
+        window.removeEventListener('mousemove', onMouseMove);
         window.removeEventListener('resize', onWindowResize);
         if (animationFrameId) {
           cancelAnimationFrame(animationFrameId);
@@ -297,7 +340,7 @@ export default function Hero() {
         <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center">
           <h1 className="text-6xl neon mt-4">Anastasia</h1>
           <p className="text-2xl mt-4 text-center md:text-left">
-            Design Engineering with a passion for{' '}
+            Design Engineer with a passion for{' '}
             <span className="typewriter">
               {text}
               <span className="typewriter-cursor">|</span>
@@ -314,11 +357,11 @@ export default function Hero() {
           ></canvas>
 
           {/* "View My Work" button under the animation */}
-          <div className="mt-6">
+          <div className="mt-4 md:mt-6">
             <Link href="/#projects" scroll={false}>
               <a
                 className="px-6 py-3 text-xl transition-transform transform hover:scale-105 view-my-work-button"
-                style={{ fontSize: '24px' }} // Increase the font size
+                style={{ fontSize: '24px', marginTop: '16px' }} // Increase the font size and adjust margin
               >
                 View My Work
               </a>
