@@ -177,7 +177,7 @@ export default function Hero() {
       scene.add(flowerGroup);
 
       // Adjust the size of the flower
-      flowerGroup.scale.set(0.8, 0.8, 0.8); // Adjusted scale to make the animation bigger
+      flowerGroup.scale.set(1.2, 1.2, 1.2); // Increased scale
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(
@@ -346,7 +346,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative h-screen flex items-center justify-center"
+      className="relative h-screen flex items-center justify-center overflow-hidden" // Added overflow-hidden here
     >
       <div className="flex flex-col md:flex-row items-center w-full h-full px-8">
         {/* Left Column - Intro Text */}
@@ -366,7 +366,7 @@ export default function Hero() {
           <canvas
             ref={canvasRef}
             id="bg"
-            className="w-full h-64 md:h-full"
+            className="w-full h-full" // Adjusted height to fill the parent
           ></canvas>
 
           {/* "View My Work" button under the animation */}
