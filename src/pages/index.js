@@ -3,6 +3,19 @@
 import Hero from '../components/Hero';
 import Header from '../components/Header';
 import Projects from '../components/Projects';
+import Link from 'next/link';
+
+{/* "View My Work" button */}
+<div className="mt-6">
+  <Link href="/#projects" scroll={true}>
+    <a
+      className="px-6 py-3 text-xl neon transition-transform transform hover:scale-105"
+      style={{ fontSize: '24px' }}
+    >
+      View My Work
+    </a>
+  </Link>
+</div>
 
 export default function Home() {
   return (
