@@ -87,6 +87,11 @@ a:hover {
 }
 
 /* Typewriter Effect */
+/* src/styles/globals.css */
+
+/* Existing styles... */
+
+/* Typewriter Effect */
 .typewriter {
   display: inline-block;
 }
@@ -96,6 +101,7 @@ a:hover {
   width: 0.1em;
   background-color: #FFC0CB;
   animation: blink-caret 0.75s step-end infinite;
+  margin-left: 2px; /* Adjust spacing if needed */
 }
 
 @keyframes blink-caret {
@@ -107,6 +113,10 @@ a:hover {
     background-color: #FFC0CB;
   }
 }
+
+/* Ensure there's no additional cursor styles causing a second cursor */
+
+/* Rest of your existing CSS... */
 
 /* Adjust the "View My Work" button */
 .view-my-work-button {
