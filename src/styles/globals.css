@@ -219,3 +219,24 @@ html {
   height: 100%;
 }
 
+/* src/styles/globals.css */
+
+.section {
+  min-height: 100vh;
+  padding: 160px 60px 80px 60px;
+  background-color: #1a1a1a; /* Or any color you want */
+}
+
+#contact {
+  padding-top: 50px; /* Adjust this if needed */
+  padding-bottom: 50px;
+}
+
+a {
+  color: #FFC0CB;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ff69b4; /* Adjust hover effect color */
+}

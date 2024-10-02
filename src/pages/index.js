@@ -3,19 +3,7 @@
 import Hero from '../components/Hero';
 import Header from '../components/Header';
 import Projects from '../components/Projects';
-import Link from 'next/link';
-
-{/* "View My Work" button */}
-<div className="mt-6">
-  <Link href="/#projects" scroll={true}>
-    <a
-      className="px-6 py-3 text-xl neon transition-transform transform hover:scale-105"
-      style={{ fontSize: '24px' }}
-    >
-      View My Work
-    </a>
-  </Link>
-</div>
+import Contact from '../components/Contact'; // Import the Contact component
 
 export default function Home() {
   return (
@@ -38,14 +26,14 @@ export default function Home() {
 
         {/* Section 4: Contact */}
         <section id="contact" className="section">
-          {/* Your Contact Me content */}
+          <Contact /> {/* Add the Contact component */}
         </section>
       </main>
 
       {/* Email in Bottom Right Corner */}
       <div className="email-vertical">
-        <a href="mailto:anastasia.cattaneo@gmail.com" className="email-link">
-          anastasia.cattaneo@gmail.com
+        <a href="mailto:aac522@ic.ac.uk" className="email-link">
+          aac522@ic.ac.uk
         </a>
         <div className="vertical-line"></div>
       </div>
