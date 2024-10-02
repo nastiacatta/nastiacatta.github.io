@@ -353,7 +353,7 @@ export default function Hero() {
         <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center">
           <h1 className="text-6xl neon mt-4">Anastasia</h1>
           <p className="text-2xl mt-4 text-center md:text-left">
-            Design Engineering with a passion for{' '}
+            Design Engineer with a passion for{' '}
             <span className="typewriter">
               {text}
               <span className="typewriter-cursor">|</span>
