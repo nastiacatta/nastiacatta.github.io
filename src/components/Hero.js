@@ -351,7 +351,7 @@ export default function Hero() {
       <div className="flex flex-col md:flex-row items-center w-full h-full px-8">
         {/* Left Column - Intro Text */}
         <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center">
-          <h1 className="text-6xl neon mt-4">Anastasia</h1>
+          <h1 className="text-6xl neon mt-4">Anastasi Cattaneo</h1>
           <p className="text-2xl mt-4 text-center md:text-left">
             Design Engineer with a passion for{' '}
             <span className="typewriter">
@@ -374,7 +374,7 @@ export default function Hero() {
             <Link href="/#projects" scroll={false}>
               <a
                 className="px-6 py-3 text-xl transition-transform transform hover:scale-105 view-my-work-button"
-                style={{ fontSize: '24px', marginTop: '16px' }}
+                style={{ fontSize: '24px', marginTop: '10px' }}
               >
                 View My Work
               </a>
