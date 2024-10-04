@@ -207,17 +207,37 @@ html {
 
 /* Flashlight Effect */
 .flashlight {
-  @apply absolute rounded-full pointer-events-none mix-blend-multiply opacity-80 transition-all duration-200 ease-out;
-  width: 400px; /* Increased size */
-  height: 400px;
+  @apply fixed rounded-full pointer-events-none mix-blend-multiply opacity-80 transition-all duration-500 ease-out;
+  width: 500px; /* Increased size */
+  height: 500px;
   background: radial-gradient(
     circle,
-    rgba(255, 105, 180, 0.5) 0%,
-    rgba(26, 26, 26, 0.4) 70%,
-    rgba(26, 26, 26, 0) 100%
+    rgba(255, 105, 180, 0.6) 0%,
+    rgba(255, 105, 180, 0.2) 70%,
+    rgba(255, 105, 180, 0) 100%
   ); /* Pinkish color with smooth fade */
   transform: translate(-50%, -50%);
   z-index: 10; /* Below header */
+}
+
+/* Light Mode Adjustments */
+.flashlight.light-mode {
+  background: radial-gradient(
+    circle,
+    rgba(255, 105, 180, 0.6) 0%,
+    rgba(255, 105, 180, 0.2) 70%,
+    rgba(255, 105, 180, 0) 100%
+  ); /* Pinkish color with smooth fade */
+}
+
+/* Dark Mode Adjustments */
+.flashlight.dark-mode {
+  background: radial-gradient(
+    circle,
+    rgba(255, 105, 180, 0.6) 0%,
+    rgba(255, 105, 180, 0.2) 70%,
+    rgba(255, 105, 180, 0) 100%
+  ); /* Same pinkish color, can adjust if needed */
 }
 
 /* Initially hide the flashlight */
