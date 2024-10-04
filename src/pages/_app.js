@@ -2,6 +2,7 @@
 
 import '../styles/globals.css';
 import Head from 'next/head';
+import Flashlight from '../components/Flashlight'; // Import Flashlight component
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -23,8 +24,9 @@ function MyApp({ Component, pageProps }) {
         <meta property="og:url" content="https://your-portfolio-url.com" />
         <meta name="twitter:card" content="summary_large_image" />
         {/* Add more meta tags as needed */}
+        
       </Head>
-
+      <Flashlight /> {/* Always-on flashlight */}
       <Component {...pageProps} />
     </>
   );
