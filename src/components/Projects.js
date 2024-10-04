@@ -23,19 +23,19 @@ export default function Projects() {
       imageSrc: '/innovice.jpeg',
     },
     {
+      title: 'ROBOT CAR',
+      href: '/robot_car',
+      imageSrc: '/robot_car.png',
+    },
+    {
       title: 'CONCEPT CAR',
-      href: '/concept car',
+      href: '/concept_Car',
       imageSrc: '/concept_car.png',
     },
     {
-      title: 'PROJECT 5',
-      href: '/project5',
-      imageSrc: '/project5.jpeg',
-    },
-    {
-      title: 'PROJECT 6',
-      href: '/project6',
-      imageSrc: '/project6.jpeg',
+      title: 'KEEPING WARM',
+      href: '/keeping_warm',
+      imageSrc: '/keeping_warm.png',
     },
   ];
 
