@@ -23,9 +23,9 @@ export default function Projects() {
       imageSrc: '/innovice.jpeg',
     },
     {
-      title: 'PROJECT 4',
-      href: '/project4',
-      imageSrc: '/project4.jpeg',
+      title: 'CONCEPT CAR',
+      href: '/concept car',
+      imageSrc: '/concept_car.png',
     },
     {
       title: 'PROJECT 5',
