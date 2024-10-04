@@ -6,19 +6,22 @@ import { useEffect } from 'react';
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    const flashlight = document.querySelector('.flashlight');
     const flashlightArea = document.querySelector('.flashlight-area');
+    const flashlight = document.querySelector('.flashlight');
 
-    if (!flashlight || !flashlightArea) return;
-
-    const lightRadius = 300; // Should match the CSS size
-    const flashlightOffset = lightRadius / 2;
+    if (!flashlightArea || !flashlight) return;
 
     const handleMouseMove = (e) => {
       const { clientX, clientY } = e;
       const { left, top } = flashlightArea.getBoundingClientRect();
-      flashlight.style.left = `${clientX - left - flashlightOffset}px`;
-      flashlight.style.top = `${clientY - top - flashlightOffset}px`;
+
+      // Calculate position relative to the flashlight area
+      const posX = clientX - left;
+      const posY = clientY - top;
+
+      // Update CSS variables for positioning
+      flashlight.style.left = `${posX}px`;
+      flashlight.style.top = `${posY}px`;
     };
 
     flashlightArea.addEventListener('mousemove', handleMouseMove);
