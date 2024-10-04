@@ -88,18 +88,19 @@ a:hover {
 
 /* Flashlight Effect */
 .flashlight-area {
-  position: fixed; /* Changed to fixed to cover the entire viewport */
+  position: fixed; /* Covers the entire viewport */
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
   overflow: hidden;
   pointer-events: none; /* Allow interactions through the overlay */
+  z-index: 9999; /* Ensure it sits above other elements */
 }
 
 .flashlight {
   position: absolute;
-  width: 300px; /* Adjusted size for subtler effect */
+  width: 300px; /* Subtle size */
   height: 300px;
   border-radius: 50%;
   background-color: transparent;
@@ -134,8 +135,8 @@ a:hover {
 
 /* Adjust the "View My Work" button */
 .view-my-work-button {
-  font-size: 24px; /* Make the button text larger */
-  color: #FFC0CB; /* Match the neon color */
+  font-size: 24px; /* Larger text */
+  color: #FFC0CB; /* Neon pink */
   text-shadow:
     0 0 1px #FFC0CB,
     0 0 2px #FFC0CB;
