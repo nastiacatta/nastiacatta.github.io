@@ -209,46 +209,39 @@ html {
 
 /* ... existing styles ... */
 
+/* src/styles/globals.css */
+
 /* Flashlight Effect */
 .flashlight {
-  @apply fixed rounded-full pointer-events-none mix-blend-multiply transition-all duration-700 ease-out;
-  width: 800px; /* Increased size for more subtle effect */
-  height: 800px;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0.2) 25%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.05) 75%,
-    rgba(255, 255, 255, 0) 100%
-  ); /* Gradual gradient with several stops to make it blend smoothly */
+  @apply fixed rounded-full pointer-events-none transition-all duration-700 ease-out;
+  width: 700px; /* Increased size for more noticeable effect */
+  height: 700px;
   transform: translate(-50%, -50%);
   z-index: 10; /* Below header */
-  opacity: 0.6; /* Adjust opacity for better blending */
 }
 
-/* Dark Mode Adjustments */
+/* Dark Mode Flashlight */
 .flashlight.dark-mode {
   background: radial-gradient(
     circle,
-    rgba(200, 200, 200, 0.4) 0%, /* Lighter grey in dark mode to create brightness */
-    rgba(200, 200, 200, 0.3) 25%,
-    rgba(200, 200, 200, 0.2) 50%,
-    rgba(200, 200, 200, 0.1) 75%,
-    rgba(200, 200, 200, 0) 100%
-  ); /* More gradual layers for a smoother fade */
+    rgba(255, 255, 255, 0.2) 0%,         /* Lighter grey center */
+    rgba(255, 255, 255, 0.15) 25%,       /* Gradual fade to blend */
+    rgba(255, 255, 255, 0.1) 50%,        /* More gradual fade */
+    rgba(255, 255, 255, 0.05) 75%,       /* Even lighter to blend in */
+    rgba(26, 26, 26, 0) 100%             /* Completely blend into the dark grey background */
+  );
 }
 
-/* Light Mode Adjustments */
+/* Light Mode Flashlight */
 .flashlight.light-mode {
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.5) 0%, /* Slightly bright for contrast */
-    rgba(255, 255, 255, 0.3) 25%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.1) 75%,
-    rgba(255, 255, 255, 0) 100%
-  ); /* Gradual transition to blend smoothly with the light background */
+    rgba(255, 255, 255, 0.4) 0%,         /* Bright white center */
+    rgba(255, 255, 255, 0.3) 25%,        /* Gradually blending */
+    rgba(255, 255, 255, 0.2) 50%,        /* More subtle fading */
+    rgba(255, 255, 255, 0.1) 75%,        /* Almost blending */
+    rgba(255, 255, 255, 0) 100%          /* Completely blend into the light background */
+  );
 }
 
 /* Initially hide the flashlight */
