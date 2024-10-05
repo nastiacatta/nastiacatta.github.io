@@ -16,7 +16,7 @@ const Flashlight = () => {
   }, []);
 
   useEffect(() => {
-    // Disable flashlight on touch devices
+    // Disable flashlight on touch devices and small screens
     const isTouchDevice =
       'ontouchstart' in window || navigator.maxTouchPoints > 0;
     if (isTouchDevice) return;
@@ -49,9 +49,9 @@ const Flashlight = () => {
 
   return (
     <div
-      className={`flashlight ${isVisible ? '' : 'hidden'} ${
-        prefersDarkMode ? 'dark-mode' : 'light-mode'
-      }`}
+      className={`flashlight ${
+        isVisible ? '' : 'hidden'
+      } ${prefersDarkMode ? 'dark-mode' : 'light-mode'}`}
       ref={flashlightRef}
       aria-hidden="true"
     ></div>
