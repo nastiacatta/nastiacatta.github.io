@@ -177,7 +177,7 @@ export default function Hero() {
       scene.add(flowerGroup);
 
       // Adjust the size of the flower
-      flowerGroup.scale.set(1.2, 1.2, 1.2); // Increased scale
+      flowerGroup.scale.set(1.4, 1.4, 1.4); // Increased scale
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(
@@ -374,7 +374,7 @@ export default function Hero() {
             <Link href="/#projects" scroll={false}>
               <a
                 className="px-6 py-3 text-xl transition-transform transform hover:scale-105 view-my-work-button"
-                style={{ fontSize: '24px', marginTop: '10px' }}
+                style={{ fontSize: '24px', marginTop: '4px' }}
               >
                 View My Work
               </a>
