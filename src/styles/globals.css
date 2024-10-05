@@ -207,15 +207,11 @@ html {
 
 /* src/styles/globals.css */
 
-/* ... existing styles ... */
-
-/* src/styles/globals.css */
-
 /* Flashlight Effect */
 .flashlight {
   @apply fixed rounded-full pointer-events-none transition-all duration-700 ease-out;
-  width: 700px; /* Increased size for more noticeable effect */
-  height: 700px;
+  width: 800px; /* Increased size for a larger effect */
+  height: 800px;
   transform: translate(-50%, -50%);
   z-index: 10; /* Below header */
 }
@@ -224,11 +220,11 @@ html {
 .flashlight.dark-mode {
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.2) 0%,         /* Lighter grey center */
-    rgba(255, 255, 255, 0.15) 25%,       /* Gradual fade to blend */
-    rgba(255, 255, 255, 0.1) 50%,        /* More gradual fade */
-    rgba(255, 255, 255, 0.05) 75%,       /* Even lighter to blend in */
-    rgba(26, 26, 26, 0) 100%             /* Completely blend into the dark grey background */
+    rgba(255, 255, 255, 0.08) 0%,       /* Very subtle light center */
+    rgba(255, 255, 255, 0.07) 15%,      /* Slightly fading outward */
+    rgba(255, 255, 255, 0.05) 35%,      /* Even more subtle as it moves out */
+    rgba(255, 255, 255, 0.03) 60%,      /* Gradually fades out */
+    rgba(26, 26, 26, 0) 100%            /* Completely blends into the dark background */
   );
 }
 
@@ -236,11 +232,11 @@ html {
 .flashlight.light-mode {
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.4) 0%,         /* Bright white center */
-    rgba(255, 255, 255, 0.3) 25%,        /* Gradually blending */
-    rgba(255, 255, 255, 0.2) 50%,        /* More subtle fading */
-    rgba(255, 255, 255, 0.1) 75%,        /* Almost blending */
-    rgba(255, 255, 255, 0) 100%          /* Completely blend into the light background */
+    rgba(255, 255, 255, 0.2) 0%,         /* Bright white center */
+    rgba(255, 255, 255, 0.15) 20%,       /* Slightly fading outward */
+    rgba(255, 255, 255, 0.1) 40%,        /* Fades further */
+    rgba(255, 255, 255, 0.05) 70%,       /* Almost blending */
+    rgba(255, 255, 255, 0) 100%          /* Completely blends into the background */
   );
 }
 
