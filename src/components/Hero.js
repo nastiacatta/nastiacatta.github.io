@@ -74,7 +74,7 @@ export default function Hero() {
         75,
         canvas.clientWidth / canvas.clientHeight,
         0.1,
-        1000
+        1500
       );
       camera.position.z = 5;
 
