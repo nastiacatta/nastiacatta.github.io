@@ -9,7 +9,7 @@ export default function RobotCar() {
           <h1 className="text-5xl font-bold mb-4">ROBOT CAR</h1>
           <div className="mb-8">
             <img
-              src="/robotcar.jpg"  // Assuming the image is saved as 'robotcar.jpg' in the public folder
+              src="/robotcar.png"  // Assuming the image is saved as 'robotcar.jpg' in the public folder
               alt="Robotic Car Project"
               className="rounded-lg shadow-lg w-full h-auto"
             />

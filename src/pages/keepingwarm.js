@@ -9,7 +9,7 @@ export default function KeepingWarm() {
           <h1 className="text-5xl font-bold mb-4">KEEPING WARM</h1>
           <div className="mb-8">
             <img
-              src="/keepingwarm.jpg"  // Assuming the image is saved as 'keepingwarm.jpg' in the public folder
+              src="/keepingwarm.png"  // Assuming the image is saved as 'keepingwarm.jpg' in the public folder
               alt="Heated Blanket for Wheelchair Users"
               className="rounded-lg shadow-lg w-full h-auto"
             />

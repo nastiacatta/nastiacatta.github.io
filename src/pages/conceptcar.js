@@ -9,7 +9,7 @@ export default function ConceptCar() {
           <h1 className="text-5xl font-bold mb-4">CONCEPT CAR</h1>
           <div className="mb-8">
             <img
-              src="/conceptcar.jpg"  // Assuming the image is saved as 'conceptcar.jpg' in the public folder
+              src="/conceptcar.png"  // Assuming the image is saved as 'conceptcar.jpg' in the public folder
               alt="Concept Car"
               className="rounded-lg shadow-lg w-full h-auto"
             />

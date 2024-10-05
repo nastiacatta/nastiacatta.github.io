@@ -253,12 +253,3 @@ html {
   }
 }
 
-
-
-.logo svg {
-  transition: transform 0.3s ease;
-}
-
-.logo svg:hover {
-  transform: scale(1.1);
-}
