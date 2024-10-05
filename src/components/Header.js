@@ -1,13 +1,6 @@
-// src/components/Header.js
-
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  SunIcon,
-  MoonIcon,
-  Bars3Icon,
-  XMarkIcon,
-} from '@heroicons/react/24/solid';
+import { SunIcon, MoonIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 
 export default function Header() {
   const [darkMode, setDarkMode] = useState(false);
@@ -38,7 +31,7 @@ export default function Header() {
   };
 
   return (
-    <header className="header flex items-center justify-between p-4 bg-gray-800 dark:bg-gray-900 fixed w-full top-0 z-50">
+    <header className="header flex items-center justify-between p-4 bg-transparent fixed w-full top-0 z-50">
       {/* Skip Navigation Link for Accessibility */}
       <a href="#main-content" className="sr-only focus:not-sr-only">
         Skip to main content
@@ -48,8 +41,18 @@ export default function Header() {
       <div className="logo flex items-center">
         <Link href="/">
           <a className="flex items-center">
-            {/* Replace with your actual logo if available */}
-            <img src="/logo.png" alt="Logo" className="w-8 h-8 mr-2" />
+            {/* AC Voltage Symbol SVG */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="w-8 h-8 mr-2 hover:scale-110 transition-transform"
+            >
+              <circle cx="12" cy="12" r="10" fill="none" />
+              <path d="M7,12 h10 M12,7 v10 M9,12 q3-3 6,0 q-3,3 -6,0" strokeWidth="2" />
+            </svg>
             <span className="text-white dark:text-gray-800 font-semibold text-2xl hover:text-lilac transition-colors">
               Anastasia's Portfolio
             </span>
