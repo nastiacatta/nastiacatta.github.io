@@ -76,7 +76,7 @@ export default function Hero() {
         0.1,
         1500
       );
-      camera.position.z = 5;
+      camera.position.z = 6;
 
       const renderer = new THREE.WebGLRenderer({
         canvas,

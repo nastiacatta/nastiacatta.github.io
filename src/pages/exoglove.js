@@ -1,4 +1,3 @@
-// src/pages/exoglove.js
 import Header from '../components/Header';
 
 export default function ExoGlove() {
@@ -26,9 +25,18 @@ export default function ExoGlove() {
             </div>
           </div>
 
-          {/* Second Full-Width Image */}
+          {/* Embedded YouTube Video */}
           <div className="my-12 flex justify-center">
-            <img src="/exoglove_2.png" alt="Exo Glove Image 2" className="rounded-lg shadow-lg w-full h-auto max-w-3xl" />
+            <iframe 
+              width="560" 
+              height="315" 
+              src="https://www.youtube.com/embed/9K6wcKrc9YI" 
+              title="Exo Glove Video"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowFullScreen
+              className="rounded-lg shadow-lg w-full h-auto max-w-3xl"
+            ></iframe>
           </div>
 
           {/* Additional Text Section */}
@@ -42,16 +50,6 @@ export default function ExoGlove() {
             <p className="text-lg mb-6 max-w-4xl mx-auto">
               Powered by rechargeable lithium-ion batteries, the glove provides up to eight hours of continuous use, making power tools universally accessible and challenging gender biases in the industry.
             </p>
-          </div>
-
-          {/* Last Two Images in the Same Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex justify-center">
-              <img src="/exoglove_3.png" alt="Exo Glove Image 3" className="rounded-lg shadow-lg w-full h-auto max-w-md md:max-w-lg" />
-            </div>
-            <div className="flex justify-center">
-              <img src="/exoglove_4.png" alt="Exo Glove Image 4" className="rounded-lg shadow-lg w-full h-auto max-w-md md:max-w-lg" />
-            </div>
           </div>
         </div>
       </section>
