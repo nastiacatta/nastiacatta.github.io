@@ -34,18 +34,18 @@ a:hover {
 }
 /* Header Styles */
 .header {
-  background-color: rgba(26, 26, 26, 0.9); /* Dark grey background with slight transparency */
+  background-color: #1a1a1a; /* Dark grey background */
   position: fixed; /* Ensure the header stays fixed at the top */
   top: 0; /* Align to the top */
   left: 0;
   width: 100%; /* Full width */
   z-index: 1000; /* Keep it above other elements */
   padding: 10px 20px; /* Add some padding for spacing */
-  transition: background-color 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for better visibility */
 }
 
 .dark .header {
-  background-color: rgba(249, 224, 231, 0.9); /* Light pink background in light mode with slight transparency */
+  background-color: #F9E0E7; /* Light pink background in light mode */
 }
 
 /* Ensure text and logo inside the header are visible and properly sized */
@@ -64,6 +64,8 @@ a:hover {
 /* Adding margin to the main content to prevent it from hiding under the header */
 #main-content {
   margin-top: 80px; /* Adjust to match the height of the header */
+  position: relative;
+  z-index: 1; /* Ensures content remains under the header when scrolling */
 }
 
 /* Section Styles */
