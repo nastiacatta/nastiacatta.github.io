@@ -205,15 +205,15 @@ html {
   height: 100%;
 }
 
-/* Flashlight Effect */
+
 .flashlight {
-  @apply fixed rounded-full pointer-events-none mix-blend-multiply opacity-80 transition-all duration-500 ease-out;
-  width: 500px; /* Increased size */
-  height: 500px;
+  @apply fixed rounded-full pointer-events-none mix-blend-multiply opacity-60 transition-all duration-700 ease-out;
+  width: 600px; /* Increased size */
+  height: 600px;
   background: radial-gradient(
     circle,
-    rgba(255, 105, 180, 0.6) 0%,
-    rgba(255, 105, 180, 0.2) 70%,
+    rgba(255, 105, 180, 0.4) 0%,
+    rgba(255, 105, 180, 0.1) 60%,
     rgba(255, 105, 180, 0) 100%
   ); /* Pinkish color with smooth fade */
   transform: translate(-50%, -50%);
@@ -224,24 +224,31 @@ html {
 .flashlight.light-mode {
   background: radial-gradient(
     circle,
-    rgba(255, 105, 180, 0.6) 0%,
-    rgba(255, 105, 180, 0.2) 70%,
+    rgba(255, 105, 180, 0.4) 0%,
+    rgba(255, 105, 180, 0.1) 60%,
     rgba(255, 105, 180, 0) 100%
-  ); /* Pinkish color with smooth fade */
+  ); /* Pinkish color */
 }
 
 /* Dark Mode Adjustments */
 .flashlight.dark-mode {
   background: radial-gradient(
     circle,
-    rgba(255, 105, 180, 0.6) 0%,
-    rgba(255, 105, 180, 0.2) 70%,
+    rgba(255, 105, 180, 0.5) 0%,
+    rgba(255, 105, 180, 0.15) 60%,
     rgba(255, 105, 180, 0) 100%
-  ); /* Same pinkish color, can adjust if needed */
+  ); /* Slightly different pinkish color */
 }
 
 /* Initially hide the flashlight */
 .flashlight.hidden {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .flashlight {
+    display: none; /* Hide flashlight on smaller screens */
+  }
 }
