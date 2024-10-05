@@ -24,17 +24,17 @@ export default function Projects() {
     },
     {
       title: 'ROBOT CAR',
-      href: '/robot_car',
+      href: '/robotcar',
       imageSrc: '/robot_car.png',
     },
     {
       title: 'CONCEPT CAR',
-      href: '/concept_Car',
+      href: '/conceptcar',
       imageSrc: '/concept_car.png',
     },
     {
       title: 'KEEPING WARM',
-      href: '/keeping_warm',
+      href: '/keepingwarm',
       imageSrc: '/keeping_warm.png',
     },
   ];
