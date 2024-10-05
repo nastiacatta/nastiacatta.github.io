@@ -177,7 +177,7 @@ export default function Hero() {
       scene.add(flowerGroup);
 
       // Adjust the size of the flower
-      flowerGroup.scale.set(1.8, 1.8, 1.8); // Increased scale
+      flowerGroup.scale.set(1.4, 1.4, 1.4); // Increased scale
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(
