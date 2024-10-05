@@ -205,13 +205,11 @@ html {
   height: 100%;
 }
 
-/* src/styles/globals.css */
-
 /* Flashlight Effect */
 .flashlight {
   @apply fixed rounded-full pointer-events-none transition-all duration-700 ease-out;
-  width: 800px; /* Increased size for a larger effect */
-  height: 800px;
+  width: 1000px; /* Increased size for a larger, softer effect */
+  height: 1000px;
   transform: translate(-50%, -50%);
   z-index: 10; /* Below header */
 }
@@ -220,11 +218,12 @@ html {
 .flashlight.dark-mode {
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.08) 0%,       /* Very subtle light center */
-    rgba(255, 255, 255, 0.07) 15%,      /* Slightly fading outward */
-    rgba(255, 255, 255, 0.05) 35%,      /* Even more subtle as it moves out */
-    rgba(255, 255, 255, 0.03) 60%,      /* Gradually fades out */
-    rgba(26, 26, 26, 0) 100%            /* Completely blends into the dark background */
+    rgba(255, 255, 255, 0.03) 0%,      /* Very subtle brightness in the center */
+    rgba(255, 255, 255, 0.025) 20%,    /* Gradually fading outwards */
+    rgba(255, 255, 255, 0.02) 35%,     /* More gradual, very soft edges */
+    rgba(255, 255, 255, 0.015) 50%,    /* Continuation of a very gradual fade */
+    rgba(255, 255, 255, 0.01) 70%,     /* Barely visible, smooth transition */
+    rgba(26, 26, 26, 0) 90%           /* Fully blending into the dark background */
   );
 }
 
@@ -232,11 +231,12 @@ html {
 .flashlight.light-mode {
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.2) 0%,         /* Bright white center */
-    rgba(255, 255, 255, 0.15) 20%,       /* Slightly fading outward */
-    rgba(255, 255, 255, 0.1) 40%,        /* Fades further */
-    rgba(255, 255, 255, 0.05) 70%,       /* Almost blending */
-    rgba(255, 255, 255, 0) 100%          /* Completely blends into the background */
+    rgba(255, 255, 255, 0.08) 0%,      /* Subtle white center */
+    rgba(255, 255, 255, 0.07) 20%,     /* Gradual fade outward */
+    rgba(255, 255, 255, 0.05) 40%,     /* Keeping a light effect without hard edges */
+    rgba(255, 255, 255, 0.03) 60%,     /* Continuing gradual fade */
+    rgba(255, 255, 255, 0.01) 80%,     /* Near transparent */
+    rgba(255, 255, 255, 0) 90%        /* Completely blends into the background */
   );
 }
 
