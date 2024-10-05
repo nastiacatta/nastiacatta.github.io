@@ -32,16 +32,23 @@ a:hover {
 .dark a:hover {
   color: #ff69b4; /* Hot pink in light mode */
 }
-
 /* Header Styles */
 .header {
-  background-color: transparent; /* Dark grey background */
+  background-color: rgba(26, 26, 26, 0.9); /* Dark grey background with slight transparency */
+  position: fixed; /* Ensure the header stays fixed at the top */
+  top: 0; /* Align to the top */
+  left: 0;
+  width: 100%; /* Full width */
+  z-index: 1000; /* Keep it above other elements */
+  padding: 10px 20px; /* Add some padding for spacing */
+  transition: background-color 0.3s ease-in-out;
 }
 
 .dark .header {
-  background-color: #F9E0E7; /* Light pink background in light mode */
+  background-color: rgba(249, 224, 231, 0.9); /* Light pink background in light mode with slight transparency */
 }
 
+/* Ensure text and logo inside the header are visible and properly sized */
 .header .logo img {
   width: 32px;
   height: 32px;
@@ -50,6 +57,13 @@ a:hover {
 
 .header nav ul li a {
   font-size: 16px;
+  color: inherit; /* Inherit color from header for better contrast */
+  transition: color 0.3s ease;
+}
+
+/* Adding margin to the main content to prevent it from hiding under the header */
+#main-content {
+  margin-top: 80px; /* Adjust to match the height of the header */
 }
 
 /* Section Styles */
