@@ -35,7 +35,7 @@ a:hover {
 
 /* Header Styles */
 .header {
-  background-color: #1a1a1a; /* Dark grey background */
+  background-color: transparent; /* Dark grey background */
 }
 
 .dark .header {
