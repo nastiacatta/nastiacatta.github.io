@@ -41,18 +41,11 @@ export default function Header() {
       <div className="logo flex items-center">
         <Link href="/">
           <a className="flex items-center">
-            {/* AC Voltage Symbol SVG */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+            <img
+              src="/logo.png"
+              alt="Logo"
               className="w-8 h-8 mr-2 hover:scale-110 transition-transform"
-            >
-              <circle cx="12" cy="12" r="10" fill="none" />
-              <path d="M7,12 h10 M12,7 v10 M9,12 q3-3 6,0 q-3,3 -6,0" strokeWidth="2" />
-            </svg>
+            />
             <span className="text-white dark:text-gray-800 font-semibold text-2xl hover:text-lilac transition-colors">
               Anastasia's Portfolio
             </span>
