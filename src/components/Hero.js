@@ -346,7 +346,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative h-screen flex items-center justify-center overflow-hidden" // Added overflow-hidden here
+      className="relative h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-0" // Added overflow-hidden here
     >
       <div className="flex flex-col md:flex-row items-center w-full h-full px-8">
         {/* Left Column - Intro Text */}
