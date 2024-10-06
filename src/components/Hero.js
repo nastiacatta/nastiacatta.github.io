@@ -370,7 +370,7 @@ export default function Hero() {
           ></canvas>
 
           {/* "View My Work" button under the animation */}
-          <div className="mt-2 md:mt-4">
+          <div className="mt-1 md:mt-3">
             <Link href="/#projects" scroll={false}>
               <a
                 className="px-6 py-3 text-xl transition-transform transform hover:scale-105 view-my-work-button"
