@@ -46,6 +46,7 @@ a:hover {
 
 .dark .header {
   background-color: #F9E0E7; /* Light pink background in light mode */
+  color:#1a1a1a
 }
 
 /* Ensure text and logo inside the header are visible and properly sized */
@@ -78,6 +79,7 @@ a:hover {
 
 .dark .section {
   background-color: #F9E0E7; /* Light pink background in light mode */
+  color:#1a1a1a
 }
 
 @media (max-width: 768px) {

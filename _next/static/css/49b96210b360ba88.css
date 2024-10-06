@@ -1,0 +1,1 @@
+.flashlight-area{position:relative;overflow:hidden}.flashlight{position:absolute;width:500px;height:500px;border-radius:50%;background-color:transparent;box-shadow:0 0 0 9999px rgba(0,0,0,.8);filter:blur(100px);pointer-events:none;transform:translate(-50%,-50%)}
