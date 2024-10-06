@@ -270,4 +270,6 @@ html {
     display: none; /* Hide flashlight on smaller screens */
   }
 }
-
+.dark a {
+  color: #000000; /* Black text for links in light mode */
+}
