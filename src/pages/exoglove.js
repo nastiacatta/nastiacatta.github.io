@@ -25,19 +25,20 @@ export default function ExoGlove() {
             </div>
           </div>
 
-          {/* Embedded YouTube Video */}
+              {/* Embedded YouTube Video */}
           <div className="my-12 flex justify-center">
             <iframe 
-              width="560" 
-              height="315" 
+              width="800"  // Increased width
+              height="450" // Increased height
               src="https://www.youtube.com/embed/9K6wcKrc9YI" 
               title="Exo Glove Video"
-              frameborder="0" 
+              frameBorder="0" 
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
               allowFullScreen
-              className="rounded-lg shadow-lg w-full h-auto max-w-3xl"
+              className="rounded-lg shadow-lg w-full h-auto max-w-4xl" // Updated max width
             ></iframe>
           </div>
+
 
           {/* Additional Text Section */}
           <div className="mb-12">
