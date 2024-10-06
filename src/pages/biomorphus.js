@@ -1,4 +1,3 @@
-// src/pages/biomorphus.js
 import Header from '../components/Header';
 
 export default function Biomorphus() {
@@ -26,6 +25,22 @@ export default function Biomorphus() {
           <p className="text-lg mb-6 max-w-4xl mx-auto">
             Through this creation, the dress becomes an extension of the wearer, responding and adapting organically to environmental stimuli.
           </p>
+          <div className="text-lg mb-6 max-w-4xl mx-auto">
+            <a href="/gizmo.pdf" target="_blank" className="text-pink-500 underline">
+              View Gizmo PDF
+            </a>
+          </div>
+          <div className="text-lg mb-6 max-w-4xl mx-auto">
+            <iframe
+              width="100%"
+              height="400"
+              src="https://www.youtube.com/embed/kuVLW63gYhk?start=25"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
         </div>
       </section>
     </div>
