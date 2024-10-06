@@ -243,18 +243,18 @@ html {
     rgba(26, 26, 26, 0) 100%           /* Fully blends into the dark background */
   );
 }
-
 /* Light Mode Flashlight */
 .flashlight.light-mode {
   background: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.05) 0%,      /* Subtle white center */
-    rgba(255, 255, 255, 0.04) 25%,     /* Gradual fade outward */
-    rgba(255, 255, 255, 0.03) 50%,     /* Keeping a light effect without hard edges */
-    rgba(255, 255, 255, 0.01) 75%,     /* Nearly invisible towards the edge */
+    rgba(255, 255, 255, 0.1) 0%,       /* Increased brightness at the center */
+    rgba(255, 255, 255, 0.08) 25%,     /* More prominent gradual fade outward */
+    rgba(255, 255, 255, 0.06) 50%,     /* Keeping a more visible effect */
+    rgba(255, 255, 255, 0.03) 75%,     /* Slightly more visible towards the edge */
     rgba(255, 255, 255, 0) 100%        /* Completely blends into the background */
   );
 }
+
 
 /* Initially hide the flashlight */
 .flashlight.hidden {
