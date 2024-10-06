@@ -57,7 +57,7 @@ a:hover {
 
 .header nav ul li a {
   font-size: 16px;
-  color: inherit; /* Inherit color from header for better contrast */
+  color: #333333; /* Inherit color from header for better contrast */
   transition: color 0.3s ease;
 }
 
