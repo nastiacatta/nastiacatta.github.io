@@ -374,7 +374,7 @@ export default function Hero() {
             <Link href="/#projects" scroll={false}>
               <a
                 className="px-6 py-3 text-xl transition-transform transform hover:scale-105 view-my-work-button"
-                style={{ fontSize: '24px', marginTop: '0px' }}
+                style={{ fontSize: '24px', marginTop: '10px' }}
               >
                 View My Work
               </a>
