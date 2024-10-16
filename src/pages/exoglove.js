@@ -9,7 +9,7 @@ export default function ExoGlove() {
           {/* Title and First Image + Text Section */}
           <div className="flex flex-col md:flex-row gap-8">
             <div className="md:w-1/2">
-              <h1 className="text-5xl mb-4 neon">Exo Glove</h1> {/* Removed bold and capitalized style, added neon effect */}
+              <h1 className="text-5xl mb-4 neon">Exo Glove</h1>
               <p className="text-lg mb-6 max-w-4xl mx-auto">
                 The Exo Glove is a wearable technology designed to boost grip strength and reduce strain for DIY enthusiasts and homeowners.
               </p>
@@ -25,31 +25,30 @@ export default function ExoGlove() {
             </div>
           </div>
 
-              {/* Embedded YouTube Video */}
-          <div className="my-12 flex justify-center">
-            <iframe 
-              src="https://www.youtube.com/embed/9K6wcKrc9YI" 
-              title="Exo Glove Video"
-              frameBorder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              allowFullScreen
-              className="rounded-lg shadow-lg w-full h-auto max-w-5xl" // Updated max width
-              style={{ aspectRatio: '16/9' }} // Maintain 16:9 aspect ratio
-            ></iframe>
-          </div>
-
-
-          {/* Additional Text Section */}
-          <div className="mb-12">
-            <p className="text-lg mb-6 max-w-4xl mx-auto">
-              This innovative glove enhances grip strength using air pumps and soft robotics that curl the fingers upon contact with an object, providing a secure hold and deflating once the object is released.
-            </p>
-            <p className="text-lg mb-6 max-w-4xl mx-auto">
-              Developed using advanced soft robotics and ergonomic design principles, the Exo Glove integrates force-sensitive resistors (FSRs) in the fingertips to detect grip pressure accurately.
-            </p>
-            <p className="text-lg mb-6 max-w-4xl mx-auto">
-            Inspired by the Robo-Glove, developed by NASA and General Motors to reduce repetitive stress injuries
-            </p>
+          {/* YouTube Video and Additional Text Section */}
+          <div className="flex flex-col md:flex-row gap-8 items-start my-12">
+            <div className="md:w-1/2 flex justify-center">
+              <iframe 
+                src="https://www.youtube.com/embed/9K6wcKrc9YI" 
+                title="Exo Glove Video"
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowFullScreen
+                className="rounded-lg shadow-lg w-full h-auto max-w-5xl"  // Increased max width
+                style={{ aspectRatio: '16/9' }} // Maintain 16:9 aspect ratio
+              ></iframe>
+            </div>
+            <div className="md:w-1/2">
+              <p className="text-lg mb-6 max-w-4xl mx-auto">
+                This innovative glove enhances grip strength using air pumps and soft robotics that curl the fingers upon contact with an object, providing a secure hold and deflating once the object is released.
+              </p>
+              <p className="text-lg mb-6 max-w-4xl mx-auto">
+                Developed using advanced soft robotics and ergonomic design principles, the Exo Glove integrates force-sensitive resistors (FSRs) in the fingertips to detect grip pressure accurately.
+              </p>
+              <p className="text-lg mb-6 max-w-4xl mx-auto">
+                Inspired by the Robo-Glove, developed by NASA and General Motors to reduce repetitive stress injuries.
+              </p>
+            </div>
           </div>
         </div>
       </section>
