@@ -11,13 +11,13 @@ export default function ExoGlove() {
             <div className="md:w-1/2">
               <h1 className="text-5xl mb-4 neon">Exo Glove</h1> {/* Removed bold and capitalized style, added neon effect */}
               <p className="text-lg mb-6 max-w-4xl mx-auto">
-                The Exo Glove is a wearable technology designed to boost grip strength and reduce strain for women DIY enthusiasts and homeowners.
+                The Exo Glove is a wearable technology designed to boost grip strength and reduce strain for DIY enthusiasts and homeowners.
               </p>
               <p className="text-lg mb-6 max-w-4xl mx-auto">
-                By focusing on ergonomic comfort and minimizing fatigue, the Exo Glove enables users to perform tasks requiring manual dexterity more effectively.
+                By focusing on ergonomic comfort and minimising fatigue, the Exo Glove enables users to perform tasks requiring manual dexterity more effectively.
               </p>
               <p className="text-lg mb-6 max-w-4xl mx-auto">
-                Addressing the gap in grip and upper body strength between men and women, the Exo Glove aims to empower women to handle home improvement tasks efficiently.
+                The glove is designed as a battery-operated exoskeleton glove with artificial tendons and forearm actuators.
               </p>
             </div>
             <div className="md:w-1/2 flex justify-center">
@@ -28,8 +28,8 @@ export default function ExoGlove() {
               {/* Embedded YouTube Video */}
           <div className="my-12 flex justify-center">
             <iframe 
-              width="800"  // Increased width
-              height="450" // Increased height
+              width="1800"  // Increased width
+              height="1450" // Increased height
               src="https://www.youtube.com/embed/9K6wcKrc9YI" 
               title="Exo Glove Video"
               frameBorder="0" 
@@ -49,7 +49,7 @@ export default function ExoGlove() {
               Developed using advanced soft robotics and ergonomic design principles, the Exo Glove integrates force-sensitive resistors (FSRs) in the fingertips to detect grip pressure accurately.
             </p>
             <p className="text-lg mb-6 max-w-4xl mx-auto">
-              Powered by rechargeable lithium-ion batteries, the glove provides up to eight hours of continuous use, making power tools universally accessible and challenging gender biases in the industry.
+            Inspired by the Robo-Glove, developed by NASA and General Motors to reduce repetitive stress injuries
             </p>
           </div>
         </div>
