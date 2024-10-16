@@ -28,14 +28,13 @@ export default function ExoGlove() {
               {/* Embedded YouTube Video */}
           <div className="my-12 flex justify-center">
             <iframe 
-              width="1800"  // Increased width
-              height="1450" // Increased height
               src="https://www.youtube.com/embed/9K6wcKrc9YI" 
               title="Exo Glove Video"
               frameBorder="0" 
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
               allowFullScreen
-              className="rounded-lg shadow-lg w-full h-auto max-w-4xl" // Updated max width
+              className="rounded-lg shadow-lg w-full h-auto max-w-5xl" // Updated max width
+              style={{ aspectRatio: '16/9' }} // Maintain 16:9 aspect ratio
             ></iframe>
           </div>
 
