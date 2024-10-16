@@ -1,4 +1,3 @@
-// src/pages/innovice.js
 import Header from '../components/Header';
 
 export default function Innovice() {
@@ -26,6 +25,14 @@ export default function Innovice() {
           <p className="text-lg mb-6 max-w-4xl mx-auto">
             This innovative solution aims to reduce waste and foster a circular economy by revolutionising the furniture repair industry.
           </p>
+
+          {/* Embed the PDF */}
+          <iframe
+            src="/public/innovice.pdf"
+            width="100%"
+            height="800px"
+            className="border-none"
+          ></iframe>
         </div>
       </section>
     </div>
