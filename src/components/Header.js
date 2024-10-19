@@ -77,9 +77,9 @@ export default function Header() {
         </Link>
         {/* Resume Link with Hover Effect */}
         <div className="relative group">
-          <Link href="/resume">
+          <Link href="/portfolio">
             <a className="text-gray-200 hover:text-lilac transition-colors flex items-center px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-lilac">
-              Resume
+              portfolio
             </a>
           </Link>
           {/* Hover Effect: Rounded Box with Shadow Moving to Top Left */}
