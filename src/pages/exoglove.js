@@ -1,25 +1,6 @@
 import Header from '../components/Header';
-import { useState, useEffect } from 'react';
 
 export default function ExoGlove() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    // Function to update state based on window size
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Adjust breakpoint as needed
-    };
-
-    // Initial check
-    handleResize();
-
-    // Event listener for window resize
-    window.addEventListener('resize', handleResize);
-
-    // Cleanup function
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   return (
     <div className="bg-dark-grey text-light-pink dark:bg-white dark:text-dark-grey min-h-screen">
       <Header />
@@ -29,7 +10,15 @@ export default function ExoGlove() {
           <div className="flex flex-col md:flex-row gap-8">
             <div className="md:w-1/2">
               <h1 className="text-5xl mb-4 neon">Exo Glove</h1>
-              {/* Existing paragraphs... */}
+              <p className="text-lg mb-6 max-w-4xl mx-auto">
+                The Exo Glove is a wearable technology designed to boost grip strength and reduce strain for DIY enthusiasts and homeowners.
+              </p>
+              <p className="text-lg mb-6 max-w-4xl mx-auto">
+                By focusing on ergonomic comfort and minimizing fatigue, the Exo Glove enables users to perform tasks requiring manual dexterity more effectively.
+              </p>
+              <p className="text-lg mb-6 max-w-4xl mx-auto">
+                The glove is designed as a battery-operated exoskeleton glove with artificial tendons and forearm actuators.
+              </p>
             </div>
             <div className="md:w-1/2 flex justify-center">
               <img
@@ -42,34 +31,38 @@ export default function ExoGlove() {
 
           {/* YouTube Video and Additional Text Section */}
           <div className="flex flex-col md:flex-row gap-8 items-start my-12">
-            {/* Existing content... */}
+            <div className="md:w-1/2 flex justify-center">
+              <iframe
+                src="https://www.youtube.com/embed/9K6wcKrc9YI"
+                title="Exo Glove Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="rounded-lg shadow-lg w-full h-auto max-w-5xl"
+                style={{ aspectRatio: '16/9' }} // Maintain 16:9 aspect ratio
+              ></iframe>
+            </div>
+            <div className="md:w-1/2">
+              <p className="text-lg mb-6 max-w-4xl mx-auto">
+                This innovative glove enhances grip strength using air pumps and soft robotics that curl the fingers upon contact with an object, providing a secure hold and deflating once the object is released.
+              </p>
+              <p className="text-lg mb-6 max-w-4xl mx-auto">
+                Developed using advanced soft robotics and ergonomic design principles, the Exo Glove integrates force-sensitive resistors (FSRs) in the fingertips to detect grip pressure accurately.
+              </p>
+              <p className="text-lg mb-6 max-w-4xl mx-auto">
+                Inspired by the Robo-Glove, developed by NASA and General Motors to reduce repetitive stress injuries.
+              </p>
+            </div>
           </div>
 
           {/* PDF Display Section */}
-          <div className="flex flex-col items-center mt-12">
-            <h2 className="text-3xl mb-4">Exo Glove Details</h2>
-            {isMobile ? (
-              <div className="text-center">
-                <p className="mb-4">
-                  Tap the button below to view the Exo Glove PDF. It will open in a new tab or your device's PDF viewer.
-                </p>
-                <a
-                  href="/exoglove.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
-                >
-                  Open PDF
-                </a>
-              </div>
-            ) : (
-              <iframe
-                src="/exoglove.pdf"
-                title="Exo Glove PDF"
-                className="w-full"
-                style={{ minHeight: '800px' }}
-              ></iframe>
-            )}
+          <div className="flex justify-center mt-12">
+            <iframe
+              src="/exoglove.pdf"
+              title="Exo Glove PDF"
+              className="w-full h-screen"
+              style={{ minHeight: '800px' }}
+            ></iframe>
           </div>
         </div>
       </section>
