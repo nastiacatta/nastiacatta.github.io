@@ -1,6 +1,7 @@
 // src/components/About.js
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
+import Link from 'next/link';
 
 export default function About() {
   const canvasRef = useRef(null);
@@ -165,7 +166,7 @@ export default function About() {
   };
 
   return (
-    <section className="py-10 px-6 flex flex-col md:flex-row items-center justify-between">
+    <section className="py-10 px-6 flex flex-col md:flex-row items-center justify-between" id="about">
       {/* Text Section */}
       <div className="md:w-1/2">
         <h1 className="text-4xl font-bold mb-4">Anastasia Cattaneo</h1>
