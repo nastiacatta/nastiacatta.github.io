@@ -1,38 +1,38 @@
 // src/components/About.js
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import Link from 'next/link';
 
 export default function About() {
   const canvasRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    // Ensure the canvasRef is attached
+    console.log('Initializing Three.js in About.js');
+
     if (!canvasRef.current) return;
 
-    // Initialize Scene
+    // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1a1a); // Dark grey background
+    scene.background = new THREE.Color(0x1a1a1a); // Dark grey
 
-    // Initialize Camera
+    // Camera
     const camera = new THREE.PerspectiveCamera(
-      50,
+      75,
       canvasRef.current.clientWidth / canvasRef.current.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 1.5, 5); // Adjust as needed
+    camera.position.z = 5;
 
-    // Initialize Renderer
+    // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     canvasRef.current.appendChild(renderer.domElement);
 
-    // Add Lights
+    // Light
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
@@ -41,16 +41,16 @@ export default function About() {
     directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    // Add a Ground Plane to Receive Shadows
+    // Ground Plane
     const planeGeometry = new THREE.PlaneGeometry(10, 10);
     const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -Math.PI / 2;
-    plane.position.y = -0.75; // Adjust based on robot's position
+    plane.position.y = -0.75;
     plane.receiveShadow = true;
     scene.add(plane);
 
-    // Create Robot
+    // Robot
     const robot = createRobot();
     scene.add(robot.group);
 
@@ -67,19 +67,17 @@ export default function About() {
     // Animation Loop
     let waveDirection = 1;
     const waveSpeed = 0.02;
-    const maxWaveAngle = Math.PI / 4; // 45 degrees
+    const maxWaveAngle = Math.PI / 4;
 
     const animate = () => {
       requestAnimationFrame(animate);
 
       if (isHovered) {
-        // Waving Animation
         robot.arm.rotation.z += waveSpeed * waveDirection;
         if (robot.arm.rotation.z > maxWaveAngle || robot.arm.rotation.z < -maxWaveAngle) {
           waveDirection *= -1;
         }
       } else {
-        // Return arm to original position smoothly
         robot.arm.rotation.z = THREE.MathUtils.lerp(robot.arm.rotation.z, 0, 0.05);
       }
 
@@ -87,14 +85,16 @@ export default function About() {
     };
     animate();
 
-    // Cleanup on Unmount
+    console.log('Three.js setup complete');
+
+    // Cleanup
     return () => {
+      console.log('Cleaning up Three.js in About.js');
       window.removeEventListener('resize', handleResize);
       if (renderer && renderer.domElement) {
         canvasRef.current.removeChild(renderer.domElement);
         renderer.dispose();
       }
-      // Dispose geometries and materials to free memory
       robot.group.traverse((child) => {
         if (child.geometry) child.geometry.dispose();
         if (child.material) child.material.dispose();
@@ -143,21 +143,19 @@ export default function About() {
     rightArm.receiveShadow = true;
     group.add(rightArm);
 
-    // For Rigging: Make the arm a separate group to rotate it
+    // Arm Group for Rigging
     const armGroup = new THREE.Group();
     armGroup.position.set(0.75, 0.25, 0);
     group.add(armGroup);
     armGroup.add(rightArm);
 
-    // Add Eyes for Better Appearance
-    // Left Eye
+    // Eyes
     const eyeGeometry = new THREE.SphereGeometry(0.05, 16, 16);
-    const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 }); // Black eyes
+    const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
     leftEye.position.set(-0.15, 0.05, 0.35);
     head.add(leftEye);
 
-    // Right Eye
     const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
     rightEye.position.set(0.15, 0.05, 0.35);
     head.add(rightEye);
@@ -169,9 +167,9 @@ export default function About() {
     <section className="py-10 px-6 flex flex-col md:flex-row items-center justify-between" id="about">
       {/* Text Section */}
       <div className="md:w-1/2">
-        <h1 className="text-4xl font-bold mb-4">Anastasia Cattaneo</h1>
+        <h1 className="text-4xl font-bold mb-4">About Me</h1>
         <p className="text-lg">
-          I am a third-year MEng Design Engineering student at Imperial College London, with a keen interest in the innovative field of wearables. My passion lies in the fusion of electronics, AI, and fashion. I am driven by a commitment to integrating elegant design with robust engineering to develop solutions that are both functional and aesthetically pleasing.
+          I am a third-year MEng Design Engineering student at Imperial College London, passionate about wearables, AI, and fashion.
         </p>
       </div>
       
@@ -183,7 +181,7 @@ export default function About() {
       >
         <div
           ref={canvasRef}
-          className="w-full h-64 md:h-80 bg-gray-800"
+          className="w-full h-80 bg-gray-800"
         ></div>
       </div>
     </section>
