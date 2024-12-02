@@ -1,4 +1,4 @@
-// src/components/About.jsx
+// src/components/About.js
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 
@@ -7,6 +7,9 @@ export default function About() {
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
+    // Ensure the canvasRef is attached
+    if (!canvasRef.current) return;
+
     // Initialize Scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x1a1a1a); // Dark grey background
@@ -23,6 +26,9 @@ export default function About() {
     // Initialize Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
     canvasRef.current.appendChild(renderer.domElement);
 
     // Add Lights
@@ -31,7 +37,17 @@ export default function About() {
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(5, 10, 7.5);
+    directionalLight.castShadow = true;
     scene.add(directionalLight);
+
+    // Add a Ground Plane to Receive Shadows
+    const planeGeometry = new THREE.PlaneGeometry(10, 10);
+    const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.y = -0.75; // Adjust based on robot's position
+    plane.receiveShadow = true;
+    scene.add(plane);
 
     // Create Robot
     const robot = createRobot();
@@ -39,8 +55,10 @@ export default function About() {
 
     // Handle Resize
     const handleResize = () => {
-      renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
-      camera.aspect = canvasRef.current.clientWidth / canvasRef.current.clientHeight;
+      const width = canvasRef.current.clientWidth;
+      const height = canvasRef.current.clientHeight;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
     };
     window.addEventListener('resize', handleResize);
@@ -71,7 +89,10 @@ export default function About() {
     // Cleanup on Unmount
     return () => {
       window.removeEventListener('resize', handleResize);
-      canvasRef.current.removeChild(renderer.domElement);
+      if (renderer && renderer.domElement) {
+        canvasRef.current.removeChild(renderer.domElement);
+        renderer.dispose();
+      }
       // Dispose geometries and materials to free memory
       robot.group.traverse((child) => {
         if (child.geometry) child.geometry.dispose();
@@ -90,6 +111,8 @@ export default function About() {
     const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0xFFC0CB }); // Light pink
     const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
     body.position.y = 0;
+    body.castShadow = true;
+    body.receiveShadow = true;
     group.add(body);
 
     // Head
@@ -97,6 +120,8 @@ export default function About() {
     const headMaterial = new THREE.MeshStandardMaterial({ color: 0xFFC0CB });
     const head = new THREE.Mesh(headGeometry, headMaterial);
     head.position.y = 1.25;
+    head.castShadow = true;
+    head.receiveShadow = true;
     group.add(head);
 
     // Left Arm
@@ -104,6 +129,8 @@ export default function About() {
     const leftArmMaterial = new THREE.MeshStandardMaterial({ color: 0xFFC0CB });
     const leftArm = new THREE.Mesh(leftArmGeometry, leftArmMaterial);
     leftArm.position.set(-0.75, 0.25, 0);
+    leftArm.castShadow = true;
+    leftArm.receiveShadow = true;
     group.add(leftArm);
 
     // Right Arm
@@ -111,6 +138,8 @@ export default function About() {
     const rightArmMaterial = new THREE.MeshStandardMaterial({ color: 0xFFC0CB });
     const rightArm = new THREE.Mesh(rightArmGeometry, rightArmMaterial);
     rightArm.position.set(0.75, 0.25, 0);
+    rightArm.castShadow = true;
+    rightArm.receiveShadow = true;
     group.add(rightArm);
 
     // For Rigging: Make the arm a separate group to rotate it
@@ -118,6 +147,19 @@ export default function About() {
     armGroup.position.set(0.75, 0.25, 0);
     group.add(armGroup);
     armGroup.add(rightArm);
+
+    // Add Eyes for Better Appearance
+    // Left Eye
+    const eyeGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+    const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 }); // Black eyes
+    const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+    leftEye.position.set(-0.15, 0.05, 0.35);
+    head.add(leftEye);
+
+    // Right Eye
+    const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+    rightEye.position.set(0.15, 0.05, 0.35);
+    head.add(rightEye);
 
     return { group, arm: armGroup };
   };
@@ -140,7 +182,7 @@ export default function About() {
       >
         <div
           ref={canvasRef}
-          className="w-full h-64 md:h-80"
+          className="w-full h-64 md:h-80 bg-gray-800"
         ></div>
       </div>
     </section>
