@@ -15,13 +15,21 @@ export default function Home() {
       {/* Main Content */}
       <main id="main-content">
         {/* Section 2: About Me */}
-        <section id="about" className="section">
-          <h2 className="text-4xl font-normal mb-6 hover:text-lilac transition-colors">
-            About Me
-          </h2>
-          <p className="text-lg">
-            I am a third-year MEng Design Engineering student at Imperial College London. My passion lies in the fusion of electronics, AI, and fashion. I am driven by a commitment to integrating elegant design with robust engineering to develop solutions that are both functional and aesthetically pleasing. Beyond my core focus, I have a deep interest in the arts, literature, and architecture, which continually inspire my work.
-          </p>
+        <section id="about" className="section flex flex-col md:flex-row items-center justify-between">
+          {/* Text Section */}
+          <div className="md:w-1/2">
+            <h2 className="text-4xl font-normal mb-6 hover:text-lilac transition-colors">
+              About Me
+            </h2>
+            <p className="text-lg">
+              I am a third-year MEng Design Engineering student at Imperial College London. My passion lies in the fusion of electronics, AI, and fashion. I am driven by a commitment to integrating elegant design with robust engineering to develop solutions that are both functional and aesthetically pleasing. Beyond my core focus, I have a deep interest in the arts, literature, and architecture, which continually inspire my work.
+            </p>
+          </div>
+
+          {/* Animation Section */}
+          <div className="md:w-1/2 mt-8 md:mt-0">
+            <About /> {/* Rendering the About component for animation */}
+          </div>
         </section>
 
         {/* Section 3: Projects */}
