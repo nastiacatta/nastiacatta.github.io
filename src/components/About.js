@@ -12,11 +12,11 @@ export default function About() {
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    // Scene setup
+    // Scene Setup
     const scene = new THREE.Scene();
     scene.background = null; // Transparent background
 
-    // Camera setup
+    // Camera Setup
     const camera = new THREE.PerspectiveCamera(
       50,
       canvasRef.current.clientWidth / canvasRef.current.clientHeight,
@@ -25,7 +25,7 @@ export default function About() {
     );
     camera.position.set(0, 2.5, 6); // Elevated to prevent clipping
 
-    // Renderer setup
+    // Renderer Setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(
       canvasRef.current.clientWidth,
@@ -36,15 +36,15 @@ export default function About() {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
     canvasRef.current.appendChild(renderer.domElement);
 
-    // Lights setup
+    // Lighting Setup
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Increased intensity
     directionalLight.position.set(5, 10, 7.5);
     directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 1024; // Higher resolution shadows
-    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.mapSize.width = 2048; // Higher resolution shadows
+    directionalLight.shadow.mapSize.height = 2048;
     directionalLight.shadow.camera.near = 0.5;
     directionalLight.shadow.camera.far = 50;
     scene.add(directionalLight);
@@ -53,7 +53,7 @@ export default function About() {
     const robot = createRobot();
     scene.add(robot.group);
 
-    // Ground plane to receive shadows (fully transparent)
+    // Ground Plane to Receive Shadows (Transparent)
     const groundGeometry = new THREE.PlaneGeometry(50, 50);
     const groundMaterial = new THREE.MeshStandardMaterial({
       color: 0xffffff,
@@ -138,7 +138,7 @@ export default function About() {
 
     // Animation Loop
     let waveDirection = 1;
-    const waveSpeed = 0.05; // Increased speed for quicker waving
+    const waveSpeed = 0.03; // Slower speed for smoother waving
     const maxWaveAngleUp = Math.PI / 6; // 30 degrees
     const maxWaveAngleDown = -Math.PI / 12; // -15 degrees
     let eyeRotationAngle = 0;
@@ -148,6 +148,7 @@ export default function About() {
 
       // Right Arm waving animation
       if (hoveredRef.current) {
+        // Move arm upwards
         robot.rightArm.rotation.z += waveSpeed * waveDirection;
         // Clamp the rotation to prevent excessive movement
         robot.rightArm.rotation.z = THREE.MathUtils.clamp(
@@ -219,19 +220,15 @@ export default function About() {
       } else {
         // Eyes wiggle in opposite directions when spinning
         eyeRotationAngle += 0.1;
-        robot.eyes[0].position.x =
-          robot.eyes[0].userData.initialPosition.x +
-          0.02 * Math.cos(eyeRotationAngle);
-        robot.eyes[0].position.y =
-          robot.eyes[0].userData.initialPosition.y +
-          0.02 * Math.sin(eyeRotationAngle);
-
-        robot.eyes[1].position.x =
-          robot.eyes[1].userData.initialPosition.x +
-          0.02 * Math.cos(-eyeRotationAngle);
-        robot.eyes[1].position.y =
-          robot.eyes[1].userData.initialPosition.y +
-          0.02 * Math.sin(-eyeRotationAngle);
+        robot.eyes.forEach((eye, index) => {
+          const direction = index === 0 ? 1 : -1; // Opposite directions for each eye
+          eye.position.x =
+            robot.eyes[index].userData.initialPosition.x +
+            0.02 * Math.cos(eyeRotationAngle * direction);
+          eye.position.y =
+            robot.eyes[index].userData.initialPosition.y +
+            0.02 * Math.sin(eyeRotationAngle * direction);
+        });
       }
 
       renderer.render(scene, camera);
@@ -269,13 +266,15 @@ export default function About() {
   // Function to Create Robot
   const createRobot = () => {
     const group = new THREE.Group();
-    group.position.y = 0; // Adjusted position to align with scene
+    group.position.y = 0; // Centered vertically
 
-    // Material for the robot (bright light pink)
+    // Material for the robot (bright light pink with emissive properties)
     const material = new THREE.MeshStandardMaterial({
       color: 0xFFC0CB, // Light baby pink
       metalness: 0.8,  // High metalness for a metallic look
-      roughness: 0.3,
+      roughness: 0.2,
+      emissive: 0xFFC0CB, // Emissive color matching the main color
+      emissiveIntensity: 0.5, // Adjust for desired brightness
     });
 
     // Material for the screen (black, thinner)
@@ -375,13 +374,13 @@ export default function About() {
   };
 
   return (
-    <section id="about" className="section">
-      <h2 className="text-4xl font-normal mb-6 hover:text-lilac transition-colors">
-        About Me
-      </h2>
-      <div className="flex flex-col md:flex-row items-center justify-between">
+    <section id="about" className="section flex items-center justify-center">
+      <div className="flex flex-col md:flex-row items-center justify-center w-full">
         {/* Text Section */}
         <div className="md:w-1/2 pr-4">
+          <h2 className="text-4xl font-normal mb-6 hover:text-lilac transition-colors">
+            About Me
+          </h2>
           <p className="text-lg">
             I am a third-year MEng Design Engineering student at Imperial College
             London. My passion lies in the fusion of electronics, AI, and fashion.
@@ -394,8 +393,12 @@ export default function About() {
         </div>
 
         {/* Animation Section */}
-        <div className="md:w-1/2 mt-8 md:mt-0">
-          <div ref={canvasRef} className="w-full h-96 md:h-96"></div> {/* Increased height to h-96 */}
+        <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center items-center">
+          <div
+            ref={canvasRef}
+            className="w-full h-96 md:h-96"
+            style={{ maxWidth: '500px' }} // Limit the max width for better alignment
+          ></div>
         </div>
       </div>
     </section>
