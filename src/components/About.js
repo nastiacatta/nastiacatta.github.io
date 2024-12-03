@@ -23,7 +23,7 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 1.8, 5); // Elevated to prevent clipping
+    camera.position.set(0, 2.0, 5); // Elevated to prevent clipping
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -55,7 +55,11 @@ export default function About() {
 
     // Ground plane to receive shadows (fully transparent)
     const groundGeometry = new THREE.PlaneGeometry(50, 50);
-    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.0 });
+    const groundMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.0,
+    });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -1.2; // Elevated to align with robot's new position
@@ -137,9 +141,9 @@ export default function About() {
 
     // Animation Loop
     let waveDirection = 1;
-    const waveSpeed = 0.02;
-    const maxWaveAngleUp = Math.PI / 4; // 45 degrees (arm raised)
-    const maxWaveAngleDown = Math.PI / 8; // 22.5 degrees (arm lowered)
+    const waveSpeed = 0.04; // Increased speed for smoother waving
+    const maxWaveAngleUp = Math.PI / 6; // 30 degrees (arm raised)
+    const maxWaveAngleDown = -Math.PI / 12; // -15 degrees (arm lowered)
     let eyeRotationAngle = 0;
 
     const animate = () => {
@@ -147,11 +151,23 @@ export default function About() {
 
       // Right Arm waving animation
       if (hoveredRef.current) {
-        robot.rightArm.rotation.z = Math.min(robot.rightArm.rotation.z + waveSpeed * waveDirection, maxWaveAngleUp);
-        if (robot.rightArm.rotation.z >= maxWaveAngleUp || robot.rightArm.rotation.z <= -maxWaveAngleDown) {
+        robot.rightArm.rotation.z += waveSpeed * waveDirection;
+        // Clamp the rotation to the desired range
+        robot.rightArm.rotation.z = THREE.MathUtils.clamp(
+          robot.rightArm.rotation.z,
+          maxWaveAngleDown,
+          maxWaveAngleUp
+        );
+
+        // Reverse direction if limits are reached
+        if (
+          robot.rightArm.rotation.z >= maxWaveAngleUp ||
+          robot.rightArm.rotation.z <= maxWaveAngleDown
+        ) {
           waveDirection *= -1;
         }
       } else {
+        // Return arm to original position smoothly
         robot.rightArm.rotation.z = THREE.MathUtils.lerp(
           robot.rightArm.rotation.z,
           0,
@@ -261,10 +277,10 @@ export default function About() {
     const group = new THREE.Group();
     group.position.y = -0.3; // Adjusted position to be higher
 
-    // Material for the robot (bright light pink, almost metallic)
+    // Material for the robot (bright baby pink, almost metallic)
     const material = new THREE.MeshStandardMaterial({
-      color: 0xFFB6C1, // Bright light pink
-      metalness: 0.9,  // High metalness for a metallic look
+      color: 0xFFEBF0, // Bright baby pink
+      metalness: 0.9, // High metalness for a metallic look
       roughness: 0.2,
     });
 
@@ -293,9 +309,9 @@ export default function About() {
     body.add(head);
 
     // Face plate (black, attached directly to the head, thinner)
-    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.03, 5, 0.05); // Reduced depth
+    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.02, 5, 0.05); // Further reduced depth
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.75); // Attached closer to the head
+    facePlate.position.set(0, 0, 0.76); // Attached closer to the head
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
@@ -305,12 +321,12 @@ export default function About() {
     const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink eyes
 
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    leftEye.position.set(-0.25, 0.15, 0.06); // Adjusted positions
+    leftEye.position.set(-0.25, 0.15, 0.05); // Adjusted positions
     leftEye.userData.initialPosition = leftEye.position.clone();
     facePlate.add(leftEye);
 
     const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    rightEye.position.set(0.25, 0.15, 0.06);
+    rightEye.position.set(0.25, 0.15, 0.05);
     rightEye.userData.initialPosition = rightEye.position.clone();
     facePlate.add(rightEye);
 
@@ -319,7 +335,7 @@ export default function About() {
     const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink mouth
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.rotation.z = Math.PI; // Inverted to look like a smile
-    mouth.position.set(0, -0.15, 0.06);
+    mouth.position.set(0, -0.15, 0.05);
     facePlate.add(mouth);
 
     // Collect eyes for movement
@@ -336,7 +352,7 @@ export default function About() {
     // Right Arm (Animated)
     const rightArmGeometry = new RoundedBoxGeometry(0.1, 0.8, 0.1, 5, 0.05);
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.65, 0.4, 0);
+    rightArm.position.set(0.65, 0.6, 0); // Elevated initial position
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
@@ -376,20 +392,20 @@ export default function About() {
       <div className="flex flex-col md:flex-row items-center justify-between">
         {/* Text Section */}
         <div className="md:w-1/2 pr-4">
+          <p className="text-lg mb-4">
+            I am a third-year MEng Design Engineering student at Imperial College London. My passion lies in the fusion of electronics, AI, and fashion.
+          </p>
+          <p className="text-lg mb-4">
+            I am driven by a commitment to integrating elegant design with robust engineering to develop solutions that are both functional and aesthetically pleasing.
+          </p>
           <p className="text-lg">
-            I am a third-year MEng Design Engineering student at Imperial College
-            London. My passion lies in the fusion of electronics, AI, and fashion.
-            I am driven by a commitment to integrating elegant design with robust
-            engineering to develop solutions that are both functional and
-            aesthetically pleasing. Beyond my core focus, I have a deep interest
-            in the arts, literature, and architecture, which continually inspire
-            my work.
+            Beyond my core focus, I have a deep interest in the arts, literature, and architecture, which continually inspire my work.
           </p>
         </div>
 
         {/* Animation Section */}
         <div className="md:w-1/2 mt-8 md:mt-0">
-          <div ref={canvasRef} className="w-full h-64 md:h-80"></div>
+          <div ref={canvasRef} className="w-full h-80 md:h-96"></div> {/* Increased height to prevent clipping */}
         </div>
       </div>
     </section>
