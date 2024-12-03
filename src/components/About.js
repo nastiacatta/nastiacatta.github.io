@@ -14,7 +14,7 @@ export default function About() {
 
     // Scene Setup
     const scene = new THREE.Scene();
-    scene.background = null; // Keep background transparent
+    scene.background = null; // Transparent background
 
     // Camera Setup
     const camera = new THREE.PerspectiveCamera(
@@ -59,12 +59,12 @@ export default function About() {
     robot.group.scale.set(1.2, 1.2, 1.2); // Scale down to 120%
     scene.add(robot.group);
 
-    // Ground Plane to Receive Shadows (Dark Gray for Visible Shadows)
+    // Ground Plane to Receive Shadows (Transparent)
     const groundGeometry = new THREE.PlaneGeometry(50, 50);
     const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x000000, // Dark black for prominent shadows
+      color: 0x808080, // Neutral gray to cast visible shadows without being colorful
       transparent: true,
-      opacity: 0.2, // Slight opacity to keep ground subtle
+      opacity: 0.0, // Set to 0 if you don't want to see the ground; shadows will still be cast
     });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
@@ -83,7 +83,7 @@ export default function About() {
     };
     window.addEventListener('resize', handleResize);
 
-    // Mouse Variables
+    // Mouse and Touch Variables
     let isDragging = false;
     let previousMousePosition = { x: 0, y: 0 };
     let spinVelocity = 0;
@@ -123,11 +123,53 @@ export default function About() {
       isDragging = false;
     };
 
+    // Touch Events for Mobile
+    const onTouchStart = (event) => {
+      isDragging = true;
+      const rect = canvasRef.current.getBoundingClientRect();
+      const touch = event.touches[0];
+      previousMousePosition = {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top,
+      };
+    };
+
+    const onTouchMove = (event) => {
+      if (!isDragging) return;
+      const rect = canvasRef.current.getBoundingClientRect();
+      const touch = event.touches[0];
+      mouseRef.current.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseRef.current.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+
+      const deltaMove = {
+        x: touch.clientX - rect.left - previousMousePosition.x,
+        y: touch.clientY - rect.top - previousMousePosition.y,
+      };
+
+      // Update spin velocity based on touch movement
+      spinVelocity = deltaMove.x * 0.005; // Adjusted multiplier for momentum
+
+      previousMousePosition = {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top,
+      };
+    };
+
+    const onTouchEnd = () => {
+      isDragging = false;
+    };
+
     // Event Listeners
     canvasRef.current.addEventListener('mousedown', onMouseDown);
     canvasRef.current.addEventListener('mousemove', onMouseMove);
     canvasRef.current.addEventListener('mouseup', onMouseUp);
     canvasRef.current.addEventListener('mouseleave', onMouseUp);
+
+    // Touch Event Listeners
+    canvasRef.current.addEventListener('touchstart', onTouchStart);
+    canvasRef.current.addEventListener('touchmove', onTouchMove);
+    canvasRef.current.addEventListener('touchend', onTouchEnd);
+    canvasRef.current.addEventListener('touchcancel', onTouchEnd);
 
     const onMouseEnter = () => {
       hoveredRef.current = true;
@@ -292,6 +334,13 @@ export default function About() {
         canvasRef.current.removeEventListener('mousemove', onMouseMove);
         canvasRef.current.removeEventListener('mouseup', onMouseUp);
         canvasRef.current.removeEventListener('mouseleave', onMouseUp);
+
+        // Remove Touch Event Listeners
+        canvasRef.current.removeEventListener('touchstart', onTouchStart);
+        canvasRef.current.removeEventListener('touchmove', onTouchMove);
+        canvasRef.current.removeEventListener('touchend', onTouchEnd);
+        canvasRef.current.removeEventListener('touchcancel', onTouchEnd);
+
         canvasRef.current.removeEventListener('mouseenter', onMouseEnter);
         canvasRef.current.removeEventListener('mouseleave', onMouseLeaveCanvas);
       }
@@ -454,9 +503,8 @@ export default function About() {
         <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center items-center">
           <div
             ref={canvasRef}
-            className="w-full"
-            style={{ height: '40rem', maxWidth: '700px' }} // Set height to 40rem and increased maxWidth
-            aria-label="Animated robot waving its arm" // Accessibility enhancement
+            className="w-full h-[30rem] md:h-[40rem] max-w-[700px]"
+            aria-label="Animated robot waving its arm"
           ></div>
         </div>
       </div>
