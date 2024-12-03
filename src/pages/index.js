@@ -1,10 +1,30 @@
 // src/pages/index.js
 
-import Hero from '../components/Hero';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
+import Hero from '../components/Hero';
 import Projects from '../components/Projects';
+import About from '../components/About';
 
 export default function Home() {
+  const [hideEmail, setHideEmail] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const aboutSection = document.getElementById('about');
+      if (aboutSection) {
+        const rect = aboutSection.getBoundingClientRect();
+        const isVisible = rect.top <= window.innerHeight && rect.bottom >= 0;
+        setHideEmail(isVisible);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initialize on load
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div>
       <Header /> {/* Top menu restored */}
@@ -46,7 +66,7 @@ export default function Home() {
       </main>
 
       {/* Email in Bottom Right Corner */}
-      <div className="email-vertical">
+      <div className={`email-vertical ${hideEmail ? 'hidden' : ''}`}>
         <a href="mailto:anastasia.cattaneo@gmail.com" className="email-link">
           anastasia.cattaneo@gmail.com
         </a>
