@@ -72,6 +72,12 @@ export default function About() {
     ground.receiveShadow = true;
     scene.add(ground);
 
+    // Optional: Add Helpers for Debugging (Remove after alignment)
+    // const axesHelper = new THREE.AxesHelper(5);
+    // scene.add(axesHelper);
+    // const gridHelper = new THREE.GridHelper(50, 50);
+    // scene.add(gridHelper);
+
     // Handle Resize
     const handleResize = () => {
       if (!canvasRef.current) return;
@@ -221,10 +227,9 @@ export default function About() {
       } else if (isDragging) {
         // Apply spin velocity while dragging
         robot.group.rotation.y += spinVelocity;
-      } else {
-        // Idle rotation
-        robot.group.rotation.y += 0.002;
       }
+      // Removed idle rotation to prevent automatic spinning
+      // No else clause here
 
       // Eye Movement
       if (hoveredRef.current) {
@@ -369,7 +374,7 @@ export default function About() {
     // Left Arm (Resting Arm)
     const leftArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.55, 0.3, 0.025); // Adjusted X and Z positions for better connection
+    leftArm.position.set(-0.5, 0.3, 0.025); // Reduced X from -0.55 to -0.5 and adjusted Z
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
@@ -377,7 +382,7 @@ export default function About() {
     // Right Arm (Waving Arm)
     const rightArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.55, 0.3, 0.025); // Adjusted X and Z positions for better connection
+    rightArm.position.set(0.5, 0.3, 0.025); // Reduced X from 0.55 to 0.5 and adjusted Z
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
