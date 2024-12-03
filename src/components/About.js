@@ -23,8 +23,8 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 6, 15); // Elevated and closer to the robot
-    camera.lookAt(0, 2.0, 0); // Look at the robot's center
+    camera.position.set(0, 4, 12); // Elevated and closer to the robot
+    camera.lookAt(0, 2.5, 0); // Look at the robot's center
 
     // Renderer Setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -56,7 +56,7 @@ export default function About() {
 
     // Create Robot
     const robot = createRobot();
-    robot.group.scale.set(1.2, 1.2, 1.2); // Scale up to 120%
+    robot.group.scale.set(1.5, 1.5, 1.5); // Scale up to 150%
     scene.add(robot.group);
 
     // Ground Plane to Receive Shadows (Transparent)
@@ -144,9 +144,9 @@ export default function About() {
 
     // Animation Loop
     let waveDirection = 1;
-    const waveSpeed = 0.01; // Slower speed for smoother waving
-    const maxWaveAngleUp = Math.PI / 2; // 90 degrees
-    const maxWaveAngleDown = -Math.PI / 4; // -45 degrees
+    const waveSpeed = 0.02; // Increased speed for faster waving
+    const maxWaveAngleUp = Math.PI; // 180 degrees
+    const maxWaveAngleDown = -Math.PI / 6; // -30 degrees
     let eyeRotationAngle = 0;
 
     const animate = () => {
@@ -307,33 +307,33 @@ export default function About() {
     body.add(head);
 
     // Face plate (black, attached directly to the head, smaller)
-    const facePlateGeometry = new RoundedBoxGeometry(0.8, 0.6, 0.02, 5, 0.02); // Smaller size
+    const facePlateGeometry = new RoundedBoxGeometry(0.6, 0.5, 0.02, 5, 0.02); // Smaller size
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.55); // Attached closer to the head
+    facePlate.position.set(0, 0.1, 0.6); // Adjusted position
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
 
     // Eyes
-    const eyeGeometry = new THREE.CircleGeometry(0.05, 16); // Smaller eyes
+    const eyeGeometry = new THREE.CircleGeometry(0.04, 16); // Smaller eyes
     const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink eyes
 
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    leftEye.position.set(-0.2, 0.1, 0.01); // Adjusted positions
+    leftEye.position.set(-0.15, 0.1, 0.03); // Adjusted positions
     leftEye.userData.initialPosition = leftEye.position.clone();
     facePlate.add(leftEye);
 
     const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    rightEye.position.set(0.2, 0.1, 0.01);
+    rightEye.position.set(0.15, 0.1, 0.03);
     rightEye.userData.initialPosition = rightEye.position.clone();
     facePlate.add(rightEye);
 
     // Mouth
-    const mouthGeometry = new THREE.CircleGeometry(0.1, 16, 0, Math.PI);
+    const mouthGeometry = new THREE.CircleGeometry(0.08, 16, 0, Math.PI);
     const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink mouth
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.rotation.z = Math.PI; // Inverted to look like a smile
-    mouth.position.set(0, -0.1, 0.01);
+    mouth.position.set(0, -0.15, 0.03); // Adjusted position
     facePlate.add(mouth);
 
     // Left Arm (Static)
@@ -402,8 +402,8 @@ export default function About() {
         <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center items-center">
           <div
             ref={canvasRef}
-            className="w-full h-[40rem] md:h-[40rem]" // Corrected height using arbitrary values
-            style={{ maxWidth: '700px' }} // Increased maxWidth for better visibility
+            className="w-full"
+            style={{ height: '40rem', maxWidth: '700px' }} // Set height to 40rem and increased maxWidth
           ></div>
         </div>
       </div>
