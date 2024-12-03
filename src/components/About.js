@@ -72,12 +72,6 @@ export default function About() {
     ground.receiveShadow = true;
     scene.add(ground);
 
-    // Optional: Add Helpers for Debugging (Remove after alignment)
-    // const axesHelper = new THREE.AxesHelper(5);
-    // scene.add(axesHelper);
-    // const gridHelper = new THREE.GridHelper(50, 50);
-    // scene.add(gridHelper);
-
     // Handle Resize
     const handleResize = () => {
       if (!canvasRef.current) return;
@@ -153,8 +147,8 @@ export default function About() {
     // Waving Arm
     let waveDirection = 1;
     const waveSpeed = 0.01; // Reduced speed for slower waving
-    const maxWaveAngleUp = Math.PI; // 180 degrees
-    const maxWaveAngleDown = Math.PI - (Math.PI / 12); // 165 degrees to allow oscillation
+    const maxWaveAngleUp = (5 * Math.PI) / 6; // 150 degrees
+    const maxWaveAngleDown = (5 * Math.PI) / 6 - (Math.PI / 12); // 135 degrees
 
     // Resting Arm
     let restingWaveDirection = 1;
@@ -374,7 +368,7 @@ export default function About() {
     // Left Arm (Resting Arm)
     const leftArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.475, 0.3, 0.03); // Adjusted X and Z positions for better connection
+    leftArm.position.set(-0.475, 0.3, 0.03); // Slightly closer on X and adjusted Z
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
@@ -382,7 +376,7 @@ export default function About() {
     // Right Arm (Waving Arm)
     const rightArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.475, 0.3, 0.03); // Adjusted X and Z positions for better connection
+    rightArm.position.set(0.475, 0.3, 0.03); // Slightly closer on X and adjusted Z
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
