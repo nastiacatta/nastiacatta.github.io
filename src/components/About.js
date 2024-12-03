@@ -146,7 +146,7 @@ export default function About() {
 
     // Waving Arm
     let waveDirection = 1;
-    const waveSpeed = 0.02; // Slightly increased speed for natural waving
+    const waveSpeed = 0.01; // Reduced speed for slower waving
     const maxWaveAngleUp = Math.PI; // 180 degrees
     const maxWaveAngleDown = Math.PI - (Math.PI / 12); // 165 degrees to allow oscillation
 
@@ -434,6 +434,7 @@ export default function About() {
             ref={canvasRef}
             className="w-full"
             style={{ height: '40rem', maxWidth: '700px' }} // Set height to 40rem and increased maxWidth
+            aria-label="Animated robot waving its arm" // Accessibility enhancement
           ></div>
         </div>
       </div>
