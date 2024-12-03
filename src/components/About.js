@@ -23,8 +23,8 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 4, 12); // Elevated and closer to the robot
-    camera.lookAt(0, 2.5, 0); // Look at the robot's center
+    camera.position.set(0, 4, 12); // Adjusted position for better framing
+    camera.lookAt(0, 2.5, 0); // Focus on robot's center
 
     // Renderer Setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -56,7 +56,7 @@ export default function About() {
 
     // Create Robot
     const robot = createRobot();
-    robot.group.scale.set(1.2, 1.2, 1.2); // Scale down to 120%
+    robot.group.scale.set(1.2, 1.2, 1.2); // **Scaled down to 120%**
     scene.add(robot.group);
 
     // Ground Plane to Receive Shadows (Transparent)
@@ -145,15 +145,9 @@ export default function About() {
     // Animation Loop
     let waveDirection = 1;
     const waveSpeed = 0.02; // Increased speed for smoother waving
-    const maxWaveAngleUp = Math.PI; // 180 degrees
-    const maxWaveAngleDown = Math.PI / 2; // 90 degrees
+    const maxWaveAngleUp = Math.PI / 2; // 90 degrees (adjusted for back and forth)
+    const maxWaveAngleDown = Math.PI / 4; // 45 degrees towards head
     let eyeRotationAngle = 0;
-
-    // Variables for Left Arm Rocking
-    let leftArmWaveAngle = 0;
-    let leftArmDirection = 1;
-    const leftArmSpeed = 0.02; // Speed of rocking
-    const leftArmMaxAngle = Math.PI / 8; // 22.5 degrees
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -165,14 +159,14 @@ export default function About() {
         // Clamp the rotation to prevent excessive movement
         robot.rightArm.rotation.z = THREE.MathUtils.clamp(
           robot.rightArm.rotation.z,
-          maxWaveAngleDown,
+          -maxWaveAngleDown,
           maxWaveAngleUp
         );
 
         // Reverse direction if limits are reached
         if (
           robot.rightArm.rotation.z >= maxWaveAngleUp ||
-          robot.rightArm.rotation.z <= maxWaveAngleDown
+          robot.rightArm.rotation.z <= -maxWaveAngleDown
         ) {
           waveDirection *= -1;
         }
@@ -183,16 +177,6 @@ export default function About() {
           0,
           0.05
         );
-      }
-
-      // Left Arm rocking motion
-      leftArmWaveAngle += leftArmSpeed * leftArmDirection;
-      robot.leftArm.rotation.z = leftArmWaveAngle;
-      if (
-        leftArmWaveAngle > leftArmMaxAngle ||
-        leftArmWaveAngle < -leftArmMaxAngle
-      ) {
-        leftArmDirection *= -1;
       }
 
       // Slight up and down motion (levitating)
@@ -216,11 +200,7 @@ export default function About() {
       if (hoveredRef.current) {
         // Eyes follow mouse
         // Convert mouse position to 3D coordinates
-        const vector = new THREE.Vector3(
-          mouseRef.current.x,
-          mouseRef.current.y,
-          0.5
-        );
+        const vector = new THREE.Vector3(mouseRef.current.x, mouseRef.current.y, 0.5);
         vector.unproject(camera);
 
         // Calculate direction from head to mouse position
@@ -243,7 +223,21 @@ export default function About() {
           eye.position.x = eye.userData.initialPosition.x + eyeDirX;
           eye.position.y = eye.userData.initialPosition.y + eyeDirY;
         });
+
+        // Subtle movement for resting arm (left arm)
+        robot.leftArm.rotation.z = THREE.MathUtils.lerp(
+          robot.leftArm.rotation.z,
+          0.02, // Slight rotation
+          0.05
+        );
       } else {
+        // Reset resting arm rotation when not hovering
+        robot.leftArm.rotation.z = THREE.MathUtils.lerp(
+          robot.leftArm.rotation.z,
+          0,
+          0.05
+        );
+
         // Eyes wiggle in opposite directions when spinning
         eyeRotationAngle += 0.1;
         robot.eyes.forEach((eye, index) => {
@@ -281,10 +275,7 @@ export default function About() {
           if (child.geometry && typeof child.geometry.dispose === 'function') {
             child.geometry.dispose();
           }
-          if (
-            child.material &&
-            typeof child.material.dispose === 'function'
-          ) {
+          if (child.material && typeof child.material.dispose === 'function') {
             child.material.dispose();
           }
         }
@@ -300,7 +291,7 @@ export default function About() {
     // Material for the robot (bright light pink with emissive properties)
     const material = new THREE.MeshStandardMaterial({
       color: 0xFFC0CB, // Light baby pink
-      metalness: 0.8, // High metalness for a metallic look
+      metalness: 0.8,  // High metalness for a metallic look
       roughness: 0.2,
       emissive: 0xFFC0CB, // Emissive color matching the main color
       emissiveIntensity: 0.5, // Adjust for desired brightness
@@ -313,8 +304,8 @@ export default function About() {
       roughness: 0.2,
     });
 
-    // Body (rounded box) - Less tall and slightly wider
-    const bodyGeometry = new RoundedBoxGeometry(1.2, 1.2, 0.5, 5, 0.2);
+    // Body (rounded box)
+    const bodyGeometry = new RoundedBoxGeometry(1.2, 1.5, 0.6, 5, 0.2); // **Increased width to 1.2 and depth to 0.6**
     const body = new THREE.Mesh(bodyGeometry, material);
     body.position.y = 0;
     body.castShadow = true;
@@ -322,55 +313,55 @@ export default function About() {
     group.add(body);
 
     // Head (rounded box)
-    const headGeometry = new RoundedBoxGeometry(1.0, 1.0, 1.0, 5, 0.2); // Smaller head
+    const headGeometry = new RoundedBoxGeometry(1.0, 1.0, 1.0, 5, 0.2); // Head size remains the same
     const head = new THREE.Mesh(headGeometry, material);
     head.position.y = 1.2; // Positioned higher on the body
     head.castShadow = true;
     head.receiveShadow = true;
     body.add(head);
 
-    // Face plate (black, attached directly to the head, slightly bigger and better attached)
-    const facePlateGeometry = new RoundedBoxGeometry(0.7, 0.6, 0.02, 5, 0.02); // Increased size
+    // Face plate (black, attached directly to the head, larger and better centered)
+    const facePlateGeometry = new RoundedBoxGeometry(0.7, 0.6, 0.02, 5, 0.02); // **Slightly larger**
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0.15, 0.6); // Adjusted position for better attachment
+    facePlate.position.set(0, 0, 0.6); // **Centered more accurately**
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
 
     // Eyes
-    const eyeGeometry = new THREE.CircleGeometry(0.04, 16); // Slightly smaller eyes
+    const eyeGeometry = new THREE.CircleGeometry(0.05, 16); // **Slightly larger eyes**
     const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink eyes
 
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    leftEye.position.set(-0.15, 0.1, 0.03); // Adjusted positions
+    leftEye.position.set(-0.2, 0.15, 0.04); // **Adjusted positions for better centering**
     leftEye.userData.initialPosition = leftEye.position.clone();
     facePlate.add(leftEye);
 
     const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    rightEye.position.set(0.15, 0.1, 0.03);
+    rightEye.position.set(0.2, 0.15, 0.04);
     rightEye.userData.initialPosition = rightEye.position.clone();
     facePlate.add(rightEye);
 
     // Mouth
-    const mouthGeometry = new THREE.CircleGeometry(0.08, 16, 0, Math.PI);
+    const mouthGeometry = new THREE.CircleGeometry(0.1, 16, 0, Math.PI);
     const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink mouth
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.rotation.z = Math.PI; // Inverted to look like a smile
-    mouth.position.set(0, -0.15, 0.03); // Adjusted position
+    mouth.position.set(0, -0.2, 0.04); // **Adjusted position for better centering**
     facePlate.add(mouth);
 
-    // Left Arm (Non-Waving) - Rocking back and forth
-    const leftArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
+    // Left Arm (Static with slight movement)
+    const leftArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Arm size remains the same
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.5, 0.3, 0);
+    leftArm.position.set(-0.7, 0.3, 0); // **Moved slightly outward for wider body**
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
 
-    // Right Arm (Waving)
-    const rightArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
+    // Right Arm (Animated)
+    const rightArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Arm size remains the same
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.5, 0.3, 0);
+    rightArm.position.set(0.7, 0.3, 0); // **Moved slightly outward for wider body**
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
@@ -380,15 +371,15 @@ export default function About() {
     rightArm.position.y += 0.3; // Adjust position after translation
 
     // Legs
-    const legGeometry = new RoundedBoxGeometry(0.08, 0.5, 0.08, 5, 0.04); // Smaller legs
+    const legGeometry = new RoundedBoxGeometry(0.08, 0.5, 0.08, 5, 0.04); // Legs remain the same
     const leftLeg = new THREE.Mesh(legGeometry, material);
-    leftLeg.position.set(-0.15, -0.75, 0);
+    leftLeg.position.set(-0.2, -0.8, 0); // **Adjusted position for consistency**
     leftLeg.castShadow = true;
     leftLeg.receiveShadow = true;
     body.add(leftLeg);
 
     const rightLeg = new THREE.Mesh(legGeometry, material);
-    rightLeg.position.set(0.15, -0.75, 0);
+    rightLeg.position.set(0.2, -0.8, 0);
     rightLeg.castShadow = true;
     rightLeg.receiveShadow = true;
     body.add(rightLeg);
@@ -426,7 +417,7 @@ export default function About() {
           <div
             ref={canvasRef}
             className="w-full"
-            style={{ height: '40rem', maxWidth: '700px' }} // Set height to 40rem and increased maxWidth
+            style={{ height: '40rem', maxWidth: '700px' }} // Ensuring adequate canvas size
             aria-label="Animated robot waving its arm"
           ></div>
         </div>
