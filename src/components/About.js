@@ -14,6 +14,7 @@ export default function About() {
 
     // Scene setup
     const scene = new THREE.Scene();
+    scene.background = null; // Remove scene background for transparency
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
@@ -22,7 +23,7 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 1.5, 5);
+    camera.position.set(0, 1.5, 5); // Adjusted position to prevent clipping
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -32,6 +33,7 @@ export default function About() {
     );
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true; // Enable shadows
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
     canvasRef.current.appendChild(renderer.domElement);
 
     // Lights setup
@@ -41,6 +43,10 @@ export default function About() {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(5, 10, 7.5);
     directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 1024; // Higher resolution shadows
+    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.camera.near = 0.5;
+    directionalLight.shadow.camera.far = 50;
     scene.add(directionalLight);
 
     // Create Robot
@@ -49,7 +55,7 @@ export default function About() {
 
     // Ground plane to receive shadows
     const groundGeometry = new THREE.PlaneGeometry(50, 50);
-    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0xeeeeee });
+    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.0 });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -1.6;
@@ -58,6 +64,7 @@ export default function About() {
 
     // Handle Resize
     const handleResize = () => {
+      if (!canvasRef.current) return;
       renderer.setSize(
         canvasRef.current.clientWidth,
         canvasRef.current.clientHeight
@@ -138,22 +145,16 @@ export default function About() {
     const animate = () => {
       requestAnimationFrame(animate);
 
-      // Arm waving animation
+      // Right Arm waving animation
       if (hoveredRef.current) {
-        robot.leftArm.rotation.z += waveSpeed * waveDirection;
         robot.rightArm.rotation.z += waveSpeed * waveDirection;
         if (
-          robot.leftArm.rotation.z > maxWaveAngleDown ||
-          robot.leftArm.rotation.z < maxWaveAngleUp
+          robot.rightArm.rotation.z > maxWaveAngleDown ||
+          robot.rightArm.rotation.z < maxWaveAngleUp
         ) {
           waveDirection *= -1;
         }
       } else {
-        robot.leftArm.rotation.z = THREE.MathUtils.lerp(
-          robot.leftArm.rotation.z,
-          0,
-          0.05
-        );
         robot.rightArm.rotation.z = THREE.MathUtils.lerp(
           robot.rightArm.rotation.z,
           0,
@@ -258,16 +259,16 @@ export default function About() {
   // Function to Create Robot
   const createRobot = () => {
     const group = new THREE.Group();
-    group.position.y = -0.5; // Adjusted position
+    group.position.y = -0.3; // Adjusted position to be higher
 
     // Material for the robot (very light pink, almost metallic)
     const material = new THREE.MeshStandardMaterial({
       color: 0xffd1dc, // Very light pink
-      metalness: 0.9,  // Increased metalness for a more metallic look
+      metalness: 0.9, // Increased metalness for a more metallic look
       roughness: 0.2,
     });
 
-    // Material for the screen (black, not extruded)
+    // Material for the screen (black, less extruded)
     const screenMaterial = new THREE.MeshStandardMaterial({
       color: 0x000000, // Black
       metalness: 0.7,
@@ -291,10 +292,10 @@ export default function About() {
     head.receiveShadow = true;
     body.add(head);
 
-    // Face plate (black, attached directly to the head)
-    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.05, 5, 0.1);
+    // Face plate (black, attached directly to the head, thinner)
+    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.03, 5, 0.05); // Reduced depth from 0.05 to 0.03
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.73); // Positioned slightly in front of the head
+    facePlate.position.set(0, 0, 0.75); // Slight adjustment to position
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
@@ -324,7 +325,7 @@ export default function About() {
     // Collect eyes for movement
     const eyes = [leftEye, rightEye];
 
-    // Left Arm
+    // Left Arm (Static)
     const leftArmGeometry = new RoundedBoxGeometry(0.1, 0.8, 0.1, 5, 0.05);
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
     leftArm.position.set(-0.65, 0.4, 0);
@@ -332,7 +333,7 @@ export default function About() {
     leftArm.receiveShadow = true;
     body.add(leftArm);
 
-    // Right Arm
+    // Right Arm (Animated)
     const rightArmGeometry = new RoundedBoxGeometry(0.1, 0.8, 0.1, 5, 0.05);
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
     rightArm.position.set(0.65, 0.4, 0);
@@ -341,11 +342,8 @@ export default function About() {
     body.add(rightArm);
 
     // Set the pivot point at the shoulder for rotation
-    leftArm.geometry.translate(0, -0.4, 0);
-    rightArm.geometry.translate(0, -0.4, 0);
-
-    leftArm.position.y += 0.4; // Adjust position after translation
-    rightArm.position.y += 0.4;
+    rightArm.geometry.translate(0, -0.4, 0); // Pivot at shoulder
+    rightArm.position.y += 0.4; // Adjust position after translation
 
     // Legs
     const legGeometry = new RoundedBoxGeometry(0.15, 0.7, 0.15, 5, 0.05);
@@ -376,13 +374,8 @@ export default function About() {
         About Me
       </h2>
       <div className="flex flex-col md:flex-row items-center justify-between">
-        {/* Animation Section */}
-        <div className="md:w-1/2 mt-8 md:mt-0 order-1 md:order-0">
-          <div ref={canvasRef} className="w-full h-64 md:h-80"></div>
-        </div>
-
         {/* Text Section */}
-        <div className="md:w-1/2 order-0 md:order-1">
+        <div className="md:w-1/2">
           <p className="text-lg">
             I am a third-year MEng Design Engineering student at Imperial College
             London. My passion lies in the fusion of electronics, AI, and fashion.
@@ -392,6 +385,11 @@ export default function About() {
             in the arts, literature, and architecture, which continually inspire
             my work.
           </p>
+        </div>
+
+        {/* Animation Section */}
+        <div className="md:w-1/2 mt-8 md:mt-0">
+          <div ref={canvasRef} className="w-full h-64 md:h-80"></div>
         </div>
       </div>
     </section>
