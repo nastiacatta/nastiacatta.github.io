@@ -23,7 +23,7 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 8, 20); // Elevated and farther back
+    camera.position.set(0, 6, 15); // Elevated and closer to the robot
     camera.lookAt(0, 2.0, 0); // Look at the robot's center
 
     // Renderer Setup
@@ -56,7 +56,7 @@ export default function About() {
 
     // Create Robot
     const robot = createRobot();
-    robot.group.scale.set(0.8, 0.8, 0.8); // Scale down to 80%
+    robot.group.scale.set(1.2, 1.2, 1.2); // Scale up to 120%
     scene.add(robot.group);
 
     // Ground Plane to Receive Shadows (Transparent)
@@ -68,7 +68,7 @@ export default function About() {
     });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -1.5; // Elevated to align with robot's new position
+    ground.position.y = -2.0; // Elevated to align with robot's new position
     ground.receiveShadow = true;
     scene.add(ground);
 
@@ -180,7 +180,7 @@ export default function About() {
       }
 
       // Slight up and down motion (levitating)
-      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 2.0; // Levitate higher
+      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 2.5; // Levitate higher
 
       // Rotation with momentum
       if (!isDragging && Math.abs(spinVelocity) > 0.001) {
@@ -403,7 +403,7 @@ export default function About() {
           <div
             ref={canvasRef}
             className="w-full h-[40rem] md:h-[40rem]" // Corrected height using arbitrary values
-            style={{ maxWidth: '600px' }} // Increased maxWidth for better visibility
+            style={{ maxWidth: '700px' }} // Increased maxWidth for better visibility
           ></div>
         </div>
       </div>
