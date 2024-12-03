@@ -7,7 +7,7 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 export default function About() {
   const canvasRef = useRef(null);
   const hoveredRef = useRef(false);
-  const mouse = useRef({ x: 0, y: 0 });
+  const mouseRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -23,7 +23,7 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 2.0, 5); // Elevated to prevent clipping
+    camera.position.set(0, 2.5, 6); // Elevated to prevent clipping
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -62,7 +62,7 @@ export default function About() {
     });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -1.2; // Elevated to align with robot's new position
+    ground.position.y = -1.0; // Adjusted to align with robot's new position
     ground.receiveShadow = true;
     scene.add(ground);
 
@@ -81,10 +81,7 @@ export default function About() {
 
     // Mouse Variables
     let isDragging = false;
-    let previousMousePosition = {
-      x: 0,
-      y: 0,
-    };
+    let previousMousePosition = { x: 0, y: 0 };
     let spinVelocity = 0;
 
     // Mouse Events
@@ -99,8 +96,8 @@ export default function About() {
 
     const onMouseMove = (event) => {
       const rect = canvasRef.current.getBoundingClientRect();
-      mouse.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
       if (isDragging) {
         const deltaMove = {
@@ -132,18 +129,18 @@ export default function About() {
       hoveredRef.current = true;
     };
 
-    const onMouseLeave = () => {
+    const onMouseLeaveCanvas = () => {
       hoveredRef.current = false;
     };
 
     canvasRef.current.addEventListener('mouseenter', onMouseEnter);
-    canvasRef.current.addEventListener('mouseleave', onMouseLeave);
+    canvasRef.current.addEventListener('mouseleave', onMouseLeaveCanvas);
 
     // Animation Loop
     let waveDirection = 1;
-    const waveSpeed = 0.04; // Increased speed for smoother waving
-    const maxWaveAngleUp = Math.PI / 6; // 30 degrees (arm raised)
-    const maxWaveAngleDown = -Math.PI / 12; // -15 degrees (arm lowered)
+    const waveSpeed = 0.05; // Increased speed for quicker waving
+    const maxWaveAngleUp = Math.PI / 6; // 30 degrees
+    const maxWaveAngleDown = -Math.PI / 12; // -15 degrees
     let eyeRotationAngle = 0;
 
     const animate = () => {
@@ -152,7 +149,7 @@ export default function About() {
       // Right Arm waving animation
       if (hoveredRef.current) {
         robot.rightArm.rotation.z += waveSpeed * waveDirection;
-        // Clamp the rotation to the desired range
+        // Clamp the rotation to prevent excessive movement
         robot.rightArm.rotation.z = THREE.MathUtils.clamp(
           robot.rightArm.rotation.z,
           maxWaveAngleDown,
@@ -167,7 +164,7 @@ export default function About() {
           waveDirection *= -1;
         }
       } else {
-        // Return arm to original position smoothly
+        // Smoothly return the arm to the default position
         robot.rightArm.rotation.z = THREE.MathUtils.lerp(
           robot.rightArm.rotation.z,
           0,
@@ -176,7 +173,7 @@ export default function About() {
       }
 
       // Slight up and down motion (levitating)
-      robot.group.position.y = Math.sin(Date.now() * 0.002) * 0.1 - 0.3; // Adjusted position to be higher
+      robot.group.position.y = Math.sin(Date.now() * 0.0015) * 0.1 - 0.2; // Adjusted position to be higher
 
       // Rotation with momentum
       if (!isDragging && Math.abs(spinVelocity) > 0.001) {
@@ -196,7 +193,7 @@ export default function About() {
       if (hoveredRef.current) {
         // Eyes follow mouse
         // Convert mouse position to 3D coordinates
-        const vector = new THREE.Vector3(mouse.current.x, mouse.current.y, 0.5);
+        const vector = new THREE.Vector3(mouseRef.current.x, mouseRef.current.y, 0.5);
         vector.unproject(camera);
 
         // Calculate direction from head to mouse position
@@ -222,9 +219,6 @@ export default function About() {
       } else {
         // Eyes wiggle in opposite directions when spinning
         eyeRotationAngle += 0.1;
-        robot.eyes[0].material.color.set('#FFC0CB'); // Pink
-        robot.eyes[1].material.color.set('#FFC0CB'); // Pink
-
         robot.eyes[0].position.x =
           robot.eyes[0].userData.initialPosition.x +
           0.02 * Math.cos(eyeRotationAngle);
@@ -253,7 +247,7 @@ export default function About() {
         canvasRef.current.removeEventListener('mouseup', onMouseUp);
         canvasRef.current.removeEventListener('mouseleave', onMouseUp);
         canvasRef.current.removeEventListener('mouseenter', onMouseEnter);
-        canvasRef.current.removeEventListener('mouseleave', onMouseLeave);
+        canvasRef.current.removeEventListener('mouseleave', onMouseLeaveCanvas);
       }
       if (renderer && renderer.domElement && canvasRef.current) {
         canvasRef.current.removeChild(renderer.domElement);
@@ -275,13 +269,13 @@ export default function About() {
   // Function to Create Robot
   const createRobot = () => {
     const group = new THREE.Group();
-    group.position.y = -0.3; // Adjusted position to be higher
+    group.position.y = 0; // Adjusted position to align with scene
 
-    // Material for the robot (bright baby pink, almost metallic)
+    // Material for the robot (bright light pink)
     const material = new THREE.MeshStandardMaterial({
-      color: 0xFFEBF0, // Bright baby pink
-      metalness: 0.9, // High metalness for a metallic look
-      roughness: 0.2,
+      color: 0xFFC0CB, // Light baby pink
+      metalness: 0.8,  // High metalness for a metallic look
+      roughness: 0.3,
     });
 
     // Material for the screen (black, thinner)
@@ -299,19 +293,18 @@ export default function About() {
     body.receiveShadow = true;
     group.add(body);
 
-    // Remove Neck: Attach head directly to body
     // Head (rounded box)
     const headGeometry = new RoundedBoxGeometry(1.4, 1.2, 1.4, 5, 0.3);
     const head = new THREE.Mesh(headGeometry, material);
-    head.position.y = 1.1; // Adjusted to sit properly on the body
+    head.position.y = 1.1; // Positioned higher on the body
     head.castShadow = true;
     head.receiveShadow = true;
     body.add(head);
 
     // Face plate (black, attached directly to the head, thinner)
-    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.02, 5, 0.05); // Further reduced depth
+    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.03, 5, 0.05); // Reduced depth
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.76); // Attached closer to the head
+    facePlate.position.set(0, 0, 0.75); // Attached closer to the head
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
@@ -321,12 +314,12 @@ export default function About() {
     const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink eyes
 
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    leftEye.position.set(-0.25, 0.15, 0.05); // Adjusted positions
+    leftEye.position.set(-0.25, 0.15, 0.06); // Adjusted positions
     leftEye.userData.initialPosition = leftEye.position.clone();
     facePlate.add(leftEye);
 
     const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    rightEye.position.set(0.25, 0.15, 0.05);
+    rightEye.position.set(0.25, 0.15, 0.06);
     rightEye.userData.initialPosition = rightEye.position.clone();
     facePlate.add(rightEye);
 
@@ -335,11 +328,8 @@ export default function About() {
     const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink mouth
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.rotation.z = Math.PI; // Inverted to look like a smile
-    mouth.position.set(0, -0.15, 0.05);
+    mouth.position.set(0, -0.15, 0.06);
     facePlate.add(mouth);
-
-    // Collect eyes for movement
-    const eyes = [leftEye, rightEye];
 
     // Left Arm (Static)
     const leftArmGeometry = new RoundedBoxGeometry(0.1, 0.8, 0.1, 5, 0.05);
@@ -352,7 +342,7 @@ export default function About() {
     // Right Arm (Animated)
     const rightArmGeometry = new RoundedBoxGeometry(0.1, 0.8, 0.1, 5, 0.05);
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.65, 0.6, 0); // Elevated initial position
+    rightArm.position.set(0.65, 0.4, 0);
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
@@ -380,7 +370,7 @@ export default function About() {
       leftArm,
       rightArm,
       head,
-      eyes,
+      eyes: [leftEye, rightEye],
     };
   };
 
@@ -392,20 +382,20 @@ export default function About() {
       <div className="flex flex-col md:flex-row items-center justify-between">
         {/* Text Section */}
         <div className="md:w-1/2 pr-4">
-          <p className="text-lg mb-4">
-            I am a third-year MEng Design Engineering student at Imperial College London. My passion lies in the fusion of electronics, AI, and fashion.
-          </p>
-          <p className="text-lg mb-4">
-            I am driven by a commitment to integrating elegant design with robust engineering to develop solutions that are both functional and aesthetically pleasing.
-          </p>
           <p className="text-lg">
-            Beyond my core focus, I have a deep interest in the arts, literature, and architecture, which continually inspire my work.
+            I am a third-year MEng Design Engineering student at Imperial College
+            London. My passion lies in the fusion of electronics, AI, and fashion.
+            I am driven by a commitment to integrating elegant design with robust
+            engineering to develop solutions that are both functional and
+            aesthetically pleasing. Beyond my core focus, I have a deep interest
+            in the arts, literature, and architecture, which continually inspire
+            my work.
           </p>
         </div>
 
         {/* Animation Section */}
         <div className="md:w-1/2 mt-8 md:mt-0">
-          <div ref={canvasRef} className="w-full h-80 md:h-96"></div> {/* Increased height to prevent clipping */}
+          <div ref={canvasRef} className="w-full h-96 md:h-96"></div> {/* Increased height to h-96 */}
         </div>
       </div>
     </section>
