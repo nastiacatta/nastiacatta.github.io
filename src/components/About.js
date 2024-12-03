@@ -23,7 +23,7 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 2.5, 6); // Elevated to prevent clipping
+    camera.position.set(0, 5, 10); // Further elevated to prevent clipping
 
     // Renderer Setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -41,7 +41,7 @@ export default function About() {
     scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Increased intensity
-    directionalLight.position.set(5, 10, 7.5);
+    directionalLight.position.set(5, 15, 10); // Higher position for better shadow casting
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048; // Higher resolution shadows
     directionalLight.shadow.mapSize.height = 2048;
@@ -62,7 +62,7 @@ export default function About() {
     });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -1.0; // Adjusted to align with robot's new position
+    ground.position.y = -1.5; // Elevated to align with robot's new position
     ground.receiveShadow = true;
     scene.add(ground);
 
@@ -138,9 +138,9 @@ export default function About() {
 
     // Animation Loop
     let waveDirection = 1;
-    const waveSpeed = 0.03; // Slower speed for smoother waving
-    const maxWaveAngleUp = Math.PI / 6; // 30 degrees
-    const maxWaveAngleDown = -Math.PI / 12; // -15 degrees
+    const waveSpeed = 0.015; // Slower speed for smoother waving
+    const maxWaveAngleUp = Math.PI / 2; // 90 degrees
+    const maxWaveAngleDown = -Math.PI / 6; // -30 degrees
     let eyeRotationAngle = 0;
 
     const animate = () => {
@@ -174,7 +174,7 @@ export default function About() {
       }
 
       // Slight up and down motion (levitating)
-      robot.group.position.y = Math.sin(Date.now() * 0.0015) * 0.1 - 0.2; // Adjusted position to be higher
+      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 1.0; // Levitate higher
 
       // Rotation with momentum
       if (!isDragging && Math.abs(spinVelocity) > 0.001) {
@@ -293,73 +293,73 @@ export default function About() {
     group.add(body);
 
     // Head (rounded box)
-    const headGeometry = new RoundedBoxGeometry(1.4, 1.2, 1.4, 5, 0.3);
+    const headGeometry = new RoundedBoxGeometry(1.0, 1.0, 1.0, 5, 0.2); // Smaller head
     const head = new THREE.Mesh(headGeometry, material);
-    head.position.y = 1.1; // Positioned higher on the body
+    head.position.y = 1.2; // Positioned higher on the body
     head.castShadow = true;
     head.receiveShadow = true;
     body.add(head);
 
-    // Face plate (black, attached directly to the head, thinner)
-    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.03, 5, 0.05); // Reduced depth
+    // Face plate (black, attached directly to the head, smaller)
+    const facePlateGeometry = new RoundedBoxGeometry(0.8, 0.6, 0.02, 5, 0.02); // Smaller size
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.75); // Attached closer to the head
+    facePlate.position.set(0, 0, 0.55); // Attached closer to the head
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
 
     // Eyes
-    const eyeGeometry = new THREE.CircleGeometry(0.1, 16);
+    const eyeGeometry = new THREE.CircleGeometry(0.05, 16); // Smaller eyes
     const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink eyes
 
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    leftEye.position.set(-0.25, 0.15, 0.06); // Adjusted positions
+    leftEye.position.set(-0.2, 0.1, 0.01); // Adjusted positions
     leftEye.userData.initialPosition = leftEye.position.clone();
     facePlate.add(leftEye);
 
     const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    rightEye.position.set(0.25, 0.15, 0.06);
+    rightEye.position.set(0.2, 0.1, 0.01);
     rightEye.userData.initialPosition = rightEye.position.clone();
     facePlate.add(rightEye);
 
     // Mouth
-    const mouthGeometry = new THREE.CircleGeometry(0.15, 16, 0, Math.PI);
+    const mouthGeometry = new THREE.CircleGeometry(0.1, 16, 0, Math.PI);
     const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink mouth
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.rotation.z = Math.PI; // Inverted to look like a smile
-    mouth.position.set(0, -0.15, 0.06);
+    mouth.position.set(0, -0.1, 0.01);
     facePlate.add(mouth);
 
     // Left Arm (Static)
-    const leftArmGeometry = new RoundedBoxGeometry(0.1, 0.8, 0.1, 5, 0.05);
+    const leftArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.65, 0.4, 0);
+    leftArm.position.set(-0.5, 0.3, 0);
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
 
     // Right Arm (Animated)
-    const rightArmGeometry = new RoundedBoxGeometry(0.1, 0.8, 0.1, 5, 0.05);
+    const rightArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.65, 0.4, 0);
+    rightArm.position.set(0.5, 0.3, 0);
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
 
     // Set the pivot point at the shoulder for rotation
-    rightArm.geometry.translate(0, -0.4, 0); // Pivot at shoulder
-    rightArm.position.y += 0.4; // Adjust position after translation
+    rightArm.geometry.translate(0, -0.3, 0); // Pivot at shoulder
+    rightArm.position.y += 0.3; // Adjust position after translation
 
     // Legs
-    const legGeometry = new RoundedBoxGeometry(0.15, 0.7, 0.15, 5, 0.05);
+    const legGeometry = new RoundedBoxGeometry(0.08, 0.5, 0.08, 5, 0.04); // Smaller legs
     const leftLeg = new THREE.Mesh(legGeometry, material);
-    leftLeg.position.set(-0.2, -1.15, 0);
+    leftLeg.position.set(-0.15, -0.75, 0);
     leftLeg.castShadow = true;
     leftLeg.receiveShadow = true;
     body.add(leftLeg);
 
     const rightLeg = new THREE.Mesh(legGeometry, material);
-    rightLeg.position.set(0.2, -1.15, 0);
+    rightLeg.position.set(0.15, -0.75, 0);
     rightLeg.castShadow = true;
     rightLeg.receiveShadow = true;
     body.add(rightLeg);
@@ -374,7 +374,7 @@ export default function About() {
   };
 
   return (
-    <section id="about" className="section flex items-center justify-center">
+    <section id="about" className="section flex items-center justify-center py-20">
       <div className="flex flex-col md:flex-row items-center justify-center w-full">
         {/* Text Section */}
         <div className="md:w-1/2 pr-4">
@@ -396,7 +396,7 @@ export default function About() {
         <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center items-center">
           <div
             ref={canvasRef}
-            className="w-full h-96 md:h-96"
+            className="w-full h-160 md:h-160"
             style={{ maxWidth: '500px' }} // Limit the max width for better alignment
           ></div>
         </div>
