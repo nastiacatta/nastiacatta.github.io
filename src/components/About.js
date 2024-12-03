@@ -339,7 +339,7 @@ export default function About() {
     // Face plate (black, attached directly to the head, larger and well-centered)
     const facePlateGeometry = new RoundedBoxGeometry(0.7, 0.6, 0.02, 5, 0.02); // Increased size
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.55); // Tight attachment
+    facePlate.position.set(0, 0, 0.55); // Tight attachment along z-axis
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
@@ -369,7 +369,7 @@ export default function About() {
     // Left Arm (Resting Arm)
     const leftArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.55, 0.3, 0); // Adjusted X position from -0.6 to -0.55
+    leftArm.position.set(-0.35, 0.3, 0); // Adjusted position for better connection
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
@@ -377,7 +377,7 @@ export default function About() {
     // Right Arm (Waving Arm)
     const rightArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.55, 0.3, 0); // Adjusted X position from 0.6 to 0.55
+    rightArm.position.set(0.35, 0.3, 0); // Adjusted position for better connection
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
