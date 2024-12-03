@@ -23,8 +23,8 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 4, 12); // Adjusted position for better framing
-    camera.lookAt(0, 2.5, 0); // Focus on robot's center
+    camera.position.set(0, 4, 12); // Elevated and closer to the robot
+    camera.lookAt(0, 2.5, 0); // Look at the robot's center
 
     // Renderer Setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -56,7 +56,7 @@ export default function About() {
 
     // Create Robot
     const robot = createRobot();
-    robot.group.scale.set(1.2, 1.2, 1.2); // **Scaled down to 120%**
+    robot.group.scale.set(1.2, 1.2, 1.2); // Scale down to 120%
     scene.add(robot.group);
 
     // Ground Plane to Receive Shadows (Transparent)
@@ -142,45 +142,75 @@ export default function About() {
     canvasRef.current.addEventListener('mouseenter', onMouseEnter);
     canvasRef.current.addEventListener('mouseleave', onMouseLeaveCanvas);
 
-    // Animation Loop
+    // Animation Loop Adjustments
+
+    // Waving Arm
     let waveDirection = 1;
-    const waveSpeed = 0.02; // Increased speed for smoother waving
-    const maxWaveAngleUp = Math.PI / 2; // 90 degrees (adjusted for back and forth)
-    const maxWaveAngleDown = Math.PI / 4; // 45 degrees towards head
+    const waveSpeed = 0.02; // Slightly increased speed for natural waving
+    const maxWaveAngleUp = Math.PI; // 180 degrees
+    const maxWaveAngleDown = Math.PI - (Math.PI / 12); // 165 degrees to allow oscillation
+
+    // Resting Arm
+    let restingWaveDirection = 1;
+    const restingWaveSpeed = 0.005; // Slow speed for subtle movement
+    const restingMaxWaveAngle = Math.PI / 24; // 7.5 degrees
+
     let eyeRotationAngle = 0;
 
     const animate = () => {
       requestAnimationFrame(animate);
 
-      // Right Arm waving animation
+      // Waving Arm Animation
       if (hoveredRef.current) {
-        // Move arm upwards
         robot.rightArm.rotation.z += waveSpeed * waveDirection;
-        // Clamp the rotation to prevent excessive movement
         robot.rightArm.rotation.z = THREE.MathUtils.clamp(
           robot.rightArm.rotation.z,
-          -maxWaveAngleDown,
+          maxWaveAngleDown,
           maxWaveAngleUp
         );
 
         // Reverse direction if limits are reached
         if (
           robot.rightArm.rotation.z >= maxWaveAngleUp ||
-          robot.rightArm.rotation.z <= -maxWaveAngleDown
+          robot.rightArm.rotation.z <= maxWaveAngleDown
         ) {
           waveDirection *= -1;
         }
       } else {
-        // Smoothly return the arm to the default position
+        // Smoothly return the arm to the default resting position (90 degrees)
         robot.rightArm.rotation.z = THREE.MathUtils.lerp(
           robot.rightArm.rotation.z,
+          Math.PI / 2,
+          0.05
+        );
+      }
+
+      // Resting Arm Slight Movement
+      if (hoveredRef.current) {
+        robot.leftArm.rotation.z += restingWaveSpeed * restingWaveDirection;
+        robot.leftArm.rotation.z = THREE.MathUtils.clamp(
+          robot.leftArm.rotation.z,
+          -restingMaxWaveAngle,
+          restingMaxWaveAngle
+        );
+
+        if (
+          robot.leftArm.rotation.z >= restingMaxWaveAngle ||
+          robot.leftArm.rotation.z <= -restingMaxWaveAngle
+        ) {
+          restingWaveDirection *= -1;
+        }
+      } else {
+        // Return resting arm to neutral position
+        robot.leftArm.rotation.z = THREE.MathUtils.lerp(
+          robot.leftArm.rotation.z,
           0,
           0.05
         );
       }
 
       // Slight up and down motion (levitating)
-      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 2.5; // Levitate higher
+      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 2.5; // Base y-position
 
       // Rotation with momentum
       if (!isDragging && Math.abs(spinVelocity) > 0.001) {
@@ -223,21 +253,7 @@ export default function About() {
           eye.position.x = eye.userData.initialPosition.x + eyeDirX;
           eye.position.y = eye.userData.initialPosition.y + eyeDirY;
         });
-
-        // Subtle movement for resting arm (left arm)
-        robot.leftArm.rotation.z = THREE.MathUtils.lerp(
-          robot.leftArm.rotation.z,
-          0.02, // Slight rotation
-          0.05
-        );
       } else {
-        // Reset resting arm rotation when not hovering
-        robot.leftArm.rotation.z = THREE.MathUtils.lerp(
-          robot.leftArm.rotation.z,
-          0,
-          0.05
-        );
-
         // Eyes wiggle in opposite directions when spinning
         eyeRotationAngle += 0.1;
         robot.eyes.forEach((eye, index) => {
@@ -305,7 +321,7 @@ export default function About() {
     });
 
     // Body (rounded box)
-    const bodyGeometry = new RoundedBoxGeometry(1.2, 1.5, 0.6, 5, 0.2); // **Increased width to 1.2 and depth to 0.6**
+    const bodyGeometry = new RoundedBoxGeometry(1, 1.5, 0.5, 5, 0.2);
     const body = new THREE.Mesh(bodyGeometry, material);
     body.position.y = 0;
     body.castShadow = true;
@@ -313,55 +329,55 @@ export default function About() {
     group.add(body);
 
     // Head (rounded box)
-    const headGeometry = new RoundedBoxGeometry(1.0, 1.0, 1.0, 5, 0.2); // Head size remains the same
+    const headGeometry = new RoundedBoxGeometry(1.0, 1.0, 1.0, 5, 0.2); // Smaller head
     const head = new THREE.Mesh(headGeometry, material);
     head.position.y = 1.2; // Positioned higher on the body
     head.castShadow = true;
     head.receiveShadow = true;
     body.add(head);
 
-    // Face plate (black, attached directly to the head, larger and better centered)
-    const facePlateGeometry = new RoundedBoxGeometry(0.7, 0.6, 0.02, 5, 0.02); // **Slightly larger**
+    // Face plate (black, attached directly to the head, larger and well-centered)
+    const facePlateGeometry = new RoundedBoxGeometry(0.7, 0.6, 0.02, 5, 0.02); // Increased size
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.6); // **Centered more accurately**
+    facePlate.position.set(0, 0, 0.55); // Tight attachment
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
 
     // Eyes
-    const eyeGeometry = new THREE.CircleGeometry(0.05, 16); // **Slightly larger eyes**
+    const eyeGeometry = new THREE.CircleGeometry(0.04, 16); // Smaller eyes
     const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink eyes
 
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    leftEye.position.set(-0.2, 0.15, 0.04); // **Adjusted positions for better centering**
+    leftEye.position.set(-0.15, 0.1, 0.03); // Adjusted positions
     leftEye.userData.initialPosition = leftEye.position.clone();
     facePlate.add(leftEye);
 
     const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    rightEye.position.set(0.2, 0.15, 0.04);
+    rightEye.position.set(0.15, 0.1, 0.03);
     rightEye.userData.initialPosition = rightEye.position.clone();
     facePlate.add(rightEye);
 
     // Mouth
-    const mouthGeometry = new THREE.CircleGeometry(0.1, 16, 0, Math.PI);
+    const mouthGeometry = new THREE.CircleGeometry(0.08, 16, 0, Math.PI);
     const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink mouth
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.rotation.z = Math.PI; // Inverted to look like a smile
-    mouth.position.set(0, -0.2, 0.04); // **Adjusted position for better centering**
+    mouth.position.set(0, -0.15, 0.03); // Adjusted position
     facePlate.add(mouth);
 
-    // Left Arm (Static with slight movement)
-    const leftArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Arm size remains the same
+    // Left Arm (Resting Arm)
+    const leftArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.7, 0.3, 0); // **Moved slightly outward for wider body**
+    leftArm.position.set(-0.6, 0.3, 0); // Adjusted position for better connection
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
 
-    // Right Arm (Animated)
-    const rightArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Arm size remains the same
+    // Right Arm (Waving Arm)
+    const rightArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.7, 0.3, 0); // **Moved slightly outward for wider body**
+    rightArm.position.set(0.6, 0.3, 0); // Adjusted position for better connection
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
@@ -371,15 +387,15 @@ export default function About() {
     rightArm.position.y += 0.3; // Adjust position after translation
 
     // Legs
-    const legGeometry = new RoundedBoxGeometry(0.08, 0.5, 0.08, 5, 0.04); // Legs remain the same
+    const legGeometry = new RoundedBoxGeometry(0.08, 0.5, 0.08, 5, 0.04); // Smaller legs
     const leftLeg = new THREE.Mesh(legGeometry, material);
-    leftLeg.position.set(-0.2, -0.8, 0); // **Adjusted position for consistency**
+    leftLeg.position.set(-0.15, -0.75, 0);
     leftLeg.castShadow = true;
     leftLeg.receiveShadow = true;
     body.add(leftLeg);
 
     const rightLeg = new THREE.Mesh(legGeometry, material);
-    rightLeg.position.set(0.2, -0.8, 0);
+    rightLeg.position.set(0.15, -0.75, 0);
     rightLeg.castShadow = true;
     rightLeg.receiveShadow = true;
     body.add(rightLeg);
@@ -417,8 +433,7 @@ export default function About() {
           <div
             ref={canvasRef}
             className="w-full"
-            style={{ height: '40rem', maxWidth: '700px' }} // Ensuring adequate canvas size
-            aria-label="Animated robot waving its arm"
+            style={{ height: '40rem', maxWidth: '700px' }} // Set height to 40rem and increased maxWidth
           ></div>
         </div>
       </div>
