@@ -14,7 +14,7 @@ export default function About() {
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.background = null; // Remove scene background for transparency
+    scene.background = null; // Transparent background
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
@@ -23,7 +23,7 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 1.5, 5); // Adjusted position to prevent clipping
+    camera.position.set(0, 1.8, 5); // Elevated to prevent clipping
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -53,12 +53,12 @@ export default function About() {
     const robot = createRobot();
     scene.add(robot.group);
 
-    // Ground plane to receive shadows
+    // Ground plane to receive shadows (fully transparent)
     const groundGeometry = new THREE.PlaneGeometry(50, 50);
     const groundMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.0 });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -1.6;
+    ground.position.y = -1.2; // Elevated to align with robot's new position
     ground.receiveShadow = true;
     scene.add(ground);
 
@@ -138,8 +138,8 @@ export default function About() {
     // Animation Loop
     let waveDirection = 1;
     const waveSpeed = 0.02;
-    const maxWaveAngleUp = -Math.PI / 4; // -45 degrees (arm raised)
-    const maxWaveAngleDown = -Math.PI / 6; // -30 degrees (arm lowered)
+    const maxWaveAngleUp = Math.PI / 4; // 45 degrees (arm raised)
+    const maxWaveAngleDown = Math.PI / 8; // 22.5 degrees (arm lowered)
     let eyeRotationAngle = 0;
 
     const animate = () => {
@@ -147,11 +147,8 @@ export default function About() {
 
       // Right Arm waving animation
       if (hoveredRef.current) {
-        robot.rightArm.rotation.z += waveSpeed * waveDirection;
-        if (
-          robot.rightArm.rotation.z > maxWaveAngleDown ||
-          robot.rightArm.rotation.z < maxWaveAngleUp
-        ) {
+        robot.rightArm.rotation.z = Math.min(robot.rightArm.rotation.z + waveSpeed * waveDirection, maxWaveAngleUp);
+        if (robot.rightArm.rotation.z >= maxWaveAngleUp || robot.rightArm.rotation.z <= -maxWaveAngleDown) {
           waveDirection *= -1;
         }
       } else {
@@ -163,7 +160,7 @@ export default function About() {
       }
 
       // Slight up and down motion (levitating)
-      robot.group.position.y = Math.sin(Date.now() * 0.002) * 0.1 - 0.5; // Adjusted position
+      robot.group.position.y = Math.sin(Date.now() * 0.002) * 0.1 - 0.3; // Adjusted position to be higher
 
       // Rotation with momentum
       if (!isDragging && Math.abs(spinVelocity) > 0.001) {
@@ -192,7 +189,7 @@ export default function About() {
         const pos = camera.position.clone().add(dir.multiplyScalar(distance));
 
         // Limit eye movement
-        robot.eyes.forEach((eye, index) => {
+        robot.eyes.forEach((eye) => {
           const eyeDirX = THREE.MathUtils.clamp(
             (pos.x - robot.group.position.x) * 0.1,
             -0.05,
@@ -209,6 +206,9 @@ export default function About() {
       } else {
         // Eyes wiggle in opposite directions when spinning
         eyeRotationAngle += 0.1;
+        robot.eyes[0].material.color.set('#FFC0CB'); // Pink
+        robot.eyes[1].material.color.set('#FFC0CB'); // Pink
+
         robot.eyes[0].position.x =
           robot.eyes[0].userData.initialPosition.x +
           0.02 * Math.cos(eyeRotationAngle);
@@ -261,14 +261,14 @@ export default function About() {
     const group = new THREE.Group();
     group.position.y = -0.3; // Adjusted position to be higher
 
-    // Material for the robot (very light pink, almost metallic)
+    // Material for the robot (bright light pink, almost metallic)
     const material = new THREE.MeshStandardMaterial({
-      color: 0xffd1dc, // Very light pink
-      metalness: 0.9, // Increased metalness for a more metallic look
+      color: 0xFFB6C1, // Bright light pink
+      metalness: 0.9,  // High metalness for a metallic look
       roughness: 0.2,
     });
 
-    // Material for the screen (black, less extruded)
+    // Material for the screen (black, thinner)
     const screenMaterial = new THREE.MeshStandardMaterial({
       color: 0x000000, // Black
       metalness: 0.7,
@@ -293,16 +293,16 @@ export default function About() {
     body.add(head);
 
     // Face plate (black, attached directly to the head, thinner)
-    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.03, 5, 0.05); // Reduced depth from 0.05 to 0.03
+    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.03, 5, 0.05); // Reduced depth
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.75); // Slight adjustment to position
+    facePlate.position.set(0, 0, 0.75); // Attached closer to the head
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
 
     // Eyes
     const eyeGeometry = new THREE.CircleGeometry(0.1, 16);
-    const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink eyes
 
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
     leftEye.position.set(-0.25, 0.15, 0.06); // Adjusted positions
@@ -316,7 +316,7 @@ export default function About() {
 
     // Mouth
     const mouthGeometry = new THREE.CircleGeometry(0.15, 16, 0, Math.PI);
-    const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink mouth
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.rotation.z = Math.PI; // Inverted to look like a smile
     mouth.position.set(0, -0.15, 0.06);
@@ -375,7 +375,7 @@ export default function About() {
       </h2>
       <div className="flex flex-col md:flex-row items-center justify-between">
         {/* Text Section */}
-        <div className="md:w-1/2">
+        <div className="md:w-1/2 pr-4">
           <p className="text-lg">
             I am a third-year MEng Design Engineering student at Imperial College
             London. My passion lies in the fusion of electronics, AI, and fashion.
