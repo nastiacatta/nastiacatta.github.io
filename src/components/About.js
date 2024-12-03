@@ -310,6 +310,8 @@ export default function About() {
       roughness: 0.2,
       emissive: 0xFFC0CB, // Emissive color matching the main color
       emissiveIntensity: 0.5, // Adjust for desired brightness
+      side: THREE.DoubleSide, // Ensure both sides are rendered
+      transparent: false, // Prevent accidental transparency
     });
 
     // Material for the screen (black, thinner)
@@ -317,6 +319,8 @@ export default function About() {
       color: 0x000000, // Black
       metalness: 0.7,
       roughness: 0.2,
+      side: THREE.DoubleSide, // Ensure both sides are rendered
+      transparent: false, // Prevent accidental transparency
     });
 
     // Body (rounded box)
@@ -368,7 +372,12 @@ export default function About() {
     // Left Arm (Resting Arm)
     const leftArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.45, 0.3, 0.05); // Increased Z to 0.05 to make it visible
+
+    // Translate geometry to set pivot at the shoulder
+    leftArm.geometry.translate(0, -0.3, 0); // Pivot at shoulder
+
+    // Set position accordingly
+    leftArm.position.set(-0.45, 0.3, 0.025); // Adjusted X and Z positions to prevent overlap
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
