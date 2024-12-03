@@ -146,7 +146,7 @@ export default function About() {
 
     // Waving Arm
     let waveDirection = 1;
-    const waveSpeed = 0.005; // Further reduced speed for slower waving
+    const waveSpeed = 0.01; // Reduced speed for slower waving
     const maxWaveAngleUp = Math.PI; // 180 degrees
     const maxWaveAngleDown = Math.PI - (Math.PI / 12); // 165 degrees to allow oscillation
 
@@ -339,7 +339,7 @@ export default function About() {
     // Face plate (black, attached directly to the head, larger and well-centered)
     const facePlateGeometry = new RoundedBoxGeometry(0.7, 0.6, 0.02, 5, 0.02); // Increased size
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.55); // Tight attachment along z-axis
+    facePlate.position.set(0, 0, 0.55); // Tight attachment
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
@@ -367,17 +367,17 @@ export default function About() {
     facePlate.add(mouth);
 
     // Left Arm (Resting Arm)
-    const leftArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
+    const leftArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.55, 0.3, 0); // Adjusted position for better connection
+    leftArm.position.set(-0.55, 0.3, 0.025); // Adjusted X and Z positions for better connection
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
 
     // Right Arm (Waving Arm)
-    const rightArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
+    const rightArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.55, 0.3, 0); // Adjusted position for better connection
+    rightArm.position.set(0.55, 0.3, 0.025); // Adjusted X and Z positions for better connection
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
