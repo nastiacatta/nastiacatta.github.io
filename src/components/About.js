@@ -377,7 +377,7 @@ export default function About() {
     leftArm.geometry.translate(0, -0.3, 0); // Pivot at shoulder
 
     // Set position accordingly
-    leftArm.position.set(-0.5, 0.3, 0.025); // Adjusted X and Z positions to prevent overlap
+    leftArm.position.set(-0.45, 0.3, 0.03); // Adjusted X and Z positions to prevent overlap
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
