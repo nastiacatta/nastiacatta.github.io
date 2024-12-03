@@ -23,7 +23,8 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 5, 15); // Further elevated and farther back to capture full robot
+    camera.position.set(0, 8, 20); // Elevated and farther back
+    camera.lookAt(0, 2.0, 0); // Look at the robot's center
 
     // Renderer Setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -55,6 +56,7 @@ export default function About() {
 
     // Create Robot
     const robot = createRobot();
+    robot.group.scale.set(0.8, 0.8, 0.8); // Scale down to 80%
     scene.add(robot.group);
 
     // Ground Plane to Receive Shadows (Transparent)
@@ -178,7 +180,7 @@ export default function About() {
       }
 
       // Slight up and down motion (levitating)
-      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 1.5; // Levitate higher
+      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 2.0; // Levitate higher
 
       // Rotation with momentum
       if (!isDragging && Math.abs(spinVelocity) > 0.001) {
@@ -275,7 +277,7 @@ export default function About() {
     // Material for the robot (bright light pink with emissive properties)
     const material = new THREE.MeshStandardMaterial({
       color: 0xFFC0CB, // Light baby pink
-      metalness: 0.8, // High metalness for a metallic look
+      metalness: 0.8,  // High metalness for a metallic look
       roughness: 0.2,
       emissive: 0xFFC0CB, // Emissive color matching the main color
       emissiveIntensity: 0.5, // Adjust for desired brightness
@@ -400,8 +402,8 @@ export default function About() {
         <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center items-center">
           <div
             ref={canvasRef}
-            className="w-full h-160 md:h-160"
-            style={{ maxWidth: '600px' }} // Increased max width for better visibility
+            className="w-full h-[40rem] md:h-[40rem]" // Corrected height using arbitrary values
+            style={{ maxWidth: '600px' }} // Increased maxWidth for better visibility
           ></div>
         </div>
       </div>
