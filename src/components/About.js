@@ -368,7 +368,7 @@ export default function About() {
     // Left Arm (Resting Arm)
     const leftArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.45, 0.3, 0.025); // Increased X and decreased Z to prevent overlap
+    leftArm.position.set(-0.45, 0.3, 0.05); // Increased Z to 0.05 to make it visible
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
