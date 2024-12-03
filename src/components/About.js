@@ -368,7 +368,7 @@ export default function About() {
     // Left Arm (Resting Arm)
     const leftArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.45, 0.3, 0.04); // Increased X and Z positions
+    leftArm.position.set(-0.45, 0.3, 0.025); // Increased X and decreased Z to prevent overlap
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
@@ -376,7 +376,7 @@ export default function About() {
     // Right Arm (Waving Arm)
     const rightArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.475, 0.3, 0.03); // Position remains mostly unchanged
+    rightArm.position.set(0.475, 0.3, 0.03); // Slightly closer on X and adjusted Z
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
