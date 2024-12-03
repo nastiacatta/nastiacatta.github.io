@@ -23,7 +23,7 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 5, 10); // Further elevated to prevent clipping
+    camera.position.set(0, 5, 15); // Further elevated and farther back to capture full robot
 
     // Renderer Setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -41,12 +41,16 @@ export default function About() {
     scene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Increased intensity
-    directionalLight.position.set(5, 15, 10); // Higher position for better shadow casting
+    directionalLight.position.set(10, 20, 15); // Higher position for better shadow casting
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048; // Higher resolution shadows
     directionalLight.shadow.mapSize.height = 2048;
     directionalLight.shadow.camera.near = 0.5;
     directionalLight.shadow.camera.far = 50;
+    directionalLight.shadow.camera.left = -10;
+    directionalLight.shadow.camera.right = 10;
+    directionalLight.shadow.camera.top = 10;
+    directionalLight.shadow.camera.bottom = -10;
     scene.add(directionalLight);
 
     // Create Robot
@@ -138,9 +142,9 @@ export default function About() {
 
     // Animation Loop
     let waveDirection = 1;
-    const waveSpeed = 0.015; // Slower speed for smoother waving
+    const waveSpeed = 0.01; // Slower speed for smoother waving
     const maxWaveAngleUp = Math.PI / 2; // 90 degrees
-    const maxWaveAngleDown = -Math.PI / 6; // -30 degrees
+    const maxWaveAngleDown = -Math.PI / 4; // -45 degrees
     let eyeRotationAngle = 0;
 
     const animate = () => {
@@ -174,7 +178,7 @@ export default function About() {
       }
 
       // Slight up and down motion (levitating)
-      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 1.0; // Levitate higher
+      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 1.5; // Levitate higher
 
       // Rotation with momentum
       if (!isDragging && Math.abs(spinVelocity) > 0.001) {
@@ -271,7 +275,7 @@ export default function About() {
     // Material for the robot (bright light pink with emissive properties)
     const material = new THREE.MeshStandardMaterial({
       color: 0xFFC0CB, // Light baby pink
-      metalness: 0.8,  // High metalness for a metallic look
+      metalness: 0.8, // High metalness for a metallic look
       roughness: 0.2,
       emissive: 0xFFC0CB, // Emissive color matching the main color
       emissiveIntensity: 0.5, // Adjust for desired brightness
@@ -397,7 +401,7 @@ export default function About() {
           <div
             ref={canvasRef}
             className="w-full h-160 md:h-160"
-            style={{ maxWidth: '500px' }} // Limit the max width for better alignment
+            style={{ maxWidth: '600px' }} // Increased max width for better visibility
           ></div>
         </div>
       </div>
