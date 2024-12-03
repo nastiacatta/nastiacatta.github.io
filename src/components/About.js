@@ -260,16 +260,16 @@ export default function About() {
     const group = new THREE.Group();
     group.position.y = -0.5; // Adjusted position
 
-    // Material for the robot (brighter light pink)
+    // Material for the robot (very light pink, almost metallic)
     const material = new THREE.MeshStandardMaterial({
-      color: 0xffb6c1, // Brighter light pink
-      metalness: 0.7,
+      color: 0xffd1dc, // Very light pink
+      metalness: 0.9,  // Increased metalness for a more metallic look
       roughness: 0.2,
     });
 
-    // Material for the screen (light grey)
+    // Material for the screen (black, not extruded)
     const screenMaterial = new THREE.MeshStandardMaterial({
-      color: 0x555555, // Light grey
+      color: 0x000000, // Black
       metalness: 0.7,
       roughness: 0.2,
     });
@@ -282,26 +282,19 @@ export default function About() {
     body.receiveShadow = true;
     group.add(body);
 
-    // Neck to connect head and body
-    const neckGeometry = new THREE.CylinderGeometry(0.15, 0.15, 0.2, 32);
-    const neck = new THREE.Mesh(neckGeometry, material);
-    neck.position.y = 0.9; // Adjusted to connect head and body
-    neck.castShadow = true;
-    neck.receiveShadow = true;
-    body.add(neck);
-
+    // Remove Neck: Attach head directly to body
     // Head (rounded box)
     const headGeometry = new RoundedBoxGeometry(1.4, 1.2, 1.4, 5, 0.3);
     const head = new THREE.Mesh(headGeometry, material);
-    head.position.y = 0.7; // Adjusted to sit properly on the neck
+    head.position.y = 1.1; // Adjusted to sit properly on the body
     head.castShadow = true;
     head.receiveShadow = true;
-    neck.add(head);
+    body.add(head);
 
-    // Face plate (rounded rectangle)
-    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.1, 5, 0.1);
+    // Face plate (black, attached directly to the head)
+    const facePlateGeometry = new RoundedBoxGeometry(1.1, 0.9, 0.05, 5, 0.1);
     const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.71); // Positioned slightly in front of the head
+    facePlate.position.set(0, 0, 0.73); // Positioned slightly in front of the head
     facePlate.castShadow = true;
     facePlate.receiveShadow = true;
     head.add(facePlate);
@@ -383,8 +376,13 @@ export default function About() {
         About Me
       </h2>
       <div className="flex flex-col md:flex-row items-center justify-between">
+        {/* Animation Section */}
+        <div className="md:w-1/2 mt-8 md:mt-0 order-1 md:order-0">
+          <div ref={canvasRef} className="w-full h-64 md:h-80"></div>
+        </div>
+
         {/* Text Section */}
-        <div className="md:w-1/2">
+        <div className="md:w-1/2 order-0 md:order-1">
           <p className="text-lg">
             I am a third-year MEng Design Engineering student at Imperial College
             London. My passion lies in the fusion of electronics, AI, and fashion.
@@ -394,11 +392,6 @@ export default function About() {
             in the arts, literature, and architecture, which continually inspire
             my work.
           </p>
-        </div>
-
-        {/* Animation Section */}
-        <div className="md:w-1/2 mt-8 md:mt-0">
-          <div ref={canvasRef} className="w-full h-64 md:h-80"></div>
         </div>
       </div>
     </section>
