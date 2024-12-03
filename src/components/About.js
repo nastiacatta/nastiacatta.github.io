@@ -148,7 +148,7 @@ export default function About() {
     let waveDirection = 1;
     const waveSpeed = 0.01; // Reduced speed for slower waving
     const maxWaveAngleUp = Math.PI; // 180 degrees
-    const maxWaveAngleDown = Math.PI - (Math.PI / 12); // 165 degrees to allow oscillation
+    const maxWaveAngleDown = Math.PI - Math.PI / 12; // 165 degrees to allow oscillation
 
     // Resting Arm
     let restingWaveDirection = 1;
@@ -369,7 +369,7 @@ export default function About() {
     // Left Arm (Resting Arm)
     const leftArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
     const leftArm = new THREE.Mesh(leftArmGeometry, material);
-    leftArm.position.set(-0.6, 0.3, 0); // Adjusted position for better connection
+    leftArm.position.set(-0.6, 0.75, 0); // Position at the top of the body
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
@@ -377,7 +377,7 @@ export default function About() {
     // Right Arm (Waving Arm)
     const rightArmGeometry = new RoundedBoxGeometry(0.08, 0.6, 0.08, 5, 0.04); // Smaller arm
     const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.6, 0.3, 0); // Adjusted position for better connection
+    rightArm.position.set(0.6, 0.75, 0); // Position at the top of the body
     rightArm.castShadow = true;
     rightArm.receiveShadow = true;
     body.add(rightArm);
