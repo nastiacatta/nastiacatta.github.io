@@ -72,15 +72,13 @@ export default function About() {
     ground.receiveShadow = true;
     scene.add(ground);
 
-    // Handle Resize
+    // Handle Resize for Responsiveness
     const handleResize = () => {
       if (!canvasRef.current) return;
-      renderer.setSize(
-        canvasRef.current.clientWidth,
-        canvasRef.current.clientHeight
-      );
-      camera.aspect =
-        canvasRef.current.clientWidth / canvasRef.current.clientHeight;
+      const width = canvasRef.current.clientWidth;
+      const height = canvasRef.current.clientHeight;
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
     };
     window.addEventListener('resize', handleResize);
@@ -377,7 +375,7 @@ export default function About() {
     leftArm.geometry.translate(0, -0.3, 0); // Pivot at shoulder
 
     // Set position accordingly
-    leftArm.position.set(-0.475, 0.3, 0.03); // Adjusted X and Z positions to prevent overlap
+    leftArm.position.set(-0.45, 0.3, 0.05); // Increased Z to move arm forward
     leftArm.castShadow = true;
     leftArm.receiveShadow = true;
     body.add(leftArm);
