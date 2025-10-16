@@ -37,7 +37,23 @@ export default function Projects() {
       href: '/keepingwarm',
       imageSrc: '/keeping_warm.png',
     },
+    {
+      title: 'ROBOTICS',
+      href: '/robotics',
+      imageSrc: '/robotics.png',
+    },
+    {
+      title: 'SEAO2',
+      href: '/seao2',
+      imageSrc: '/seao2.png',
+    },
+    {
+      title: 'REORBIT',
+      href: '/reorbit',
+      imageSrc: '/reorbit.png',
+    }    
   ];
+  
 
   return (
     <div className="py-10 px-6">
