@@ -489,13 +489,8 @@ export default function About() {
             About Me
           </h2>
           <p className="text-lg">
-            I am a fourth-year MEng Design Engineering student at Imperial College
-            London. My passion lies in the fusion of electronics, AI, and fashion.
-            I am driven by a commitment to integrating elegant design with robust
-            engineering to develop solutions that are both functional and
-            aesthetically pleasing. Beyond my core focus, I have a deep interest
-            in the arts, literature, and architecture, which continually inspire
-            my work.
+          I’m a fourth-year MEng Design Engineering student at Imperial College London and a Business Intelligence Engineer (intern → part-time) at Amazon. 
+          I am interested in machine learning, data science, software, and robotics. I like owning problems end-to-end and building user-centred solutions that are elegant to use and robust underneath.
           </p>
         </div>
 
