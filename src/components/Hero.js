@@ -241,10 +241,7 @@ export default function Hero() {
           <h1 className="text-6xl neon mt-4">Anastasia Cattaneo</h1>
           <p className="text-2xl mt-4 text-center md:text-left">
             Design Engineer with a passion for{' '}
-            <span className="typewriter">
-              {text}
-              <span className="typewriter-cursor">|</span>
-            </span>
+            <span className="typewriter">{text}</span>
           </p>
         </div>
 
@@ -253,7 +250,7 @@ export default function Hero() {
           <canvas ref={canvasRef} id="bg" className="w-full h-full"></canvas>
 
           {/* "View My Work" button positioned higher over the canvas */}
-          <div className="absolute bottom-32 md:bottom-40">
+          <div className="absolute bottom-20 md:bottom-30">
             <Link href="/#projects" scroll={false}>
               <a className="px-6 py-3 text-xl transition-transform transform hover:scale-105 view-my-work-button" style={{ fontSize: '24px' }}>
                 View My Work

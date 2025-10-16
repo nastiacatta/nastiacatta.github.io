@@ -489,7 +489,7 @@ export default function About() {
             About Me
           </h2>
           <p className="text-lg">
-            I am a third-year MEng Design Engineering student at Imperial College
+            I am a fourth-year MEng Design Engineering student at Imperial College
             London. My passion lies in the fusion of electronics, AI, and fashion.
             I am driven by a commitment to integrating elegant design with robust
             engineering to develop solutions that are both functional and

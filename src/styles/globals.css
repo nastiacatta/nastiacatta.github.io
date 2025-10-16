@@ -109,22 +109,13 @@ a:hover {
   display: inline-block;
 }
 
-.typewriter-cursor {
-  display: inline-block;
-  width: 0.1em;
-  background-color: #FFC0CB;
-  animation: blink-caret 0.75s step-end infinite;
+.typewriter::after {
+  content: '|';
   margin-left: 2px;
+  animation: caret 1s steps(2, start) infinite;
 }
-
-@keyframes blink-caret {
-  from,
-  to {
-    background-color: transparent;
-  }
-  50% {
-    background-color: #FFC0CB;
-  }
+@keyframes caret {
+  to { opacity: 0; }
 }
 
 /* Adjust the "View My Work" button */
