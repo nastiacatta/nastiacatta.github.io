@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function Hero() {
   const canvasRef = useRef(null);
   const [text, setText] = useState('');
-  const phrases = ['AI', 'wearables', 'fashion'];
+  const phrases = ['Machine Learning', 'wearables', 'fashion'];
   const typingSpeed = 150; // Milliseconds per character
   const deletingSpeed = 100; // Milliseconds per character when deleting
   const pauseDuration = 1000; // Milliseconds to pause at the end of each phrase
