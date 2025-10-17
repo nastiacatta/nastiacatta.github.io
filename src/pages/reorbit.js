@@ -21,7 +21,7 @@ export default function Reorbit() {
                 <li>Mission design dashboards and 3D orbit visualisers.</li>
               </ul>
 
-              {/* Added concept blurb */}
+              {/* Concept blurb */}
               <div className="mt-6 rounded-lg border border-current/10 p-4 text-base leading-relaxed">
                 ReOrbit tackles space junk by using two kinds of satellites: laser “brooms” that gently nudge debris onto safe, predictable paths, and robotic “dustpans” that capture those pieces and deliver them to customers in orbit. This cuts collision risk for working satellites, helps operators meet debris rules, and turns waste into a resource by paying owners for defunct hardware and reselling the recovered materials to in-orbit manufacturing firms. In short, it’s a scalable, pay-as-you-go service that cleans up Low Earth Orbit while seeding a circular space economy.
               </div>
@@ -32,27 +32,6 @@ export default function Reorbit() {
                 src="/reorbit.png"
                 alt="ReOrbit cover"
                 className="rounded-lg shadow-lg w-full h-auto max-w-lg"
-              />
-            </div>
-          </div>
-
-          {/* Optional gallery (delete if not used) */}
-          <div className="grid md:grid-cols-3 gap-6 mt-12">
-            <img src="/reorbit_1.png" alt="Orbit visualisation" className="rounded-lg shadow-md w-full h-auto" />
-            <img src="/reorbit_2.png" alt="Link budget view" className="rounded-lg shadow-md w-full h-auto" />
-            <img src="/reorbit_3.png" alt="Mission dashboard" className="rounded-lg shadow-md w-full h-auto" />
-          </div>
-
-          {/* Optional video (replace src or remove block) */}
-          <div className="mt-12">
-            <div className="w-full rounded-lg shadow-lg overflow-hidden" style={{ aspectRatio: '16/9' }}>
-              <iframe
-                src="https://www.youtube.com/embed/XXXXXXXXXXX"
-                title="ReOrbit demo"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                className="w-full h-full"
               />
             </div>
           </div>
