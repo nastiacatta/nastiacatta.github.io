@@ -8,6 +8,21 @@ import Tilt from 'react-parallax-tilt';
 export default function Projects() {
   const projects = [
     {
+        title: 'ROBOTICS',
+        href: '/robotics',
+        imageSrc: '/robotics.png',
+      },
+      {
+        title: 'SEAO2',
+        href: '/seao2',
+        imageSrc: '/seao2.png',
+      },
+      {
+        title: 'REORBIT',
+        href: '/reorbit',
+        imageSrc: '/reorbit.png',
+      },
+      {
       title: 'EXO GLOVE',
       href: '/exoglove',
       imageSrc: '/exoglove.jpeg',
@@ -36,22 +51,7 @@ export default function Projects() {
       title: 'KEEPING WARM',
       href: '/keepingwarm',
       imageSrc: '/keeping_warm.png',
-    },
-    {
-      title: 'ROBOTICS',
-      href: '/robotics',
-      imageSrc: '/robotics.png',
-    },
-    {
-      title: 'SEAO2',
-      href: '/seao2',
-      imageSrc: '/seao2.png',
-    },
-    {
-      title: 'REORBIT',
-      href: '/reorbit',
-      imageSrc: '/reorbit.png',
-    }    
+    }   
   ];
   
 
