@@ -1,0 +1,9 @@
+# Exclude large PDFs and duplicate files from Vercel upload
+public/*.pdf
+public/* 2.*
+public/*copy*
+profilepiclinkedin.jpeg
+data2product/
+Vega/
+out/
+docs/
