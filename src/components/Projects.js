@@ -228,16 +228,16 @@ export default function Projects() {
                   ))}
                 </div>
               </div>
-              <div className="flex flex-col sm:items-end gap-3 shrink-0">
+              <div className="flex flex-row flex-wrap items-center justify-end gap-3 shrink-0">
                 <button
                   type="button"
                   onClick={() => setVisioneInfoOpen((o) => !o)}
-                  className="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 rounded-full border border-pink-400/35 text-pink-200 dark:text-pink-700 text-sm font-medium hover:bg-pink-500/10 dark:hover:bg-pink-400/15 transition-colors touch-manipulation w-full sm:w-auto justify-center sm:justify-end"
+                  className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-full border border-pink-400/35 text-pink-200 dark:text-pink-700 hover:bg-pink-500/10 dark:hover:bg-pink-400/15 transition-colors touch-manipulation"
                   aria-expanded={visioneInfoOpen}
+                  aria-label={visioneInfoOpen ? 'Hide Visione details' : 'Show Visione details'}
                 >
-                  {visioneInfoOpen ? 'Hide details' : 'About Visione'}
                   <svg
-                    className="w-4 h-4 transition-transform duration-300 shrink-0"
+                    className="w-5 h-5 transition-transform duration-300"
                     style={{ transform: visioneInfoOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                     fill="none"
                     viewBox="0 0 24 24"
