@@ -48,19 +48,19 @@ export default function Hero() {
     let animId;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(58, canvas.clientWidth / canvas.clientHeight, 0.1, 1500);
-    camera.position.set(0.1, 0.2, 7.0);
+    const camera = new THREE.PerspectiveCamera(54, canvas.clientWidth / canvas.clientHeight, 0.1, 1500);
+    camera.position.set(0, 0.3, 7.5);
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.12;
+    renderer.toneMappingExposure = 1.18;
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+    controls.dampingFactor = 0.06;
     controls.enablePan = false;
     controls.enableZoom = false;
     controls.minPolarAngle = Math.PI / 2;
@@ -68,198 +68,218 @@ export default function Hero() {
     controls.minAzimuthAngle = 0;
     controls.maxAzimuthAngle = 0;
 
-    // Lighting
-    scene.add(new THREE.AmbientLight(0xffeef8, 0.6));
-    const dirLight = new THREE.DirectionalLight(0xff9dd8, 1.4);
-    dirLight.position.set(2.8, 4.2, 3.4);
-    scene.add(dirLight);
-    const fillLight = new THREE.DirectionalLight(0xf060b4, 0.65);
-    fillLight.position.set(-3.2, 0.8, 2.4);
+    // ── Lights ──
+    scene.add(new THREE.AmbientLight(0xffeef8, 0.55));
+
+    const keyLight = new THREE.DirectionalLight(0xffd4ec, 1.5);
+    keyLight.position.set(3.5, 5, 4);
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0xf060b4, 0.55);
+    fillLight.position.set(-4, 1, 3);
     scene.add(fillLight);
-    const rimLight = new THREE.DirectionalLight(0xffb1e1, 0.8);
-    rimLight.position.set(0, 2.8, -3.8);
+
+    const rimLight = new THREE.DirectionalLight(0xffeedd, 0.85);
+    rimLight.position.set(0, 3, -5);
     scene.add(rimLight);
 
-    // ── Outer petal shape — wider, more natural ──
-    const outerShape = new THREE.Shape();
-    outerShape.moveTo(0, 0);
-    outerShape.bezierCurveTo(0.72, 0.2,  0.78, 1.6,  0.38, 2.6);
-    outerShape.bezierCurveTo(0.10, 3.1,  0.0,  3.2,  0.0,  3.2);
-    outerShape.bezierCurveTo(0.0,  3.2,  -0.10, 3.1, -0.38, 2.6);
-    outerShape.bezierCurveTo(-0.78, 1.6, -0.72, 0.2,  0.0,  0.0);
+    // Warm point light at center for stamen glow
+    const centerPoint = new THREE.PointLight(0xffcc55, 1.8, 6);
+    centerPoint.position.set(0, 0, 0.5);
+    scene.add(centerPoint);
 
-    const extOuter = {
-      depth: 0.07, bevelEnabled: true,
-      bevelSegments: 3, steps: 2,
-      bevelSize: 0.022, bevelThickness: 0.022,
-    };
-    const outerPetalGeo = new THREE.ExtrudeGeometry(outerShape, extOuter);
-    outerPetalGeo.translate(0, -1.6, 0);
+    // ── Shared petal geometry helpers ──
+    function makePetalGeo(length, width, bend) {
+      // Organic wide petal — broad belly, narrow tip
+      const shape = new THREE.Shape();
+      const w = width;
+      const l = length;
+      shape.moveTo(0, 0);
+      shape.bezierCurveTo( w * 0.9,  l * 0.08,  w * 0.95,  l * 0.55,  w * 0.28,  l * 0.82);
+      shape.bezierCurveTo( w * 0.06,  l * 0.92,  0,         l,          0,          l);
+      shape.bezierCurveTo(-w * 0.06,  l * 0.92, -w * 0.28,  l * 0.82, -w * 0.95,  l * 0.55);
+      shape.bezierCurveTo(-w * 0.9,  l * 0.08,  0,          0,          0,          0);
 
-    // Bend toward center
-    const bendGeo = (geo, bend) => {
+      const geo = new THREE.ExtrudeGeometry(shape, {
+        depth: 0.055,
+        bevelEnabled: true,
+        bevelSegments: 3,
+        steps: 3,
+        bevelSize: 0.018,
+        bevelThickness: 0.018,
+      });
+      // Centre the pivot at base
+      geo.translate(0, -l * 0.5, -0.028);
+
+      // Cup / curl the petal inward
       const pos = geo.attributes.position;
       for (let i = 0; i < pos.count; i++) {
-        const y = pos.getY(i), z = pos.getZ(i);
+        const y = pos.getY(i);
+        const z = pos.getZ(i);
         const theta = y * bend;
         pos.setZ(i, z * Math.cos(theta) - y * Math.sin(theta));
         pos.setY(i, z * Math.sin(theta) + y * Math.cos(theta));
       }
       geo.computeVertexNormals();
-    };
-    bendGeo(outerPetalGeo, 0.26);
+      return geo;
+    }
 
-    // ── Inner petal shape — shorter, rounder ──
-    const innerShape = new THREE.Shape();
-    innerShape.moveTo(0, 0);
-    innerShape.bezierCurveTo(0.45, 0.15, 0.48, 1.0, 0.22, 1.6);
-    innerShape.bezierCurveTo(0.06, 1.9, 0.0, 2.0, 0.0, 2.0);
-    innerShape.bezierCurveTo(0.0, 2.0, -0.06, 1.9, -0.22, 1.6);
-    innerShape.bezierCurveTo(-0.48, 1.0, -0.45, 0.15, 0.0, 0.0);
+    // Three petal ring geometries
+    const outerGeo  = makePetalGeo(3.2, 0.92, 0.25);  // large outer petals
+    const midGeo    = makePetalGeo(2.3, 0.74, 0.30);  // medium mid ring
+    const innerGeo  = makePetalGeo(1.5, 0.56, 0.38);  // small inner petals
 
-    const extInner = {
-      depth: 0.06, bevelEnabled: true,
-      bevelSegments: 2, steps: 2,
-      bevelSize: 0.018, bevelThickness: 0.018,
-    };
-    const innerPetalGeo = new THREE.ExtrudeGeometry(innerShape, extInner);
-    innerPetalGeo.translate(0, -1.0, 0);
-    bendGeo(innerPetalGeo, 0.32);
+    // ── Petal material factory ──
+    function petalMat(hue, lightness, emissiveIntensity = 0.18) {
+      return new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color().setHSL(hue, 0.88, lightness),
+        emissive: new THREE.Color().setHSL(hue, 1.0, 0.38),
+        emissiveIntensity,
+        side: THREE.DoubleSide,
+        roughness: 0.28,
+        metalness: 0.01,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.10,
+        transmission: 0.10,
+        thickness: 0.6,
+        opacity: 0.94,
+        transparent: true,
+      });
+    }
 
-    // ── Materials ──
-    const outerMat = (i, total) => new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color().setHSL(0.87 + i * 0.007, 0.92, 0.68),
-      emissive: new THREE.Color().setHSL(0.88, 1.0, 0.42),
-      emissiveIntensity: 0.24,
-      side: THREE.DoubleSide,
-      roughness: 0.30,
-      metalness: 0.02,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.14,
-      transmission: 0.08,
-      thickness: 0.5,
-      opacity: 0.92,
-      transparent: true,
-    });
-
-    const innerMat = (i) => new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color().setHSL(0.92 + i * 0.006, 0.95, 0.78),
-      emissive: new THREE.Color(0xffd0f0),
-      emissiveIntensity: 0.35,
-      side: THREE.DoubleSide,
-      roughness: 0.22,
-      metalness: 0.02,
-      clearcoat: 0.9,
-      clearcoatRoughness: 0.10,
-      transmission: 0.12,
-      thickness: 0.3,
-      opacity: 0.88,
-      transparent: true,
-    });
-
-    const OPEN_OUTER  = Math.PI / 5.2;
-    const CLOSED_OUTER = -Math.PI / 2.1;
-    const OPEN_INNER  = Math.PI / 6.5;
-    const CLOSED_INNER = -Math.PI / 1.9;
+    const OUTER_OPEN   =  Math.PI / 5.0;   // open angle
+    const OUTER_CLOSED = -Math.PI / 2.0;   // closed (hover)
+    const MID_OPEN     =  Math.PI / 5.8;
+    const MID_CLOSED   = -Math.PI / 1.85;
+    const INNER_OPEN   =  Math.PI / 6.5;
+    const INNER_CLOSED = -Math.PI / 1.6;
 
     const flowerGroup = new THREE.Group();
     scene.add(flowerGroup);
-    flowerGroup.position.y = 0.18;
 
-    // Outer petals (10)
-    const NUM_OUTER = 10;
-    const outerPetals = [];
-    for (let i = 0; i < NUM_OUTER; i++) {
-      const angle = (i / NUM_OUTER) * Math.PI * 2;
-      const pg = new THREE.Group();
-      pg.position.set(Math.sin(angle) * 0.90, 0, Math.cos(angle) * 0.90);
-      pg.rotation.y = angle;
-      const pm = new THREE.Mesh(outerPetalGeo, outerMat(i, NUM_OUTER));
-      pm.rotation.x = OPEN_OUTER;
-      pg.add(pm);
-      pg.userData = {
-        phase: (i / NUM_OUTER) * Math.PI * 2,
-        rotSpeed: 0.016 + Math.random() * 0.006,
-      };
-      outerPetals.push(pg);
-      flowerGroup.add(pg);
+    function buildRing(geo, matFn, count, radius, yOffset, openAngle, hueStart, hueStep, liStep) {
+      const ring = [];
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2;
+        const mat = matFn(hueStart + i * hueStep, 0.64 + i * liStep);
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.rotation.x = openAngle;
+        const pg = new THREE.Group();
+        pg.add(mesh);
+        pg.position.set(Math.sin(angle) * radius, yOffset, Math.cos(angle) * radius);
+        pg.rotation.y = angle;
+        pg.userData = {
+          phase: (i / count) * Math.PI * 2,
+          speed: 0.014 + (i % 3) * 0.003,
+        };
+        flowerGroup.add(pg);
+        ring.push(pg);
+      }
+      return ring;
     }
 
-    // Inner petals (7, offset by half-step, slightly closer)
-    const NUM_INNER = 7;
-    const innerPetals = [];
-    for (let i = 0; i < NUM_INNER; i++) {
-      const angle = ((i + 0.5) / NUM_INNER) * Math.PI * 2;
-      const pg = new THREE.Group();
-      pg.position.set(Math.sin(angle) * 0.46, 0.04, Math.cos(angle) * 0.46);
-      pg.rotation.y = angle;
-      const pm = new THREE.Mesh(innerPetalGeo, innerMat(i));
-      pm.rotation.x = OPEN_INNER;
-      pg.add(pm);
-      pg.userData = {
-        phase: (i / NUM_INNER) * Math.PI * 2 + 0.5,
-        rotSpeed: 0.018 + Math.random() * 0.007,
-      };
-      innerPetals.push(pg);
-      flowerGroup.add(pg);
-    }
-
-    // Outer glow halo
-    const glowVert = `varying vec3 vNormal; void main(){vNormal=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
-    const glowFrag = `varying vec3 vNormal; void main(){float i=pow(0.62-dot(vNormal,vec3(0,0,1)),2.2);gl_FragColor=vec4(1.0,0.35,0.72,0.5)*i;}`;
-    const halo = new THREE.Mesh(
-      new THREE.SphereGeometry(1.85, 32, 32),
-      new THREE.ShaderMaterial({ vertexShader: glowVert, fragmentShader: glowFrag, side: THREE.BackSide, blending: THREE.AdditiveBlending, transparent: true })
+    // Outer ring: 12 deep-pink petals
+    const outerRing = buildRing(
+      outerGeo, petalMat,
+      12, 0.95, 0,
+      OUTER_OPEN,
+      0.88, 0.0055, 0.006
     );
-    flowerGroup.add(halo);
 
-    // Center sphere — warm honey yellow
-    const center = new THREE.Mesh(
-      new THREE.SphereGeometry(0.24, 24, 24),
+    // Mid ring: 9 lighter rose petals, slightly elevated
+    const midRing = buildRing(
+      midGeo, petalMat,
+      9, 0.52, 0.05,
+      MID_OPEN,
+      0.90, 0.006, 0.008
+    );
+
+    // Inner ring: 6 pale blush petals
+    const innerRing = buildRing(
+      innerGeo, petalMat,
+      6, 0.26, 0.12,
+      INNER_OPEN,
+      0.92, 0.008, 0.012
+    );
+
+    // ── Stamen cluster ──
+    const stamenMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffe066,
+      emissive: 0xffaa00,
+      emissiveIntensity: 1.1,
+      roughness: 0.3,
+      metalness: 0.0,
+      clearcoat: 0.5,
+    });
+    const stamenTipMat = new THREE.MeshStandardMaterial({
+      color: 0xffcc22,
+      emissive: 0xffee55,
+      emissiveIntensity: 1.4,
+    });
+
+    // Central stamens — thin stems with pollen tips
+    for (let i = 0; i < 16; i++) {
+      const a = (i / 16) * Math.PI * 2;
+      const r = 0.05 + (i % 3) * 0.06;
+      const h = 0.22 + Math.sin(i * 1.3) * 0.06;
+
+      const stem = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.008, 0.012, h, 6),
+        stamenMat
+      );
+      stem.position.set(Math.sin(a) * r, h * 0.5, Math.cos(a) * r);
+      flowerGroup.add(stem);
+
+      const tip = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), stamenTipMat);
+      tip.position.set(Math.sin(a) * r, h + 0.012, Math.cos(a) * r);
+      flowerGroup.add(tip);
+    }
+
+    // Central dome — receptacle
+    const receptacle = new THREE.Mesh(
+      new THREE.SphereGeometry(0.18, 24, 24),
       new THREE.MeshPhysicalMaterial({
-        color: 0xffe58a,
-        emissive: 0xffaa00,
-        emissiveIntensity: 1.0,
-        roughness: 0.25,
-        metalness: 0.12,
-        clearcoat: 0.8,
-        clearcoatRoughness: 0.1,
+        color: 0x4a2800,
+        emissive: 0xaa5500,
+        emissiveIntensity: 0.4,
+        roughness: 0.65,
+        metalness: 0.05,
       })
     );
-    flowerGroup.add(center);
+    receptacle.scale.y = 0.55;
+    flowerGroup.add(receptacle);
 
-    // Stamen bumps around center
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * Math.PI * 2;
-      const stamen = new THREE.Mesh(
-        new THREE.SphereGeometry(0.052, 10, 10),
-        new THREE.MeshStandardMaterial({ color: 0xffee99, emissive: 0xffcc44, emissiveIntensity: 0.85 })
-      );
-      stamen.position.set(Math.sin(a) * 0.34, 0.04, Math.cos(a) * 0.34);
-      flowerGroup.add(stamen);
-    }
+    // ── Outer glow halo ──
+    const haloMat = new THREE.ShaderMaterial({
+      vertexShader: `varying vec3 vN; void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+      fragmentShader: `varying vec3 vN; void main(){float i=pow(0.60-dot(vN,vec3(0,0,1)),2.4);gl_FragColor=vec4(0.95,0.26,0.65,0.48)*i;}`,
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+    });
+    const halo = new THREE.Mesh(new THREE.SphereGeometry(2.1, 32, 32), haloMat);
+    flowerGroup.add(halo);
 
-    // ── Sparkle particles ──
-    const SPARKS = 180;
-    const sparkPositions = new Float32Array(SPARKS * 3);
-    const sparkData = []; // { r, theta, phi, speed, phase }
-    for (let i = 0; i < SPARKS; i++) {
-      const r     = 1.1 + Math.random() * 1.4;
+    // ── Pollen sparkle particles ──
+    const N_SPARKS = 140;
+    const sparkPos = new Float32Array(N_SPARKS * 3);
+    const sparkMeta = [];
+    for (let i = 0; i < N_SPARKS; i++) {
+      const r     = 1.1 + Math.random() * 1.6;
       const theta = Math.random() * Math.PI * 2;
-      const phi   = Math.random() * Math.PI;
-      sparkData.push({ r, theta, phi, speed: 0.18 + Math.random() * 0.32, phase: Math.random() * Math.PI * 2 });
-      sparkPositions[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-      sparkPositions[i * 3 + 1] = r * Math.cos(phi);
-      sparkPositions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+      const phi   = Math.PI * 0.2 + Math.random() * Math.PI * 0.6;
+      sparkMeta.push({ r, theta, phi, dTheta: (0.15 + Math.random() * 0.25) * (Math.random() < 0.5 ? 1 : -1), phase: Math.random() * Math.PI * 2 });
+      sparkPos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
+      sparkPos[i * 3 + 1] = r * Math.cos(phi);
+      sparkPos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
     }
     const sparkGeo = new THREE.BufferGeometry();
-    sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPositions, 3));
-
+    sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
     const sparkMat = new THREE.PointsMaterial({
-      color: 0xffaad8,
-      size: 0.055,
+      color: 0xffddaa,
+      size: 0.048,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.75,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
       sizeAttenuation: true,
@@ -267,7 +287,7 @@ export default function Hero() {
     const sparks = new THREE.Points(sparkGeo, sparkMat);
     flowerGroup.add(sparks);
 
-    // Mouse / hover
+    // ── Hover detection ──
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     let isHovering = false;
@@ -278,7 +298,12 @@ export default function Hero() {
     };
     window.addEventListener('mousemove', onMouseMove, false);
 
+    flowerGroup.position.y = 0.15;
     const clock = new THREE.Clock();
+
+    function lerpAngle(current, target, speed) {
+      return current + (target - current) * speed;
+    }
 
     function animate() {
       animId = requestAnimationFrame(animate);
@@ -287,52 +312,58 @@ export default function Hero() {
       raycaster.setFromCamera(mouse, camera);
       isHovering = raycaster.intersectObject(flowerGroup, true).length > 0;
 
-      const targetOuter = isHovering ? CLOSED_OUTER : OPEN_OUTER;
-      const targetInner = isHovering ? CLOSED_INNER : OPEN_INNER;
+      const tgtOuter = isHovering ? OUTER_CLOSED : OUTER_OPEN;
+      const tgtMid   = isHovering ? MID_CLOSED   : MID_OPEN;
+      const tgtInner = isHovering ? INNER_CLOSED : INNER_OPEN;
 
-      outerPetals.forEach((pg) => {
+      outerRing.forEach((pg) => {
         const pm = pg.children[0];
-        const { phase, rotSpeed } = pg.userData;
-        pm.rotation.x += (targetOuter - pm.rotation.x) * rotSpeed;
-        pm.rotation.z = Math.sin(t * 1.5 + phase) * 0.022;
-        pm.rotation.y = Math.sin(t * 0.85 + phase) * 0.012;
-        pg.position.y = Math.sin(t * 1.0 + phase) * 0.038;
-        pm.material.emissiveIntensity = 0.18 + Math.abs(Math.sin(t * 1.6 + phase)) * 0.14;
+        const { phase, speed } = pg.userData;
+        pm.rotation.x = lerpAngle(pm.rotation.x, tgtOuter + Math.sin(t * 0.9 + phase) * 0.028, speed);
+        pm.rotation.z = Math.sin(t * 0.55 + phase) * 0.018;
+        pg.position.y = Math.sin(t * 0.85 + phase) * 0.032;
+        pm.material.emissiveIntensity = 0.14 + Math.abs(Math.sin(t * 1.2 + phase)) * 0.10;
       });
 
-      innerPetals.forEach((pg) => {
+      midRing.forEach((pg) => {
         const pm = pg.children[0];
-        const { phase, rotSpeed } = pg.userData;
-        pm.rotation.x += (targetInner - pm.rotation.x) * rotSpeed;
-        pm.rotation.z = Math.sin(t * 1.8 + phase) * 0.018;
-        pg.position.y = 0.04 + Math.sin(t * 1.15 + phase) * 0.025;
-        pm.material.emissiveIntensity = 0.28 + Math.abs(Math.sin(t * 2.0 + phase)) * 0.16;
+        const { phase, speed } = pg.userData;
+        pm.rotation.x = lerpAngle(pm.rotation.x, tgtMid + Math.sin(t * 1.0 + phase) * 0.022, speed * 1.1);
+        pm.rotation.z = Math.sin(t * 0.65 + phase) * 0.016;
+        pg.position.y = 0.05 + Math.sin(t * 0.95 + phase) * 0.025;
+        pm.material.emissiveIntensity = 0.20 + Math.abs(Math.sin(t * 1.4 + phase)) * 0.12;
       });
 
-      // Animate sparkles — each orbits at its own speed, fades in/out
-      const pos = sparkGeo.attributes.position;
-      for (let i = 0; i < SPARKS; i++) {
-        const sd = sparkData[i];
-        sd.theta += sd.speed * 0.008;
-        const fade = 0.55 + 0.45 * Math.sin(t * sd.speed * 1.8 + sd.phase);
-        pos.setX(i, sd.r * Math.sin(sd.phi) * Math.cos(sd.theta));
-        pos.setY(i, sd.r * Math.cos(sd.phi) + Math.sin(t * sd.speed + sd.phase) * 0.15);
-        pos.setZ(i, sd.r * Math.sin(sd.phi) * Math.sin(sd.theta));
-        // Pack opacity into alpha via size variation
-        sparkData[i]._alpha = fade;
+      innerRing.forEach((pg) => {
+        const pm = pg.children[0];
+        const { phase, speed } = pg.userData;
+        pm.rotation.x = lerpAngle(pm.rotation.x, tgtInner + Math.sin(t * 1.15 + phase) * 0.018, speed * 1.2);
+        pg.position.y = 0.12 + Math.sin(t * 1.05 + phase) * 0.018;
+        pm.material.emissiveIntensity = 0.28 + Math.abs(Math.sin(t * 1.6 + phase)) * 0.14;
+      });
+
+      // Sparkle drift
+      const sp = sparkGeo.attributes.position;
+      for (let i = 0; i < N_SPARKS; i++) {
+        const sm = sparkMeta[i];
+        sm.theta += sm.dTheta * 0.006;
+        const yWave = Math.sin(t * sm.dTheta * 1.5 + sm.phase) * 0.12;
+        sp.setX(i, sm.r * Math.sin(sm.phi) * Math.cos(sm.theta));
+        sp.setY(i, sm.r * Math.cos(sm.phi) + yWave);
+        sp.setZ(i, sm.r * Math.sin(sm.phi) * Math.sin(sm.theta));
       }
-      pos.needsUpdate = true;
-      sparkMat.opacity = 0.82;
+      sp.needsUpdate = true;
 
-      // Center & stamen pulse
-      center.material.emissiveIntensity = 0.85 + Math.sin(t * 2.8) * 0.32;
-      center.scale.setScalar(1 + Math.sin(t * 2.8) * 0.035);
+      // Center warmth pulse
+      centerPoint.intensity = 1.6 + Math.sin(t * 2.2) * 0.4;
 
-      flowerGroup.rotation.y += isHovering ? 0.0016 : 0.0024;
-      flowerGroup.rotation.x = Math.sin(t * 0.5) * 0.030;
-      flowerGroup.position.y = 0.16 + Math.sin(t * 0.7) * 0.048;
+      // Overall group sway — slow and organic, no full rotation
+      flowerGroup.rotation.y += isHovering ? 0.0014 : 0.0020;
+      flowerGroup.rotation.x = Math.sin(t * 0.42) * 0.028;
+      flowerGroup.rotation.z = Math.sin(t * 0.31) * 0.012;
+      flowerGroup.position.y = 0.15 + Math.sin(t * 0.65) * 0.042;
 
-      halo.material.opacity = 0.5 + Math.sin(t * 1.4) * 0.12;
+      halo.material.uniforms && undefined; // halo uses ShaderMaterial (no uniforms needed)
 
       controls.update();
       renderer.render(scene, camera);
@@ -394,7 +425,7 @@ export default function Hero() {
 
         {/* Right Column — flower canvas */}
         <div className="md:w-1/2 w-full mt-6 md:mt-0 relative flex items-center justify-center"
-             style={{ height: 'clamp(280px, 44vw, 480px)' }}>
+             style={{ height: 'clamp(280px, 44vw, 490px)' }}>
           <canvas ref={canvasRef} id="bg" className="w-full h-full" />
         </div>
       </div>

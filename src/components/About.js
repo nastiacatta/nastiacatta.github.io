@@ -203,30 +203,30 @@ export default function About() {
           robot.group.rotation.y = THREE.MathUtils.lerp(robot.group.rotation.y, 0, 0.045);
         }
 
-        // Eye tracking toward cursor
+        // Eye tracking — use normalised mouse coords directly (avoids world-space errors)
+        const eyeRange = 0.036;
         if (hoveredRef.current) {
-          const v = new THREE.Vector3(mouseRef.current.x, mouseRef.current.y, 0.5);
-          v.unproject(camera);
-          const dir = v.sub(camera.position).normalize();
-          const dist = -camera.position.z / dir.z;
-          const pos = camera.position.clone().add(dir.multiplyScalar(dist));
+          const mx = THREE.MathUtils.clamp(mouseRef.current.x, -1, 1);
+          const my = THREE.MathUtils.clamp(mouseRef.current.y, -1, 1);
           robot.eyes.forEach((eye) => {
-            eye.position.x = eye.userData.ip.x +
-              THREE.MathUtils.clamp((pos.x - robot.group.position.x) * 0.1, -0.05, 0.05);
-            eye.position.y = eye.userData.ip.y +
-              THREE.MathUtils.clamp((pos.y - (robot.group.position.y + 1.5)) * 0.1, -0.05, 0.05);
-          });
-        } else if (Math.abs(spinVelocity) > 0.001) {
-          eyeAngle += 0.1;
-          robot.eyes.forEach((eye, i) => {
-            const d = i === 0 ? 1 : -1;
-            eye.position.x = eye.userData.ip.x + 0.02 * Math.cos(eyeAngle * d);
-            eye.position.y = eye.userData.ip.y + 0.02 * Math.sin(eyeAngle * d);
+            eye.position.x = THREE.MathUtils.lerp(
+              eye.position.x,
+              eye.userData.ip.x + mx * eyeRange,
+              0.10
+            );
+            eye.position.y = THREE.MathUtils.lerp(
+              eye.position.y,
+              eye.userData.ip.y + my * eyeRange * 0.65,
+              0.10
+            );
           });
         } else {
-          robot.eyes.forEach((eye) => {
-            eye.position.x = THREE.MathUtils.lerp(eye.position.x, eye.userData.ip.x, 0.05);
-            eye.position.y = THREE.MathUtils.lerp(eye.position.y, eye.userData.ip.y, 0.05);
+          // Idle: small slow random drift
+          eyeAngle += 0.008;
+          robot.eyes.forEach((eye, i) => {
+            const drift = Math.sin(t * 0.6 + i * 1.4) * 0.012;
+            eye.position.x = THREE.MathUtils.lerp(eye.position.x, eye.userData.ip.x + drift, 0.04);
+            eye.position.y = THREE.MathUtils.lerp(eye.position.y, eye.userData.ip.y + Math.sin(t * 0.4) * 0.008, 0.04);
           });
         }
 
@@ -306,12 +306,13 @@ export default function About() {
       emissive: 0xf060b4,
       emissiveIntensity: 1.5,
     });
+    // Deep raspberry/dark pink — distinct from the light body colour
     const heartPixelMat = new THREE.MeshStandardMaterial({
-      color: 0xff6eb8,
-      emissive: 0xff1493,
-      emissiveIntensity: 1.35,
-      metalness: 0.15,
-      roughness: 0.35,
+      color: 0xb81060,
+      emissive: 0x8c0842,
+      emissiveIntensity: 1.8,
+      metalness: 0.05,
+      roughness: 0.40,
     });
 
     // ── Torso ──
@@ -480,31 +481,43 @@ export default function About() {
     const rHand = new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.22, 0.18, 6, 0.06), darkMat);
     rHand.position.y = -0.90; rightArm.add(rHand);
 
-    // ── Hip ──
-    const hip = new THREE.Mesh(new THREE.CylinderGeometry(0.54, 0.50, 0.15, 24), darkMat);
-    hip.position.y = -0.82; hip.castShadow = true;
-    torso.add(hip);
+    // ── Pelvis / waist belt (bridges torso→legs cleanly) ──
+    const pelvis = new THREE.Mesh(new RoundedBoxGeometry(1.04, 0.22, 0.56, 8, 0.08), darkMat);
+    pelvis.position.y = -0.835; pelvis.castShadow = true;
+    torso.add(pelvis);
 
-    // ── Legs (added to torso so scale + transform is unified) ──
-    [-0.24, 0.24].forEach((x) => {
+    // Decorative belt strip
+    const belt = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.035, 0.015), glowMat);
+    belt.position.set(0, -0.835, 0.295);
+    torso.add(belt);
+
+    // Hip sphere joints on each side
+    [-0.38, 0.38].forEach((x) => {
+      const hipJoint = new THREE.Mesh(new THREE.SphereGeometry(0.13, 18, 18), darkMat);
+      hipJoint.position.set(x, -0.92, 0); hipJoint.castShadow = true;
+      torso.add(hipJoint);
+    });
+
+    // ── Legs ──
+    [-0.32, 0.32].forEach((x) => {
       const legBase = new THREE.Group();
-      legBase.position.set(x, -0.82, 0);
+      legBase.position.set(x, -0.95, 0);
       torso.add(legBase);
 
-      const thigh = new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.48, 0.28, 6, 0.07), bodyMat);
-      thigh.geometry.translate(0, -0.24, 0); thigh.castShadow = true; thigh.receiveShadow = true;
+      const thigh = new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.50, 0.26, 6, 0.07), bodyMat);
+      thigh.geometry.translate(0, -0.25, 0); thigh.castShadow = true; thigh.receiveShadow = true;
       legBase.add(thigh);
 
-      const knee = new THREE.Mesh(new THREE.SphereGeometry(0.125, 16, 16), darkMat);
-      knee.position.y = -0.48; legBase.add(knee);
+      const knee = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), darkMat);
+      knee.position.y = -0.50; legBase.add(knee);
 
-      const shin = new THREE.Mesh(new RoundedBoxGeometry(0.23, 0.44, 0.23, 6, 0.07), bodyMat);
-      shin.geometry.translate(0, -0.22, 0);
-      shin.position.y = -0.48; shin.castShadow = true; shin.receiveShadow = true;
+      const shin = new THREE.Mesh(new RoundedBoxGeometry(0.21, 0.46, 0.21, 6, 0.07), bodyMat);
+      shin.geometry.translate(0, -0.23, 0);
+      shin.position.y = -0.50; shin.castShadow = true; shin.receiveShadow = true;
       legBase.add(shin);
 
-      const foot = new THREE.Mesh(new RoundedBoxGeometry(0.30, 0.13, 0.42, 6, 0.05), darkMat);
-      foot.position.set(0, -0.98, 0.06); foot.castShadow = true; foot.receiveShadow = true;
+      const foot = new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.12, 0.40, 6, 0.05), darkMat);
+      foot.position.set(0, -1.02, 0.06); foot.castShadow = true; foot.receiveShadow = true;
       legBase.add(foot);
     });
 
