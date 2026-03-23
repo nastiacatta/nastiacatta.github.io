@@ -1,10 +1,9 @@
-// src/pages/index.js
-
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Projects from '../components/Projects';
 import About from '../components/About';
+import Footer from '../components/Footer';
 
 export default function Home() {
   const [hideEmail, setHideEmail] = useState(false);
@@ -14,56 +13,90 @@ export default function Home() {
       const aboutSection = document.getElementById('about');
       if (aboutSection) {
         const rect = aboutSection.getBoundingClientRect();
-        const isVisible = rect.top <= window.innerHeight && rect.bottom >= 0;
-        setHideEmail(isVisible);
+        setHideEmail(rect.top <= window.innerHeight && rect.bottom >= 0);
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initialize on load
-
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
     <div>
-      <Header /> {/* Top menu restored */}
+      <Header />
 
       <Hero />
 
-      {/* Main Content */}
       <main id="main-content">
-        {/* Section 2: About Me */}
+        {/* About */}
         <About />
 
-        {/* Section 3: Projects */}
+        {/* Projects */}
         <section id="projects" className="section">
+          <p className="section-label">Work</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-10 text-white dark:text-zinc-900">
+            Projects
+          </h2>
           <Projects />
         </section>
 
-        {/* Section 4: Contact */}
-        <section id="contact" className="section">
-          <h2 className="text-4xl font-normal mb-6 hover:text-lilac transition-colors">
+        {/* Contact */}
+        <section id="contact" className="section" style={{ minHeight: 'auto', paddingBottom: '100px' }}>
+          <p className="section-label">Get in touch</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-white dark:text-zinc-900">
             Contact Me
           </h2>
-          <p className="text-lg mb-4">Feel free to reach out to me at:</p>
-          <p className="text-lg">
-            <a
-              href="mailto:anastasia.cattaneo@gmail.com"
-              className="underline hover:text-lilac focus:outline-none focus:ring-2 focus:ring-lilac"
-            >
-              anastasia.cattaneo@gmail.com
-            </a>
-          </p>
+          <div className="contact-card max-w-2xl p-7 md:p-9">
+            <p className="text-base md:text-lg text-white/80 dark:text-zinc-700 mb-5 leading-relaxed">
+              I&apos;m always open to collaborations, internships, and interesting design
+              or engineering problems. Feel free to reach out.
+            </p>
+            <p className="text-xl font-semibold" style={{ fontFamily: 'Syne, sans-serif' }}>
+              <a
+                href="mailto:anastasia.cattaneo@gmail.com"
+                className="text-pink-300 dark:text-pink-700 hover:text-pink-200 dark:hover:text-pink-600 underline underline-offset-4 decoration-pink-400/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 rounded-sm transition-colors"
+              >
+                anastasia.cattaneo@gmail.com
+              </a>
+            </p>
+            <div className="flex items-center gap-5 mt-6">
+              <a
+                href="https://www.linkedin.com/in/anastasia-cattaneo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-white/50 dark:text-zinc-500 hover:text-pink-300 dark:hover:text-pink-600 transition-colors"
+              >
+                LinkedIn
+              </a>
+              <a
+                href="https://github.com/nastiacatta"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-white/50 dark:text-zinc-500 hover:text-pink-300 dark:hover:text-pink-600 transition-colors"
+              >
+                GitHub
+              </a>
+              <a
+                href="https://vegafinancial.uk/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-white/50 dark:text-zinc-500 hover:text-pink-300 dark:hover:text-pink-600 transition-colors"
+              >
+                Vega Financial
+              </a>
+            </div>
+          </div>
         </section>
       </main>
 
-      {/* Email in Bottom Right Corner */}
+      <Footer />
+
+      {/* Vertical email sidebar */}
       <div className={`email-vertical ${hideEmail ? 'hidden' : ''}`}>
         <a href="mailto:anastasia.cattaneo@gmail.com" className="email-link">
           anastasia.cattaneo@gmail.com
         </a>
-        <div className="vertical-line"></div>
+        <div className="vertical-line" />
       </div>
     </div>
   );

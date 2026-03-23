@@ -238,10 +238,13 @@ export default function Hero() {
       <div className="flex flex-col md:flex-row items-center w-full h-full px-8">
         {/* Left Column - Intro Text */}
         <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center">
-          <h1 className="text-6xl neon mt-4">Anastasia Cattaneo</h1>
-          <p className="text-2xl mt-4 text-center md:text-left">
+          <p className="section-label mb-3">Design Engineering Portfolio</p>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl neon mt-2 leading-tight" style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800 }}>
+            Anastasia<br />Cattaneo
+          </h1>
+          <p className="text-lg md:text-xl mt-5 text-center md:text-left text-white/80 dark:text-zinc-700 max-w-sm leading-relaxed">
             Design Engineer with a passion for{' '}
-            <span className="typewriter">{text}</span>
+            <span className="typewriter font-medium">{text}</span>
           </p>
         </div>
 

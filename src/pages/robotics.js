@@ -13,7 +13,7 @@ export default function Robotics() {
             <div className="md:w-1/2">
               <h1 className="text-5xl mb-4 neon">Robotics</h1>
               <p className="text-lg mb-4 max-w-3xl">
-                Selected robotics work: mechanisms, control, and perception demos.
+                Selected robotics courseworks.
               </p>
 
               {/* Short paragraph */}

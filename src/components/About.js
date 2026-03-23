@@ -484,14 +484,33 @@ export default function About() {
     <section id="about" className="section flex items-center justify-center py-20">
       <div className="flex flex-col md:flex-row items-center justify-center w-full">
         {/* Text Section */}
-        <div className="md:w-1/2 pr-4">
-          <h2 className="text-4xl font-normal mb-6 hover:text-lilac transition-colors">
+        <div className="md:w-1/2 pr-4 md:pr-10">
+          <p className="section-label mb-3">Background</p>
+          <h2
+            className="text-4xl md:text-5xl font-bold mb-7 text-white dark:text-zinc-900 leading-tight"
+            style={{ fontFamily: 'Syne, sans-serif' }}
+          >
             About Me
           </h2>
-          <p className="text-lg">
-          I’m a fourth-year MEng Design Engineering student at Imperial College London and a Business Intelligence Engineer (intern → part-time) at Amazon. 
-          I am interested in machine learning, data science, software, and robotics. I like owning problems end-to-end and building user-centred solutions that are elegant to use and robust underneath.
+          <p className="text-base md:text-lg text-white/80 dark:text-zinc-700 leading-relaxed mb-4">
+            I&apos;m a fourth-year MEng Design Engineering student at Imperial College London
+            and a Business Intelligence Engineer (intern &rarr; part-time) at Amazon.
           </p>
+          <p className="text-base md:text-lg text-white/80 dark:text-zinc-700 leading-relaxed">
+            I&apos;m interested in machine learning, data science, software, and robotics.
+            I like owning problems end-to-end and building user-centred solutions that are
+            elegant to use and robust underneath.
+          </p>
+          <div className="flex flex-wrap gap-2 mt-7">
+            {['Machine Learning', 'Data Science', 'Robotics', 'Full-stack', 'Amazon'].map(tag => (
+              <span
+                key={tag}
+                className="px-3 py-1.5 text-xs rounded-full border border-pink-400/25 text-pink-200 dark:text-pink-700"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
 
         {/* Animation Section */}
