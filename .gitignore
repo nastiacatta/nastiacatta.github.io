@@ -24,6 +24,12 @@ yarn-error.log*
 # Vega reference project (do not push)
 Vega/
 
+# Local R/Shiny project (large nested repo — not part of this site)
+data2product/
+
+# Duplicate asset at repo root (site uses public/VEGA.png)
+/VEGA.png
+
 # Legacy static export artifacts
 out/
 docs/

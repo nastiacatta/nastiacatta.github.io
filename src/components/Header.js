@@ -110,8 +110,8 @@ export default function Header() {
   // Pill classes
   const pillBase = [
     'nav-pill w-full flex items-center justify-between rounded-full border',
-    'transition-all duration-300',
-    mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2',
+    'transition-all duration-500',
+    mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3 scale-[0.98]',
   ].join(' ');
 
   const pillScrolled = isScrolled
@@ -128,17 +128,19 @@ export default function Header() {
       </a>
 
       {/* Fixed banner */}
-      <div className={`site-banner fixed left-0 right-0 top-0 z-[1000] pt-4 ${bannerHidden ? 'is-hidden' : ''}`}>
+      <div
+        className={`site-banner fixed left-0 right-0 top-0 z-[1000] pt-[max(1rem,env(safe-area-inset-top))] ${bannerHidden ? 'is-hidden' : ''}`}
+      >
         <div className="flex justify-center px-4 md:px-6">
           <div className={`${pillBase} ${pillScrolled} px-5 md:px-7 max-w-7xl w-full`}>
 
             {/* Logo */}
             <Link href="/">
-              <a className="flex items-center gap-3 shrink-0 group focus-visible:outline focus-visible:ring-2 focus-visible:ring-pink-400 rounded-md">
+              <a className="logo-link-motion flex items-center justify-center min-h-[44px] min-w-[44px] shrink-0 group focus-visible:outline focus-visible:ring-2 focus-visible:ring-pink-400 rounded-md touch-manipulation -ml-1">
                 <img
                   src="/logo.png"
                   alt="Logo"
-                  className="w-9 h-9 object-contain group-hover:scale-110 transition-transform duration-200"
+                  className="w-9 h-9 object-contain"
                 />
               </a>
             </Link>
@@ -159,7 +161,8 @@ export default function Header() {
                     left:    indicator.left,
                     width:   indicator.width,
                     opacity: indicator.opacity,
-                    transition: 'left 0.2s cubic-bezier(0.2,0.8,0.2,1), width 0.2s cubic-bezier(0.2,0.8,0.2,1), opacity 0.15s ease',
+                    transition:
+                      'left 0.38s cubic-bezier(0.34, 1.25, 0.64, 1), width 0.38s cubic-bezier(0.34, 1.25, 0.64, 1), opacity 0.22s ease',
                   }}
                 />
                 {navItems.map((item, i) => (
@@ -168,15 +171,16 @@ export default function Header() {
                     ref={(el) => { navItemRefs.current[i] = el; }}
                     onMouseEnter={() => setHoveredIndex(i)}
                     style={{
-                      transitionDelay: mounted ? `${i * 40}ms` : '0ms',
-                      transition: 'opacity 0.4s ease, transform 0.4s ease',
+                      transitionDelay: mounted ? `${i * 55}ms` : '0ms',
+                      transition:
+                        'opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.34, 1.15, 0.64, 1)',
                       opacity: mounted ? 1 : 0,
-                      transform: mounted ? 'translateY(0)' : 'translateY(-6px)',
+                      transform: mounted ? 'translateY(0)' : 'translateY(-10px)',
                     }}
                   >
                     <Link href={item.href}>
-                      <a className="relative z-10 block px-4 py-2.5 text-sm font-medium text-gray-300/90 dark:text-zinc-600 hover:text-white dark:hover:text-zinc-900 transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-pink-400 rounded-full whitespace-nowrap">
-                        {item.label}
+                      <a className="nav-link-motion relative z-10 block px-4 py-2.5 text-sm font-medium text-gray-300/90 dark:text-zinc-600 hover:text-white dark:hover:text-zinc-900 transition-colors duration-300 focus-visible:outline focus-visible:ring-2 focus-visible:ring-pink-400 rounded-full whitespace-nowrap">
+                        <span className="nav-link-label">{item.label}</span>
                       </a>
                     </Link>
                   </div>
@@ -187,7 +191,8 @@ export default function Header() {
               <div className="flex items-center gap-2">
               <button
                 onClick={toggleDarkMode}
-                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-pink-500/15 dark:hover:bg-pink-400/15 transition-colors focus-visible:ring-2 focus-visible:ring-pink-400"
+                type="button"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-pink-500/15 dark:hover:bg-pink-400/15 transition-colors focus-visible:ring-2 focus-visible:ring-pink-400 touch-manipulation"
                 aria-label="Toggle light/dark mode"
               >
                 {darkMode
@@ -196,7 +201,8 @@ export default function Header() {
               </button>
 
               <button
-                className="md:hidden w-9 h-9 flex items-center justify-center rounded-full hover:bg-pink-500/15 dark:hover:bg-pink-400/15 transition-colors focus-visible:ring-2 focus-visible:ring-pink-400"
+                type="button"
+                className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-pink-500/15 dark:hover:bg-pink-400/15 transition-colors focus-visible:ring-2 focus-visible:ring-pink-400 touch-manipulation"
                 onClick={() => setMobileOpen(o => !o)}
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={mobileOpen}
@@ -225,10 +231,10 @@ export default function Header() {
       <div
         id="mobile-nav-panel"
         ref={mobileMenuRef}
-        className={`fixed left-4 right-4 z-[1001] md:hidden rounded-2xl border border-white/10 dark:border-pink-400/20 shadow-2xl bg-zinc-950/95 dark:bg-pink-50/95 backdrop-blur-xl overflow-hidden transition-all duration-200 ease-out ${
+        className={`fixed left-4 right-4 z-[1001] md:hidden rounded-2xl border border-white/10 dark:border-pink-400/20 shadow-2xl bg-zinc-950/95 dark:bg-pink-50/95 backdrop-blur-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           mobileOpen
-            ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
-            : 'opacity-0 -translate-y-2 scale-[0.98] pointer-events-none'
+            ? 'mobile-nav-panel-open opacity-100 translate-y-0 scale-100 pointer-events-auto'
+            : 'mobile-nav-panel-closed opacity-0 -translate-y-3 scale-[0.97] pointer-events-none'
         }`}
         style={{ top: 'calc(4.5rem + 0.75rem)' }}
         role="dialog"
@@ -236,11 +242,12 @@ export default function Header() {
         aria-label="Mobile navigation"
         aria-hidden={!mobileOpen}
       >
-        <nav className="py-2" aria-label="Mobile navigation links">
-          {navItems.map((item) => (
+        <nav className="py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]" aria-label="Mobile navigation links">
+          {navItems.map((item, i) => (
             <Link href={item.href} key={item.href}>
               <a
-                className="flex items-center min-h-[48px] px-6 py-3 text-base font-medium text-white/90 dark:text-zinc-800 hover:bg-pink-500/10 dark:hover:bg-pink-400/10 hover:text-pink-200 dark:hover:text-pink-700 transition-colors"
+                className="mobile-nav-row flex items-center min-h-[48px] px-6 py-3 text-base font-medium text-white/90 dark:text-zinc-800 hover:bg-pink-500/10 dark:hover:bg-pink-400/10 hover:text-pink-200 dark:hover:text-pink-700 transition-colors active:scale-[0.98]"
+                style={{ transitionDelay: mobileOpen ? `${60 + i * 50}ms` : '0ms' }}
                 onClick={() => setMobileOpen(false)}
               >
                 {item.label}
