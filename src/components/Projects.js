@@ -132,7 +132,7 @@ export default function Projects() {
               {!vegaImgError ? (
                 <div className="vega-featured-image-wrap w-full flex justify-center">
                   <img
-                    src="/VEGA.png"
+                    src="/VEGA.png?v=9"
                     alt="Vega Financial product screenshot"
                     width={1200}
                     height={800}
