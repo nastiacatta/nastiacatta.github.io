@@ -121,24 +121,21 @@ a:hover {
 .typewriter {
   display: inline-block;
   color: #ff80cc;
-  /* Reserve width for cursor so text doesn't jump */
-  min-width: 1ch;
+  min-width: 15ch;
 }
 
 .dark .typewriter {
   color: #c0196e;
 }
 
-/* Blinking caret via pseudo-element on the wrapper div */
-.typewriter-wrap::after {
-  content: '|';
-  margin-left: 1px;
+.typewriter-caret {
+  margin-left: 2px;
   color: #f060b4;
   animation: caret 1s steps(2, start) infinite;
   font-weight: 300;
 }
 
-.dark .typewriter-wrap::after {
+.dark .typewriter-caret {
   color: #c0196e;
 }
 

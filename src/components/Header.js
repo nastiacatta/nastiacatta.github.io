@@ -149,47 +149,48 @@ export default function Header() {
               </a>
             </Link>
 
-            {/* Desktop nav */}
-            <nav
-              ref={navContainerRef}
-              className="hidden md:flex relative items-center gap-1"
-              aria-label="Main navigation"
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              {/* Sliding indicator */}
-              <span
-                aria-hidden
-                className="absolute top-0 h-full rounded-full pointer-events-none bg-pink-500/15 dark:bg-pink-400/15"
-                style={{
-                  left:    indicator.left,
-                  width:   indicator.width,
-                  opacity: indicator.opacity,
-                  transition: 'left 0.2s cubic-bezier(0.2,0.8,0.2,1), width 0.2s cubic-bezier(0.2,0.8,0.2,1), opacity 0.15s ease',
-                }}
-              />
-              {navItems.map((item, i) => (
-                <div
-                  key={item.href}
-                  ref={(el) => { navItemRefs.current[i] = el; }}
-                  onMouseEnter={() => setHoveredIndex(i)}
+            <div className="ml-auto flex items-center gap-3">
+              {/* Desktop nav */}
+              <nav
+                ref={navContainerRef}
+                className="hidden md:flex relative items-center gap-1"
+                aria-label="Main navigation"
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                {/* Sliding indicator */}
+                <span
+                  aria-hidden
+                  className="absolute top-0 h-full rounded-full pointer-events-none bg-pink-500/15 dark:bg-pink-400/15"
                   style={{
-                    transitionDelay: mounted ? `${i * 40}ms` : '0ms',
-                    transition: 'opacity 0.4s ease, transform 0.4s ease',
-                    opacity: mounted ? 1 : 0,
-                    transform: mounted ? 'translateY(0)' : 'translateY(-6px)',
+                    left:    indicator.left,
+                    width:   indicator.width,
+                    opacity: indicator.opacity,
+                    transition: 'left 0.2s cubic-bezier(0.2,0.8,0.2,1), width 0.2s cubic-bezier(0.2,0.8,0.2,1), opacity 0.15s ease',
                   }}
-                >
-                  <Link href={item.href}>
-                    <a className="relative z-10 block px-4 py-2.5 text-sm font-medium text-gray-300/90 dark:text-zinc-600 hover:text-white dark:hover:text-zinc-900 transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-pink-400 rounded-full whitespace-nowrap">
-                      {item.label}
-                    </a>
-                  </Link>
-                </div>
-              ))}
-            </nav>
+                />
+                {navItems.map((item, i) => (
+                  <div
+                    key={item.href}
+                    ref={(el) => { navItemRefs.current[i] = el; }}
+                    onMouseEnter={() => setHoveredIndex(i)}
+                    style={{
+                      transitionDelay: mounted ? `${i * 40}ms` : '0ms',
+                      transition: 'opacity 0.4s ease, transform 0.4s ease',
+                      opacity: mounted ? 1 : 0,
+                      transform: mounted ? 'translateY(0)' : 'translateY(-6px)',
+                    }}
+                  >
+                    <Link href={item.href}>
+                      <a className="relative z-10 block px-4 py-2.5 text-sm font-medium text-gray-300/90 dark:text-zinc-600 hover:text-white dark:hover:text-zinc-900 transition-colors focus-visible:outline focus-visible:ring-2 focus-visible:ring-pink-400 rounded-full whitespace-nowrap">
+                        {item.label}
+                      </a>
+                    </Link>
+                  </div>
+                ))}
+              </nav>
 
-            {/* Right: theme + burger */}
-            <div className="flex items-center gap-2">
+              {/* Right: theme + burger */}
+              <div className="flex items-center gap-2">
               <button
                 onClick={toggleDarkMode}
                 className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-pink-500/15 dark:hover:bg-pink-400/15 transition-colors focus-visible:ring-2 focus-visible:ring-pink-400"
@@ -211,6 +212,7 @@ export default function Header() {
                   ? <XMarkIcon  className="w-5 h-5 text-gray-200 dark:text-zinc-800" />
                   : <Bars3Icon  className="w-5 h-5 text-gray-200 dark:text-zinc-800" />}
               </button>
+              </div>
             </div>
           </div>
         </div>

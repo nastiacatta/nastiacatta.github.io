@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import Tilt from 'react-parallax-tilt';
 
 const projects = [
@@ -24,6 +23,7 @@ I am also studying how to make the system robust to real-world problems such as 
 export default function Projects() {
   const [vegaImgError, setVegaImgError] = useState(false);
   const [mastersOpen, setMastersOpen] = useState(false);
+  const [failedImages, setFailedImages] = useState({});
 
   return (
     <div>
@@ -130,7 +130,6 @@ export default function Projects() {
               <p className="section-label !mb-0">Master&apos;s Project</p>
               <h3
                 className="text-xl md:text-2xl font-bold text-white dark:text-zinc-900 leading-tight"
-                style={{ fontFamily: 'Syne, sans-serif' }}
               >
                 Designing and Implementing Prediction Markets
               </h3>
@@ -192,13 +191,21 @@ export default function Projects() {
                 className="card-frame rounded-xl overflow-hidden"
               >
                 <div className="relative w-full h-60">
-                  <Image
-                    src={project.imageSrc}
-                    alt={project.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                  {!failedImages[project.title] ? (
+                    <img
+                      src={project.imageSrc}
+                      alt={project.title}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      onError={() => setFailedImages((prev) => ({ ...prev, [project.title]: true }))}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/70 dark:bg-pink-100/70">
+                      <span className="text-xs tracking-[0.18em] text-pink-200 dark:text-pink-700">
+                        IMAGE UNAVAILABLE
+                      </span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/30" />
                   <div className="absolute inset-0 bg-pink-500/0 group-hover:bg-pink-500/20 transition-colors duration-300" />
 

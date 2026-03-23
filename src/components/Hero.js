@@ -54,7 +54,7 @@ export default function Hero() {
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1500);
-      camera.position.z = 6;
+      camera.position.z = 6.8;
 
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setSize(canvas.clientWidth, canvas.clientHeight);
@@ -128,7 +128,7 @@ export default function Hero() {
       const petalAngle = (Math.PI * 2) / numPetals;
       const flowerGroup = new THREE.Group();
       scene.add(flowerGroup);
-      flowerGroup.scale.set(1.4, 1.4, 1.4);
+      flowerGroup.scale.set(1.08, 1.08, 1.08);
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
@@ -136,8 +136,8 @@ export default function Hero() {
         petalGroup.add(petalMesh);
 
         const angle = i * petalAngle;
-        petalGroup.position.x = 1.2 * Math.sin(angle);
-        petalGroup.position.z = 1.2 * Math.cos(angle);
+        petalGroup.position.x = 1.0 * Math.sin(angle);
+        petalGroup.position.z = 1.0 * Math.cos(angle);
         petalGroup.rotation.y = angle;
         petalMesh.rotation.x = OPEN_ROTATION;
         petalGroup.userData.targetRotationX = OPEN_ROTATION;
@@ -173,7 +173,7 @@ export default function Hero() {
         })
       );
       flowerGroup.add(glowMesh);
-      flowerGroup.position.y = 0.8;
+      flowerGroup.position.y = 0.18;
 
       // Small glowing center sphere
       const centerMesh = new THREE.Mesh(
@@ -263,9 +263,10 @@ export default function Hero() {
               Design Engineer
             </p>
             <div className="h-8 flex items-center mt-1">
-              <span className="typewriter-wrap font-medium text-base md:text-lg text-pink-300 dark:text-pink-600">
+              <span className="typewriter font-medium text-base md:text-lg text-pink-300 dark:text-pink-600">
                 {text}
               </span>
+              <span className="typewriter-caret" aria-hidden>|</span>
             </div>
           </div>
 
@@ -279,7 +280,7 @@ export default function Hero() {
         </div>
 
         {/* Right Column — flower canvas */}
-        <div className="md:w-1/2 relative flex items-center justify-center h-[55vw] md:h-full max-h-[580px]">
+        <div className="md:w-1/2 w-full md:pl-10 mt-8 md:mt-0 relative flex items-center justify-center h-[46vw] md:h-[480px] max-h-[500px] overflow-hidden">
           <canvas ref={canvasRef} id="bg" className="w-full h-full" />
         </div>
       </div>
