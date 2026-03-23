@@ -481,8 +481,8 @@ export default function About() {
   };
 
   return (
-    <section id="about" className="section flex items-center justify-center py-20">
-      <div className="flex flex-col md:flex-row items-center justify-center w-full">
+    <section id="about" className="section">
+      <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-6xl mx-auto">
         {/* Text Section */}
         <div className="md:w-1/2 pr-4 md:pr-10">
           <p className="section-label mb-3">Background</p>

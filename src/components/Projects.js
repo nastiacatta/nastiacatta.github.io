@@ -4,15 +4,15 @@ import Image from 'next/image';
 import Tilt from 'react-parallax-tilt';
 
 const projects = [
-  { title: 'ROBOTICS',     href: '/robotics',    imageSrc: '/robotics.png' },
-  { title: 'SEAO2',        href: '/seao2',        imageSrc: '/seao2.png' },
-  { title: 'REORBIT',      href: '/reorbit',      imageSrc: '/reorbit.png' },
-  { title: 'EXO GLOVE',   href: '/exoglove',     imageSrc: '/exoglove.jpeg' },
-  { title: 'BIOMORPHUS',  href: '/biomorphus',   imageSrc: '/biomorphus.jpeg' },
-  { title: 'INNOVICE',    href: '/innovice',     imageSrc: '/innovice.jpeg' },
-  { title: 'ROBOT CAR',   href: '/robotcar',     imageSrc: '/robot_car.png' },
-  { title: 'CONCEPT CAR', href: '/conceptcar',   imageSrc: '/concept_car.png' },
-  { title: 'KEEPING WARM',href: '/keepingwarm',  imageSrc: '/keeping_warm.png' },
+  { title: 'ROBOTICS',      href: '/robotics',    imageSrc: '/robotics.png' },
+  { title: 'SEAO2',         href: '/seao2',        imageSrc: '/seao2.png' },
+  { title: 'REORBIT',       href: '/reorbit',      imageSrc: '/reorbit.png' },
+  { title: 'EXO GLOVE',    href: '/exoglove',     imageSrc: '/exoglove.jpeg' },
+  { title: 'BIOMORPHUS',   href: '/biomorphus',   imageSrc: '/biomorphus.jpeg' },
+  { title: 'INNOVICE',     href: '/innovice',     imageSrc: '/innovice.jpeg' },
+  { title: 'ROBOT CAR',    href: '/robotcar',     imageSrc: '/robot_car.png' },
+  { title: 'CONCEPT CAR',  href: '/conceptcar',   imageSrc: '/concept_car.png' },
+  { title: 'KEEPING WARM', href: '/keepingwarm',  imageSrc: '/keeping_warm.png' },
 ];
 
 export default function Projects() {
@@ -20,13 +20,13 @@ export default function Projects() {
 
   return (
     <div>
-      {/* ── Featured: Vega Financial ─────────────────────────────── */}
+      {/* ── Featured: Vega Financial ───────────────────────────── */}
       <div className="mb-14">
         <div className="featured-project-card rounded-2xl overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+          <div className="flex flex-col lg:flex-row">
 
             {/* Left: copy */}
-            <div className="p-7 md:p-10 flex flex-col justify-between">
+            <div className="lg:w-1/2 p-7 md:p-10 flex flex-col justify-between">
               <div>
                 <p className="section-label mb-3">Featured</p>
                 <h3
@@ -44,20 +44,19 @@ export default function Projects() {
                   {['Next.js', 'TypeScript', 'Prisma', 'Tailwind'].map(tag => (
                     <span
                       key={tag}
-                      className="px-2.5 py-1 text-xs rounded-full border border-pink-400/25 text-pink-200 dark:text-pink-700 bg-pink-500/8"
+                      className="px-2.5 py-1 text-xs rounded-full border border-pink-400/25 text-pink-200 dark:text-pink-700"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
-
               <div className="flex flex-wrap gap-3 mt-8">
                 <a
                   href="https://vegafinancial.uk/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-pink-500 hover:bg-pink-400 text-white text-sm font-medium transition-colors shadow-[0_4px_18px_rgba(240,96,180,0.35)] hover:shadow-[0_4px_24px_rgba(240,96,180,0.5)]"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-pink-500 hover:bg-pink-400 text-white text-sm font-medium transition-colors shadow-[0_4px_18px_rgba(240,96,180,0.35)]"
                 >
                   Visit Website
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -73,13 +72,13 @@ export default function Projects() {
               </div>
             </div>
 
-            {/* Right: image preview */}
-            <div className="relative min-h-[260px] lg:min-h-0 bg-zinc-900/50 dark:bg-pink-100/50 border-t lg:border-t-0 lg:border-l border-pink-400/15">
+            {/* Right: image — fixed height, image cropped to fit */}
+            <div className="lg:w-1/2 relative h-64 lg:h-auto min-h-[260px] border-t lg:border-t-0 lg:border-l border-pink-400/15 bg-zinc-900/50 dark:bg-pink-100/50 overflow-hidden">
               {!vegaImgError ? (
                 <img
                   src="/VEGA.png"
                   alt="Vega Financial screenshot"
-                  className="w-full h-full object-cover object-top"
+                  className="absolute inset-0 w-full h-full object-cover object-top"
                   onError={() => setVegaImgError(true)}
                 />
               ) : (
@@ -123,19 +122,19 @@ export default function Projects() {
                 transitionSpeed={700}
                 className="card-frame rounded-xl overflow-hidden"
               >
+                {/* Use fixed-height container with Next.js fill image */}
                 <div className="relative w-full h-60">
                   <Image
                     src={project.imageSrc}
                     alt={project.title}
-                    layout="fill"
-                    objectFit="cover"
-                    className="transition-transform duration-700 group-hover:scale-105"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  {/* Gradient overlays */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/30" />
-                  <div className="absolute inset-0 bg-pink-500/0 group-hover:bg-pink-500/18 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-pink-500/0 group-hover:bg-pink-500/20 transition-colors duration-300" />
 
-                  {/* Title at bottom */}
+                  {/* Title */}
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3
                       className="text-xs tracking-[0.18em] font-semibold text-white/90 group-hover:text-pink-200 transition-colors"
@@ -145,7 +144,7 @@ export default function Projects() {
                     </h3>
                   </div>
 
-                  {/* Arrow icon on hover */}
+                  {/* Arrow on hover */}
                   <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/40 border border-white/15 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-1 group-hover:translate-x-0">
                     <svg className="w-3 h-3 text-pink-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />

@@ -33,15 +33,18 @@ export default function Home() {
 
         {/* Projects */}
         <section id="projects" className="section">
-          <p className="section-label">Work</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-10 text-white dark:text-zinc-900">
-            Projects
-          </h2>
-          <Projects />
+          <div className="max-w-6xl mx-auto">
+            <p className="section-label">Work</p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-10 text-white dark:text-zinc-900">
+              Projects
+            </h2>
+            <Projects />
+          </div>
         </section>
 
         {/* Contact */}
         <section id="contact" className="section" style={{ minHeight: 'auto', paddingBottom: '100px' }}>
+          <div className="max-w-6xl mx-auto">
           <p className="section-label">Get in touch</p>
           <h2 className="text-4xl md:text-5xl font-bold mb-8 text-white dark:text-zinc-900">
             Contact Me
@@ -85,6 +88,7 @@ export default function Home() {
                 Vega Financial
               </a>
             </div>
+          </div>
           </div>
         </section>
       </main>
