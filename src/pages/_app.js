@@ -2,9 +2,14 @@ import '../styles/globals.css';
 import Head from 'next/head';
 import Flashlight from '../components/Flashlight';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 function MyApp({ Component, pageProps }) {
-  // Scroll-entrance observer — adds .is-visible when element enters viewport
+  const router = useRouter();
+
+  // Scroll-entrance observer — adds .is-visible when element enters viewport.
+  // IMPORTANT: re-run after client-side navigations; otherwise new [data-animate]
+  // nodes stay opacity:0 forever (looks like images "never load").
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -15,15 +20,39 @@ function MyApp({ Component, pageProps }) {
           }
         });
       },
-      { threshold: 0.12 }
+      {
+        threshold: 0.01,
+        rootMargin: '0px 0px 12% 0px',
+      }
     );
-    const animate = () => {
-      document.querySelectorAll('[data-animate]').forEach((el) => observer.observe(el));
+
+    const observePending = () => {
+      document.querySelectorAll('[data-animate]:not(.is-visible)').forEach((el) => {
+        observer.observe(el);
+      });
     };
-    // Run once on mount and re-run after navigation
-    animate();
-    return () => observer.disconnect();
-  }, []);
+
+    observePending();
+
+    const onRouteDone = () => {
+      requestAnimationFrame(() => observePending());
+    };
+
+    router.events.on('routeChangeComplete', onRouteDone);
+
+    // Safety net: never leave content invisible if observer missed (SSR quirks, fast scroll, etc.)
+    const safety = window.setTimeout(() => {
+      document.querySelectorAll('[data-animate]:not(.is-visible)').forEach((el) => {
+        el.classList.add('is-visible');
+      });
+    }, 2500);
+
+    return () => {
+      window.clearTimeout(safety);
+      router.events.off('routeChangeComplete', onRouteDone);
+      observer.disconnect();
+    };
+  }, [router]);
 
   return (
     <>
@@ -34,7 +63,10 @@ function MyApp({ Component, pageProps }) {
           name="description"
           content="Anastasia Cattaneo — Design Engineering Portfolio. Projects in robotics, ML, wearables, and software."
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5"
+        />
         <meta property="og:title" content="Anastasia Cattaneo — Portfolio" />
         <meta property="og:description" content="Design Engineering projects in robotics, AI, wearables, and software." />
         <meta property="og:image" content="/logo.png" />
