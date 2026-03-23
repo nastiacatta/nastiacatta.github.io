@@ -120,28 +120,32 @@ export default function Hero() {
         transparent: true,
       });
 
-      const OPEN_ROTATION = Math.PI / 6;
-      const CLOSED_ROTATION = -Math.PI / 2;
+      const OPEN_ROTATION = Math.PI / 5.5;
+      const CLOSED_ROTATION = -Math.PI / 2.2;
 
       const petals = [];
-      const numPetals = 8;
+      const numPetals = 10;
       const petalAngle = (Math.PI * 2) / numPetals;
       const flowerGroup = new THREE.Group();
       scene.add(flowerGroup);
-      flowerGroup.scale.set(1.08, 1.08, 1.08);
+      flowerGroup.scale.set(0.95, 0.95, 0.95);
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
+        // Slight hue variation per petal
+        petalMesh.material.color.setHSL(0.88 + i * 0.008, 0.9, 0.7);
+        petalMesh.material.emissive.setHSL(0.88, 1.0, 0.45);
         const petalGroup = new THREE.Group();
         petalGroup.add(petalMesh);
 
         const angle = i * petalAngle;
-        petalGroup.position.x = 1.0 * Math.sin(angle);
-        petalGroup.position.z = 1.0 * Math.cos(angle);
+        petalGroup.position.x = 0.95 * Math.sin(angle);
+        petalGroup.position.z = 0.95 * Math.cos(angle);
         petalGroup.rotation.y = angle;
         petalMesh.rotation.x = OPEN_ROTATION;
         petalGroup.userData.targetRotationX = OPEN_ROTATION;
-        petalGroup.userData.rotationSpeed = 0.012 + Math.random() * 0.005;
+        petalGroup.userData.phase = (i / numPetals) * Math.PI * 2;
+        petalGroup.userData.rotationSpeed = 0.018 + Math.random() * 0.006;
 
         petals.push(petalGroup);
         flowerGroup.add(petalGroup);
@@ -208,15 +212,21 @@ export default function Hero() {
 
         petals.forEach((pg) => {
           const pm = pg.children[0];
-          pg.userData.targetRotationX = isHovering ? CLOSED_ROTATION : OPEN_ROTATION;
-          pm.rotation.x += (pg.userData.targetRotationX - pm.rotation.x) * pg.userData.rotationSpeed;
+          const target = isHovering ? CLOSED_ROTATION : OPEN_ROTATION;
+          const diff = target - pm.rotation.x;
+          pm.rotation.x += diff * pg.userData.rotationSpeed;
           pm.rotation.x = THREE.MathUtils.clamp(pm.rotation.x, CLOSED_ROTATION, OPEN_ROTATION);
-          pm.rotation.z = Math.sin(t * 2 + pg.position.x * 2) * 0.012;
-          pg.position.y = Math.sin(t * 1.5 + pg.position.x * 2) * 0.022;
-          pg.rotation.z = Math.sin(t + pg.position.x) * 0.022;
+          // Gentle individual breathing
+          const phase = pg.userData.phase;
+          pm.rotation.z = Math.sin(t * 1.8 + phase) * 0.018;
+          pg.position.y = Math.sin(t * 1.2 + phase) * 0.03;
+          // Shimmer: pulse emissive intensity
+          pm.material.emissiveIntensity = 0.25 + Math.sin(t * 2 + phase) * 0.1;
         });
 
-        flowerGroup.rotation.y += 0.004;
+        // Pulse center glow
+        centerMesh.material.emissiveIntensity = 0.7 + Math.sin(t * 2.5) * 0.25;
+        flowerGroup.rotation.y += 0.003;
         controls.update();
         renderer.render(scene, camera);
       }
@@ -257,17 +267,14 @@ export default function Hero() {
             Anastasia<br />Cattaneo
           </h1>
 
-          {/* Typewriter — fixed-height line prevents layout shift */}
           <div className="mt-5 text-center md:text-left">
-            <p className="text-lg md:text-xl text-white/70 dark:text-zinc-600">
-              Design Engineer
-            </p>
-            <div className="h-8 flex items-center mt-1">
-              <span className="typewriter font-medium text-base md:text-lg text-pink-300 dark:text-pink-600">
+            <p className="text-lg md:text-xl text-white/70 dark:text-zinc-600 leading-snug">
+              Design Engineer ·{' '}
+              <span className="typewriter text-pink-300 dark:text-pink-600 font-medium">
                 {text}
               </span>
               <span className="typewriter-caret" aria-hidden>|</span>
-            </div>
+            </p>
           </div>
 
           <div className="mt-8">
@@ -279,8 +286,9 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right Column — flower canvas */}
-        <div className="md:w-1/2 w-full md:pl-10 mt-8 md:mt-0 relative flex items-center justify-center h-[46vw] md:h-[480px] max-h-[500px] overflow-hidden">
+        {/* Right Column — flower canvas, contained so it never bleeds left */}
+        <div className="md:w-1/2 w-full mt-6 md:mt-0 relative flex items-center justify-center"
+             style={{ height: 'clamp(280px, 44vw, 460px)' }}>
           <canvas ref={canvasRef} id="bg" className="w-full h-full" />
         </div>
       </div>

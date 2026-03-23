@@ -12,70 +12,80 @@ function LinkedInIcon({ className }) {
 const footerLinks = [
   { href: '/#about',    label: 'About' },
   { href: '/#projects', label: 'Projects' },
-  { href: '/#contact',  label: 'Contact' },
 ];
 
 export default function Footer() {
   return (
     <footer className="site-footer" role="contentinfo">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-12">
-        {/* Top row */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
-          {/* Left: logo + tagline */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
-            <Link href="/">
-              <a className="flex items-center gap-2.5 shrink-0 group">
-                <img
-                  src="/logo.png"
-                  alt="Logo"
-                  className="w-8 h-8 object-contain group-hover:scale-110 transition-transform"
-                />
-                <span
-                  className="font-semibold text-white dark:text-zinc-900 text-base"
-                  style={{ fontFamily: 'Syne, sans-serif' }}
-                >
-                  Anastasia Cattaneo
-                </span>
-              </a>
-            </Link>
-            <p className="text-sm text-white/55 dark:text-zinc-500 max-w-[280px] leading-relaxed">
-              MEng Design Engineering · Imperial College London
-            </p>
-          </div>
+      <div className="max-w-6xl mx-auto px-6 md:px-10 pt-16 pb-10">
 
-          {/* Right: links + LinkedIn */}
-          <nav className="flex flex-wrap items-center gap-5 md:gap-7" aria-label="Footer navigation">
-            {footerLinks.map((link) => (
+        {/* Get in touch headline */}
+        <div className="mb-12">
+          <p className="section-label mb-2">Get in touch</p>
+          <h2
+            className="text-3xl md:text-4xl font-bold text-white dark:text-zinc-900 mb-6 leading-tight"
+            style={{ fontFamily: 'Syne, sans-serif' }}
+          >
+            Let&apos;s work together.
+          </h2>
+          <a
+            href="mailto:anastasia.cattaneo@gmail.com"
+            className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-full border border-pink-400/35 bg-pink-500/10 hover:bg-pink-500/20 hover:border-pink-400/55 transition-all duration-250 shadow-[0_0_30px_rgba(240,96,180,0.1)] hover:shadow-[0_0_40px_rgba(240,96,180,0.2)]"
+          >
+            <svg className="w-4 h-4 text-pink-300 dark:text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+            <span className="text-base font-medium text-white dark:text-zinc-900 group-hover:text-pink-200 dark:group-hover:text-pink-700 transition-colors">
+              anastasia.cattaneo@gmail.com
+            </span>
+          </a>
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-white/10 dark:border-pink-400/15" />
+
+        {/* Bottom row */}
+        <div className="mt-7 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+          {/* Logo + name */}
+          <Link href="/">
+            <a className="flex items-center gap-2.5 group">
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className="w-8 h-8 object-contain group-hover:scale-110 transition-transform"
+              />
+              <span
+                className="font-semibold text-white dark:text-zinc-900 text-sm"
+                style={{ fontFamily: 'Syne, sans-serif' }}
+              >
+                Anastasia Cattaneo
+              </span>
+            </a>
+          </Link>
+
+          {/* Nav links + LinkedIn */}
+          <nav className="flex items-center gap-5 md:gap-7" aria-label="Footer navigation">
+            {footerLinks.map(link => (
               <Link href={link.href} key={link.label}>
-                <a className="text-sm text-white/70 dark:text-zinc-600 hover:text-pink-300 dark:hover:text-pink-600 transition-colors">
+                <a className="text-sm text-white/60 dark:text-zinc-500 hover:text-pink-300 dark:hover:text-pink-600 transition-colors">
                   {link.label}
                 </a>
               </Link>
             ))}
-
             <a
               href="https://www.linkedin.com/in/anastasia-cattaneo-794673277/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/70 dark:text-zinc-600 hover:text-pink-300 dark:hover:text-pink-600 transition-colors"
+              className="text-white/60 dark:text-zinc-500 hover:text-pink-300 dark:hover:text-pink-600 transition-colors"
               aria-label="LinkedIn"
             >
               <LinkedInIcon className="w-5 h-5" />
             </a>
           </nav>
-        </div>
 
-        {/* Bottom: copyright */}
-        <div className="mt-8 pt-6 border-t border-white/10 dark:border-pink-400/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <p className="text-xs text-white/40 dark:text-zinc-400">
-            © {new Date().getFullYear()} Anastasia Cattaneo. All rights reserved.
+          <p className="text-xs text-white/35 dark:text-zinc-400">
+            © {new Date().getFullYear()} Anastasia Cattaneo
           </p>
-          <a
-            href="mailto:anastasia.cattaneo@gmail.com"
-            className="text-xs text-white/40 dark:text-zinc-400 hover:text-pink-300 dark:hover:text-pink-600 transition-colors"
-          >
-            anastasia.cattaneo@gmail.com
-          </a>
         </div>
       </div>
     </footer>

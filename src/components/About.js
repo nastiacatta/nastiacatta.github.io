@@ -253,17 +253,16 @@ export default function About() {
       robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 2.5; // Base y-position
 
       // Rotation with momentum
-      if (!isDragging && Math.abs(spinVelocity) > 0.001) {
-        // Apply spin velocity to rotation
+      if (isDragging) {
         robot.group.rotation.y += spinVelocity;
-        // Apply damping to spin velocity
-        spinVelocity *= 0.95; // Adjust damping factor as needed
-      } else if (isDragging) {
-        // Apply spin velocity while dragging
+      } else if (Math.abs(spinVelocity) > 0.0005) {
         robot.group.rotation.y += spinVelocity;
+        spinVelocity *= 0.94;
+      } else {
+        // Gentle idle slow rotation when at rest
+        robot.group.rotation.y += 0.0025;
+        spinVelocity = 0;
       }
-      // Removed idle rotation to prevent automatic spinning
-      // No else clause here
 
       // Eye Movement
       if (hoveredRef.current) {
@@ -480,27 +479,42 @@ export default function About() {
 
   return (
     <section id="about" className="section">
-      <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-6xl mx-auto">
-        {/* Text Section */}
-        <div className="md:w-1/2 pr-4 md:pr-10">
-          <p className="section-label mb-3">Background</p>
+      <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full max-w-6xl mx-auto">
+
+        {/* Text + Photo */}
+        <div className="md:w-1/2 flex flex-col" data-animate>
+          {/* Profile picture */}
+          <div className="flex items-center gap-5 mb-7">
+            <img
+              src="/profilepic.jpeg"
+              alt="Anastasia Cattaneo"
+              className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover object-top border-2 border-pink-400/40 shadow-[0_0_20px_rgba(240,96,180,0.25)] shrink-0"
+            />
+            <div>
+              <p className="section-label !mb-1">Background</p>
+              <p className="text-sm text-white/55 dark:text-zinc-500 leading-snug">
+                MEng Design Engineering<br />Imperial College London
+              </p>
+            </div>
+          </div>
+
           <h2
-            className="text-4xl md:text-5xl font-bold mb-7 text-white dark:text-zinc-900 leading-tight"
+            className="text-4xl md:text-5xl font-bold mb-6 text-white dark:text-zinc-900 leading-tight"
             style={{ fontFamily: 'Syne, sans-serif' }}
           >
             About Me
           </h2>
           <p className="text-base md:text-lg text-white/80 dark:text-zinc-700 leading-relaxed mb-4">
             I&apos;m a fourth-year MEng Design Engineering student at Imperial College London
-            and a Business Intelligence Engineer (intern &rarr; part-time) at Amazon.
+            and a Business Intelligence Engineer (intern → part-time) at Amazon.
           </p>
           <p className="text-base md:text-lg text-white/80 dark:text-zinc-700 leading-relaxed">
             I&apos;m interested in machine learning, data science, software, and robotics.
             I like owning problems end-to-end and building user-centred solutions that are
             elegant to use and robust underneath.
           </p>
-          <div className="flex flex-wrap gap-2 mt-7">
-            {['Machine Learning', 'Data Science', 'Robotics', 'Full-stack', 'Amazon'].map(tag => (
+          <div className="flex flex-wrap gap-2 mt-6">
+            {['Machine Learning', 'Data Science', 'Robotics', 'Amazon'].map(tag => (
               <span
                 key={tag}
                 className="px-3 py-1.5 text-xs rounded-full border border-pink-400/25 text-pink-200 dark:text-pink-700"
@@ -511,13 +525,14 @@ export default function About() {
           </div>
         </div>
 
-        {/* Animation Section */}
-        <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center items-center">
+        {/* Robot animation */}
+        <div className="md:w-1/2 flex justify-center items-center" data-animate data-delay="2">
           <div
             ref={canvasRef}
-            className="w-full h-[30rem] md:h-[40rem] max-w-[700px]"
+            className="w-full max-w-[520px]"
+            style={{ height: 'clamp(300px, 38vw, 460px)' }}
             aria-label="Animated robot waving its arm"
-          ></div>
+          />
         </div>
       </div>
     </section>

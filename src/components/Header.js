@@ -138,14 +138,8 @@ export default function Header() {
                 <img
                   src="/logo.png"
                   alt="Logo"
-                  className="w-8 h-8 object-contain group-hover:scale-110 transition-transform duration-200"
+                  className="w-9 h-9 object-contain group-hover:scale-110 transition-transform duration-200"
                 />
-                <span
-                  className="font-semibold text-white dark:text-zinc-900 text-[1rem] tracking-tight group-hover:text-pink-300 dark:group-hover:text-pink-700 transition-colors hidden sm:inline"
-                  style={{ fontFamily: 'Syne, sans-serif' }}
-                >
-                  Anastasia Cattaneo
-                </span>
               </a>
             </Link>
 
