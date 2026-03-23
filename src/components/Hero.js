@@ -53,7 +53,8 @@ export default function Hero() {
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const dprCap = window.innerWidth < 768 ? 1.25 : 2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, dprCap));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.18;
@@ -375,6 +376,8 @@ export default function Hero() {
       camera.aspect = canvasRef.current.clientWidth / canvasRef.current.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
+      const cap = window.innerWidth < 768 ? 1.25 : 2;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, cap));
     };
     window.addEventListener('resize', onResize, false);
 
@@ -390,22 +393,22 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[100dvh] min-h-[100vh] flex items-center justify-center overflow-hidden"
+      className="relative min-h-[100dvh] min-h-[100vh] flex items-center justify-center overflow-hidden px-[max(0px,env(safe-area-inset-left))] pr-[max(0px,env(safe-area-inset-right))]"
     >
-      <div className="flex flex-col md:flex-row items-center w-full h-full max-w-6xl mx-auto px-6 md:px-10">
+      <div className="flex flex-col md:flex-row items-center w-full h-full max-w-6xl mx-auto px-4 sm:px-6 md:px-10 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
 
         {/* Left Column */}
-        <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center pt-20 md:pt-0">
+        <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center pt-[max(5rem,env(safe-area-inset-top))] md:pt-0">
           <p className="section-label mb-3">Portfolio</p>
           <h1
-            className="text-5xl md:text-6xl lg:text-7xl neon leading-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl neon leading-[1.08] sm:leading-tight text-center md:text-left"
             style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800 }}
           >
             Anastasia<br />Cattaneo
           </h1>
 
-          <div className="mt-5 text-center md:text-left">
-            <p className="text-lg md:text-xl text-white/70 dark:text-zinc-600 leading-snug">
+          <div className="mt-5 text-center md:text-left max-w-[22rem] md:max-w-none mx-auto md:mx-0">
+            <p className="text-base sm:text-lg md:text-xl text-white/70 dark:text-zinc-600 leading-snug">
               Design Engineer ·{' '}
               <span className="typewriter text-pink-300 dark:text-pink-600 font-medium">
                 {text}
@@ -424,8 +427,8 @@ export default function Hero() {
         </div>
 
         {/* Right Column — flower canvas */}
-        <div className="md:w-1/2 w-full mt-6 md:mt-0 relative flex items-center justify-center"
-             style={{ height: 'clamp(280px, 44vw, 490px)' }}>
+        <div className="md:w-1/2 w-full mt-4 sm:mt-6 md:mt-0 relative flex items-center justify-center min-h-[220px]"
+             style={{ height: 'clamp(220px, min(52vw, 42vh), 490px)' }}>
           <canvas ref={canvasRef} id="bg" className="w-full h-full" />
         </div>
       </div>

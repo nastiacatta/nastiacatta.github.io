@@ -15,10 +15,10 @@ export default function Home() {
         <About />
 
         <section id="projects" className="section">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-6xl mx-auto w-full min-w-0">
             <p className="section-label" data-animate>Work</p>
             <h2
-              className="text-4xl md:text-5xl font-bold mb-10 text-white dark:text-zinc-900"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-10 text-white dark:text-zinc-900"
               data-animate data-delay="1"
             >
               Projects

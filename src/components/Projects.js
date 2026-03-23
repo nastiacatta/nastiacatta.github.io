@@ -91,7 +91,7 @@ export default function Projects() {
               <div>
                 <p className="section-label mb-3">Featured</p>
                 <h3
-                  className="text-3xl md:text-4xl font-bold text-white dark:text-zinc-900 mb-4 leading-tight"
+                  className="text-2xl sm:text-3xl md:text-4xl font-bold text-white dark:text-zinc-900 mb-4 leading-tight"
                   style={{ fontFamily: 'Syne, sans-serif' }}
                 >
                   Vega Financial
@@ -138,7 +138,8 @@ export default function Projects() {
                     height={800}
                     loading="eager"
                     decoding="async"
-                    className="vega-featured-image w-full h-auto object-contain object-center max-h-[min(360px,52vh)] sm:max-h-[360px] mx-auto"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="vega-featured-image w-full h-auto object-contain object-center max-h-[min(280px,48vh)] sm:max-h-[min(360px,52vh)] md:max-h-[360px] mx-auto"
                     onError={() => setVegaImgError(true)}
                   />
                 </div>
@@ -166,7 +167,7 @@ export default function Projects() {
         <div className="featured-project-card rounded-2xl overflow-hidden">
           <button
             onClick={() => setMastersOpen(o => !o)}
-            className="w-full flex items-center justify-between p-7 md:p-8 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400"
+            className="w-full flex items-center justify-between gap-3 p-5 sm:p-7 md:p-8 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 touch-manipulation min-h-[52px]"
             aria-expanded={mastersOpen}
           >
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-5">
@@ -188,9 +189,9 @@ export default function Projects() {
 
           <div
             className="overflow-hidden transition-all duration-500 ease-in-out"
-            style={{ maxHeight: mastersOpen ? '700px' : '0px' }}
+            style={{ maxHeight: mastersOpen ? 'min(2000px, 220vh)' : '0px' }}
           >
-            <div className="px-7 md:px-8 pb-8 border-t border-pink-400/15">
+            <div className="px-5 sm:px-7 md:px-8 pb-6 sm:pb-8 border-t border-pink-400/15">
               <div className="pt-6 space-y-4">
                 {MASTERS_TEXT.split('\n\n').map((para, i) => (
                   <p key={i} className="text-sm md:text-base text-white/75 dark:text-zinc-600 leading-relaxed">
@@ -213,11 +214,11 @@ export default function Projects() {
       {/* ── Featured: Political Violence Forecasting (Visione) ─── */}
       <div className="mb-10" data-animate data-delay="2">
         <div className="featured-project-card rounded-2xl overflow-hidden">
-          <div className="p-7 md:p-10 flex flex-col gap-5">
+          <div className="p-5 sm:p-7 md:p-10 flex flex-col gap-5">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
                 <p className="section-label mb-2">Featured Data Product</p>
-                <h3 className="text-2xl md:text-3xl font-bold text-white dark:text-zinc-900" style={{ fontFamily: 'Syne, sans-serif' }}>
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white dark:text-zinc-900" style={{ fontFamily: 'Syne, sans-serif' }}>
                   Political Violence Forecasting
                 </h3>
                 <div className="flex flex-wrap gap-2 mt-4">
@@ -264,7 +265,10 @@ export default function Projects() {
 
             <div
               className="overflow-hidden transition-all duration-300 ease-out border-t border-pink-400/15"
-              style={{ maxHeight: visioneInfoOpen ? '320px' : '0', opacity: visioneInfoOpen ? 1 : 0 }}
+              style={{
+                maxHeight: visioneInfoOpen ? 'min(75vh, 28rem)' : '0',
+                opacity: visioneInfoOpen ? 1 : 0,
+              }}
             >
               <div className="pt-5 space-y-3">
                 {VISIONE_INFO_PARAGRAPHS.map((para, i) => (
@@ -279,7 +283,7 @@ export default function Projects() {
       </div>
 
       {/* ── Project Grid ─────────────────────────────────────────── */}
-      <div id="project-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div id="project-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {projects.map((project, idx) => (
           <div key={project.title} data-animate data-delay={String((idx % 3) + 1)}>
             <Link href={project.href}>
@@ -292,13 +296,14 @@ export default function Projects() {
                   transitionSpeed={700}
                   className="card-frame rounded-xl overflow-hidden"
                 >
-                  <div className="relative w-full h-52">
+                  <div className="relative w-full h-48 sm:h-52">
                     {!failedImages[project.title] ? (
                       <img
                         src={getCurrentImageSrc(project)}
                         alt={project.title}
-                        loading="eager"
+                        loading={idx < 3 ? 'eager' : 'lazy'}
                         decoding="async"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         onError={() => handleProjectImageError(project)}
                       />

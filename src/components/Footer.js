@@ -17,19 +17,19 @@ const footerLinks = [
 export default function Footer() {
   return (
     <footer className="site-footer" role="contentinfo">
-      <div className="max-w-6xl mx-auto px-6 md:px-10 pt-16 pb-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 pt-12 sm:pt-16 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
 
         {/* Get in touch */}
         <div className="mb-12">
           <p className="section-label mb-2">Get in touch</p>
           <a
             href="mailto:anastasia.cattaneo@gmail.com"
-            className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-full border border-pink-400/35 bg-pink-500/10 hover:bg-pink-500/20 hover:border-pink-400/55 transition-all duration-250 shadow-[0_0_30px_rgba(240,96,180,0.1)] hover:shadow-[0_0_40px_rgba(240,96,180,0.2)]"
+            className="group inline-flex items-center gap-3 px-4 sm:px-6 py-3 sm:py-3.5 rounded-full border border-pink-400/35 bg-pink-500/10 hover:bg-pink-500/20 hover:border-pink-400/55 transition-all duration-250 shadow-[0_0_30px_rgba(240,96,180,0.1)] hover:shadow-[0_0_40px_rgba(240,96,180,0.2)] min-h-[48px] max-w-full touch-manipulation"
           >
             <svg className="w-4 h-4 text-pink-300 dark:text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
             </svg>
-            <span className="text-base font-medium text-white dark:text-zinc-900 group-hover:text-pink-200 dark:group-hover:text-pink-700 transition-colors">
+            <span className="text-sm sm:text-base font-medium text-white dark:text-zinc-900 group-hover:text-pink-200 dark:group-hover:text-pink-700 transition-colors break-all sm:break-normal text-left">
               anastasia.cattaneo@gmail.com
             </span>
           </a>
@@ -70,7 +70,7 @@ export default function Footer() {
               href="https://www.linkedin.com/in/anastasia-cattaneo-794673277/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/60 dark:text-zinc-500 hover:text-pink-300 dark:hover:text-pink-600 transition-colors"
+              className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] -mr-2 text-white/60 dark:text-zinc-500 hover:text-pink-300 dark:hover:text-pink-600 transition-colors touch-manipulation rounded-lg"
               aria-label="LinkedIn"
             >
               <LinkedInIcon className="w-5 h-5" />

@@ -6,6 +6,8 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -168,6 +170,65 @@ a:hover { color: #f060b4; }
     padding: 64px 20px max(52px, env(safe-area-inset-bottom));
     min-height: 100dvh;
     min-height: 100vh;
+  }
+}
+
+/* Narrow phones: keep readable gutters without crowding */
+@media (max-width: 380px) {
+  .section {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+}
+
+/* Project case-study inner wrapper — section already provides horizontal padding */
+.project-page-inner {
+  width: 100%;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+@media (min-width: 768px) {
+  .project-page-inner {
+    padding-top: 3rem;
+    padding-bottom: 3.5rem;
+  }
+}
+
+/* Responsive embeds (YouTube, etc.) */
+.embed-responsive {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+.embed-responsive iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.embed-responsive--16x9 {
+  aspect-ratio: 16 / 9;
+}
+
+/* PDF viewers: usable height on phones without forcing 800–900px scroll wall */
+.pdf-embed-frame {
+  width: 100%;
+  border: 0;
+  display: block;
+  min-height: min(62vh, 640px);
+  height: 68vh;
+  max-height: min(88vh, 960px);
+}
+@media (min-width: 768px) {
+  .pdf-embed-frame {
+    min-height: 800px;
+    height: 900px;
+    max-height: none;
   }
 }
 

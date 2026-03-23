@@ -39,7 +39,8 @@ export default function About() {
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(W, H);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      const dprCap = W < 768 ? 1.25 : 2;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, dprCap));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -57,7 +58,7 @@ export default function About() {
       const key = new THREE.DirectionalLight(0xffffff, 1.1);
       key.position.set(5, 14, 8);
       key.castShadow = true;
-      key.shadow.mapSize.setScalar(2048);
+      key.shadow.mapSize.setScalar(W < 768 ? 1024 : 2048);
       key.shadow.bias = -0.0003;
       scene.add(key);
       const fill = new THREE.DirectionalLight(0xffc8e8, 0.45);
@@ -88,6 +89,8 @@ export default function About() {
         const w = canvasRef.current.clientWidth;
         const h = canvasRef.current.clientHeight;
         renderer.setSize(w, h);
+        const cap = w < 768 ? 1.25 : 2;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, cap));
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
       };
@@ -134,8 +137,8 @@ export default function About() {
       container.addEventListener('mouseleave', onUp);
       container.addEventListener('mouseenter', () => { hoveredRef.current = true; });
       container.addEventListener('mouseleave', () => { hoveredRef.current = false; });
-      container.addEventListener('touchstart', onTouchStart);
-      container.addEventListener('touchmove', onTouchMove);
+      container.addEventListener('touchstart', onTouchStart, { passive: true });
+      container.addEventListener('touchmove', onTouchMove, { passive: true });
       container.addEventListener('touchend', onUp);
       container.addEventListener('touchcancel', onUp);
 
@@ -534,7 +537,7 @@ export default function About() {
 
   return (
     <section id="about" className="section">
-      <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full max-w-6xl mx-auto">
+      <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 w-full max-w-6xl mx-auto min-w-0">
 
         {/* Text + Photo */}
         <div className="md:w-1/2 flex flex-col" data-animate>
@@ -582,7 +585,7 @@ export default function About() {
           <div
             ref={canvasRef}
             className="w-full max-w-[min(100%,560px)]"
-            style={{ height: 'clamp(380px, 52vw, 560px)' }}
+            style={{ height: 'clamp(300px, min(72vw, 50vh), 560px)' }}
             aria-label="Animated 3D robot — hover to wave, drag to rotate"
           />
         </div>

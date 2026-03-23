@@ -236,7 +236,9 @@ export default function Header() {
             ? 'mobile-nav-panel-open opacity-100 translate-y-0 scale-100 pointer-events-auto'
             : 'mobile-nav-panel-closed opacity-0 -translate-y-3 scale-[0.97] pointer-events-none'
         }`}
-        style={{ top: 'calc(4.5rem + 0.75rem)' }}
+        style={{
+          top: 'max(calc(4.5rem + 0.75rem), calc(4rem + env(safe-area-inset-top, 0px)))',
+        }}
         role="dialog"
         aria-modal
         aria-label="Mobile navigation"
