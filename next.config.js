@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',        // static HTML export
-  images: { unoptimized: true },
-  trailingSlash: true      // safer on GitHub Pages
+  reactStrictMode: true,
 };
 module.exports = nextConfig;

@@ -23,3 +23,9 @@ yarn-error.log*
 
 # Vega reference project (do not push)
 Vega/
+
+# Legacy static export artifacts
+out/
+docs/
+_next/
+*.html

@@ -28,7 +28,7 @@ export default function Innovice() {
 
           {/* Embed the PDF */}
           <iframe
-            src="/public/innovice.pdf"
+            src="/innovice.pdf"
             width="100%"
             height="800px"
             className="border-none"
