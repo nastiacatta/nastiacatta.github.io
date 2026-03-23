@@ -29,3 +29,4 @@ out/
 docs/
 _next/
 *.html
+.vercel
