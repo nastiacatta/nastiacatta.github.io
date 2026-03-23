@@ -12,7 +12,7 @@ const RAW_SEAO2 = '/seao2.png';
 const RAW_REORBIT = '/reorbit.png';
 
 /** Bump when replacing PNGs so browsers/CDNs don’t keep stale thumbnails. */
-const COVER_CACHE = '?v=7';
+const COVER_CACHE = '?v=10';
 
 const seaFile = SWAP_SEAO2_REORBIT_COVER_FILES ? RAW_REORBIT : RAW_SEAO2;
 const reoFile = SWAP_SEAO2_REORBIT_COVER_FILES ? RAW_SEAO2 : RAW_REORBIT;
