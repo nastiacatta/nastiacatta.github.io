@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Tilt from 'react-parallax-tilt';
 import { VISIONE_DASHBOARD_URL } from '../constants/visioneDashboard';
+import { SEO2_COVER_SRC, REORBIT_COVER_SRC } from '../constants/projectCovers';
 
 const projects = [
   { title: 'ROBOTICS',      href: '/robotics',    imageSrc: '/robotics.png' },
-  { title: 'SEAO2',         href: '/seao2',        imageSrc: '/seao2.png' },
-  { title: 'REORBIT',       href: '/reorbit',      imageSrc: '/reorbit.png' },
+  { title: 'SEAO2',         href: '/seao2',        imageSrc: SEO2_COVER_SRC },
+  { title: 'REORBIT',       href: '/reorbit',      imageSrc: REORBIT_COVER_SRC },
   { title: 'EXO GLOVE',    href: '/exoglove',     imageSrc: '/exoglove.jpeg' },
   { title: 'BIOMORPHUS',   href: '/biomorphus',   imageSrc: '/biomorphus.jpeg' },
   { title: 'INNOVICE',     href: '/innovice',     imageSrc: '/innovice.jpeg' },

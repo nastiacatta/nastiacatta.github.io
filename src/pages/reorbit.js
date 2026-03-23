@@ -1,22 +1,10 @@
 // src/pages/reorbit.js
 import { useState } from 'react';
 import Header from '../components/Header';
+import { REORBIT_COVER_SRC } from '../constants/projectCovers';
 
 export default function Reorbit() {
-  const [coverSrc, setCoverSrc] = useState('/reorbit.png');
   const [coverFailed, setCoverFailed] = useState(false);
-
-  const handleCoverError = () => {
-    if (coverSrc === '/reorbit.png') {
-      setCoverSrc('/reorbit.jpg');
-      return;
-    }
-    if (coverSrc === '/reorbit.jpg') {
-      setCoverSrc('/reorbit.jpeg');
-      return;
-    }
-    setCoverFailed(true);
-  };
 
   return (
     <div className="bg-dark-grey text-light-pink dark:bg-white dark:text-dark-grey min-h-screen">
@@ -46,10 +34,10 @@ export default function Reorbit() {
             <div className="md:w-1/2 flex justify-center">
               {!coverFailed ? (
                 <img
-                  src={coverSrc}
+                  src={REORBIT_COVER_SRC}
                   alt="ReOrbit cover"
                   className="rounded-lg shadow-lg w-full h-auto max-w-lg"
-                  onError={handleCoverError}
+                  onError={() => setCoverFailed(true)}
                 />
               ) : (
                 <div className="rounded-lg shadow-lg w-full max-w-lg h-[280px] flex items-center justify-center border border-current/15 opacity-80">

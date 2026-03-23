@@ -1,5 +1,8 @@
 # Exclude duplicate heavy assets from Vercel upload
 # Keep only the PDFs that are actually used by pages.
+# Project covers (always deploy)
+!public/seao2.png
+!public/reorbit.png
 public/*.pdf
 !public/seao2.pdf
 !public/reorbit.pdf
