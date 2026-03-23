@@ -1,5 +1,4 @@
-// src/components/About.jsx
-
+// src/components/About.js
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
@@ -15,559 +14,422 @@ export default function About() {
 
     let envRT = null;
 
-    // Scene Setup
     const scene = new THREE.Scene();
-    scene.background = null; // Transparent background
+    scene.background = null;
 
-    // Camera Setup
     const camera = new THREE.PerspectiveCamera(
-      40,
+      42,
       canvasRef.current.clientWidth / canvasRef.current.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 3.65, 7.35);
-    camera.lookAt(0, 2.35, 0);
+    camera.position.set(0, 3.8, 9.2);
+    camera.lookAt(0, 2.2, 0);
 
-    // Renderer Setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(
-      canvasRef.current.clientWidth,
-      canvasRef.current.clientHeight
-    );
+    renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true; // Enable shadows
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.12;
+    renderer.toneMappingExposure = 1.1;
     canvasRef.current.appendChild(renderer.domElement);
 
-    // Studio-style reflections for more realistic metal / clearcoat
-    const pmremGenerator = new THREE.PMREMGenerator(renderer);
-    envRT = pmremGenerator.fromScene(new RoomEnvironment(), 0.04);
+    // IBL environment for physically correct reflections
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = envRT.texture;
-    pmremGenerator.dispose();
+    pmrem.dispose();
 
-    // Lighting — balanced key + fill + rim (environment does heavy lifting)
-    const hemi = new THREE.HemisphereLight(0xfff0f8, 0x1a1220, 0.42);
-    scene.add(hemi);
+    // Lights
+    scene.add(new THREE.AmbientLight(0xffeef8, 0.4));
+    const key = new THREE.DirectionalLight(0xffffff, 1.1);
+    key.position.set(5, 14, 8);
+    key.castShadow = true;
+    key.shadow.mapSize.setScalar(2048);
+    key.shadow.bias = -0.0003;
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xffc8e8, 0.45);
+    fill.position.set(-7, 4, 6);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xf060b4, 0.5);
+    rim.position.set(0, 5, -11);
+    scene.add(rim);
 
-    const ambientLight = new THREE.AmbientLight(0xffeef8, 0.28);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.15);
-    directionalLight.position.set(6, 14, 8);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    directionalLight.shadow.bias = -0.00028;
-    directionalLight.shadow.normalBias = 0.02;
-    directionalLight.shadow.camera.near = 0.5;
-    directionalLight.shadow.camera.far = 50;
-    directionalLight.shadow.camera.left = -10;
-    directionalLight.shadow.camera.right = 10;
-    directionalLight.shadow.camera.top = 10;
-    directionalLight.shadow.camera.bottom = -10;
-    scene.add(directionalLight);
-    const fillLight = new THREE.DirectionalLight(0xffc8e8, 0.42);
-    fillLight.position.set(-8, 5, 6);
-    scene.add(fillLight);
-    const rimLight = new THREE.DirectionalLight(0xf060b4, 0.55);
-    rimLight.position.set(0, 6, -12);
-    scene.add(rimLight);
-
-    // Create Robot
-    const robot = createRobot();
-    robot.group.scale.set(2.05, 2.05, 2.05);
+    // ── Robot ─────────────────────────────────────────────────
+    const robot = buildRobot();
+    robot.group.scale.setScalar(1.6);
     scene.add(robot.group);
 
-    // Ground Plane to Receive Shadows (Transparent)
-    const groundGeometry = new THREE.PlaneGeometry(50, 50);
-    const groundMaterial = new THREE.MeshStandardMaterial({
-      color: 0x808080, // Neutral gray to cast visible shadows without being colorful
-      transparent: true,
-      opacity: 0.0, // Set to 0 if you don't want to see the ground; shadows will still be cast
-    });
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+    // Transparent shadow-catcher
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(50, 50),
+      new THREE.ShadowMaterial({ opacity: 0.22 })
+    );
     ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -2.0; // Elevated to align with robot's new position
+    ground.position.y = -2.6;
     ground.receiveShadow = true;
     scene.add(ground);
 
-    // Handle Resize for Responsiveness
+    // ── Interactions ──────────────────────────────────────────
     const handleResize = () => {
       if (!canvasRef.current) return;
-      const width = canvasRef.current.clientWidth;
-      const height = canvasRef.current.clientHeight;
-      renderer.setSize(width, height);
-      camera.aspect = width / height;
+      const w = canvasRef.current.clientWidth;
+      const h = canvasRef.current.clientHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
     };
     window.addEventListener('resize', handleResize);
 
-    // Mouse and Touch Variables
     let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
+    let prevMouse = { x: 0, y: 0 };
     let spinVelocity = 0;
 
-    // Mouse Events
-    const onMouseDown = (event) => {
+    const onDown = (e) => {
       isDragging = true;
-      const rect = canvasRef.current.getBoundingClientRect();
-      previousMousePosition = {
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
-      };
+      const r = canvasRef.current.getBoundingClientRect();
+      prevMouse = { x: e.clientX - r.left, y: e.clientY - r.top };
     };
-
-    const onMouseMove = (event) => {
-      const rect = canvasRef.current.getBoundingClientRect();
-      mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      mouseRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
+    const onMove = (e) => {
+      const r = canvasRef.current.getBoundingClientRect();
+      mouseRef.current.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+      mouseRef.current.y = -((e.clientY - r.top) / r.height) * 2 + 1;
       if (isDragging) {
-        const deltaMove = {
-          x: event.clientX - rect.left - previousMousePosition.x,
-          y: event.clientY - rect.top - previousMousePosition.y,
-        };
-
-        // Update spin velocity based on mouse movement
-        spinVelocity = deltaMove.x * 0.005; // Adjusted multiplier for momentum
-
-        previousMousePosition = {
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top,
-        };
+        spinVelocity = (e.clientX - r.left - prevMouse.x) * 0.005;
+        prevMouse = { x: e.clientX - r.left, y: e.clientY - r.top };
       }
     };
+    const onUp = () => { isDragging = false; };
 
-    const onMouseUp = () => {
-      isDragging = false;
-    };
-
-    // Touch Events for Mobile
-    const onTouchStart = (event) => {
+    const onTouchStart = (e) => {
       isDragging = true;
-      const rect = canvasRef.current.getBoundingClientRect();
-      const touch = event.touches[0];
-      previousMousePosition = {
-        x: touch.clientX - rect.left,
-        y: touch.clientY - rect.top,
-      };
+      const r = canvasRef.current.getBoundingClientRect();
+      prevMouse = { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
     };
-
-    const onTouchMove = (event) => {
+    const onTouchMove = (e) => {
       if (!isDragging) return;
-      const rect = canvasRef.current.getBoundingClientRect();
-      const touch = event.touches[0];
-      mouseRef.current.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
-      mouseRef.current.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
-
-      const deltaMove = {
-        x: touch.clientX - rect.left - previousMousePosition.x,
-        y: touch.clientY - rect.top - previousMousePosition.y,
-      };
-
-      // Update spin velocity based on touch movement
-      spinVelocity = deltaMove.x * 0.005; // Adjusted multiplier for momentum
-
-      previousMousePosition = {
-        x: touch.clientX - rect.left,
-        y: touch.clientY - rect.top,
-      };
+      const r = canvasRef.current.getBoundingClientRect();
+      const t = e.touches[0];
+      mouseRef.current.x = ((t.clientX - r.left) / r.width) * 2 - 1;
+      mouseRef.current.y = -((t.clientY - r.top) / r.height) * 2 + 1;
+      spinVelocity = (t.clientX - r.left - prevMouse.x) * 0.005;
+      prevMouse = { x: t.clientX - r.left, y: t.clientY - r.top };
     };
 
-    const onTouchEnd = () => {
-      isDragging = false;
-    };
+    const el = canvasRef.current;
+    el.addEventListener('mousedown', onDown);
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseup', onUp);
+    el.addEventListener('mouseleave', onUp);
+    el.addEventListener('mouseenter', () => { hoveredRef.current = true; });
+    el.addEventListener('mouseleave', () => { hoveredRef.current = false; });
+    el.addEventListener('touchstart', onTouchStart);
+    el.addEventListener('touchmove', onTouchMove);
+    el.addEventListener('touchend', onUp);
+    el.addEventListener('touchcancel', onUp);
 
-    // Event Listeners
-    canvasRef.current.addEventListener('mousedown', onMouseDown);
-    canvasRef.current.addEventListener('mousemove', onMouseMove);
-    canvasRef.current.addEventListener('mouseup', onMouseUp);
-    canvasRef.current.addEventListener('mouseleave', onMouseUp);
+    // ── Animation ─────────────────────────────────────────────
+    let waveDir = 1;
+    const waveSpeed = 0.013;
+    const maxUp = (5 * Math.PI) / 6;
+    const maxDown = maxUp - Math.PI / 10;
 
-    // Touch Event Listeners
-    canvasRef.current.addEventListener('touchstart', onTouchStart);
-    canvasRef.current.addEventListener('touchmove', onTouchMove);
-    canvasRef.current.addEventListener('touchend', onTouchEnd);
-    canvasRef.current.addEventListener('touchcancel', onTouchEnd);
+    let restDir = 1;
+    const restSpeed = 0.0045;
+    const restMax = Math.PI / 22;
 
-    const onMouseEnter = () => {
-      hoveredRef.current = true;
-    };
-
-    const onMouseLeaveCanvas = () => {
-      hoveredRef.current = false;
-    };
-
-    canvasRef.current.addEventListener('mouseenter', onMouseEnter);
-    canvasRef.current.addEventListener('mouseleave', onMouseLeaveCanvas);
-
-    // Animation Loop Adjustments
-
-    // Waving Arm
-    let waveDirection = 1;
-    const waveSpeed = 0.012; // Slightly smoother, more lifelike wave
-    const maxWaveAngleUp = (5 * Math.PI) / 6; // 150 degrees
-    const maxWaveAngleDown = (5 * Math.PI) / 6 - (Math.PI / 12); // 135 degrees
-
-    // Resting Arm
-    let restingWaveDirection = 1;
-    const restingWaveSpeed = 0.0045; // Slow speed for subtle movement
-    const restingMaxWaveAngle = Math.PI / 24; // 7.5 degrees
-
-    let eyeRotationAngle = 0;
+    let eyeAngle = 0;
     const clock = new THREE.Clock();
 
     const animate = () => {
       requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
 
-      const elapsed = clock.getElapsedTime();
-
-      // Waving Arm Animation
+      // Right arm wave
       if (hoveredRef.current) {
-        robot.rightArm.rotation.z += (waveSpeed + Math.sin(elapsed * 2.2) * 0.0016) * waveDirection;
-        robot.rightArm.rotation.z = THREE.MathUtils.clamp(
-          robot.rightArm.rotation.z,
-          maxWaveAngleDown,
-          maxWaveAngleUp
-        );
-
-        // Reverse direction if limits are reached
-        if (
-          robot.rightArm.rotation.z >= maxWaveAngleUp ||
-          robot.rightArm.rotation.z <= maxWaveAngleDown
-        ) {
-          waveDirection *= -1;
-        }
+        robot.rightArm.rotation.z += (waveSpeed + Math.sin(t * 2.1) * 0.0015) * waveDir;
+        robot.rightArm.rotation.z = THREE.MathUtils.clamp(robot.rightArm.rotation.z, maxDown, maxUp);
+        if (robot.rightArm.rotation.z >= maxUp || robot.rightArm.rotation.z <= maxDown) waveDir *= -1;
       } else {
-        // Smoothly return the arm to the default resting position (90 degrees)
-        robot.rightArm.rotation.z = THREE.MathUtils.lerp(
-          robot.rightArm.rotation.z,
-          Math.PI / 2,
-          0.05
-        );
+        robot.rightArm.rotation.z = THREE.MathUtils.lerp(robot.rightArm.rotation.z, Math.PI / 2, 0.055);
       }
 
-      // Resting Arm Slight Movement
+      // Left arm subtle sway
       if (hoveredRef.current) {
-        robot.leftArm.rotation.z += restingWaveSpeed * restingWaveDirection;
-        robot.leftArm.rotation.z = THREE.MathUtils.clamp(
-          robot.leftArm.rotation.z,
-          -restingMaxWaveAngle,
-          restingMaxWaveAngle
-        );
-
-        if (
-          robot.leftArm.rotation.z >= restingMaxWaveAngle ||
-          robot.leftArm.rotation.z <= -restingMaxWaveAngle
-        ) {
-          restingWaveDirection *= -1;
-        }
+        robot.leftArm.rotation.z += restSpeed * restDir;
+        robot.leftArm.rotation.z = THREE.MathUtils.clamp(robot.leftArm.rotation.z, -restMax, restMax);
+        if (Math.abs(robot.leftArm.rotation.z) >= restMax) restDir *= -1;
       } else {
-        // Return resting arm to neutral position
-        robot.leftArm.rotation.z = THREE.MathUtils.lerp(
-          robot.leftArm.rotation.z,
-          0,
-          0.05
-        );
+        robot.leftArm.rotation.z = THREE.MathUtils.lerp(robot.leftArm.rotation.z, 0, 0.05);
       }
 
-      // Slight up/down + subtle body tilt for realism
-      robot.group.position.y = Math.sin(elapsed * 1.05) * 0.07 + 2.52;
-      robot.head.rotation.z = Math.sin(elapsed * 0.8) * 0.045;
-      robot.head.rotation.x = Math.sin(elapsed * 1.3) * 0.02;
+      // Levitate + body micro-motions
+      robot.group.position.y = Math.sin(t * 1.05) * 0.07 + 2.55;
+      robot.head.rotation.z = Math.sin(t * 0.75) * 0.04;
+      robot.head.rotation.x = Math.sin(t * 1.2) * 0.018;
       if (robot.antenna) {
-        robot.antenna.rotation.z = Math.sin(elapsed * 2.4) * 0.12;
-        robot.antenna.rotation.x = Math.sin(elapsed * 1.9) * 0.06;
+        robot.antenna.rotation.z = Math.sin(t * 2.2) * 0.13;
+        robot.antenna.rotation.x = Math.sin(t * 1.8) * 0.06;
       }
 
-      // Rotation with momentum
+      // Spin
       if (isDragging) {
         robot.group.rotation.y += spinVelocity;
       } else if (Math.abs(spinVelocity) > 0.0005) {
         robot.group.rotation.y += spinVelocity;
-        spinVelocity *= 0.94;
+        spinVelocity *= 0.93;
       } else {
-        // Gentle idle slow rotation when at rest
-        robot.group.rotation.y += 0.0021;
+        robot.group.rotation.y += 0.002;
         spinVelocity = 0;
       }
 
-      // Eye Movement
+      // Eye tracking
       if (hoveredRef.current) {
-        // Eyes follow mouse
-        // Convert mouse position to 3D coordinates
-        const vector = new THREE.Vector3(mouseRef.current.x, mouseRef.current.y, 0.5);
-        vector.unproject(camera);
-
-        // Calculate direction from head to mouse position
-        const dir = vector.sub(camera.position).normalize();
-        const distance = -camera.position.z / dir.z;
-        const pos = camera.position.clone().add(dir.multiplyScalar(distance));
-
-        // Limit eye movement
+        const v = new THREE.Vector3(mouseRef.current.x, mouseRef.current.y, 0.5);
+        v.unproject(camera);
+        const dir = v.sub(camera.position).normalize();
+        const dist = -camera.position.z / dir.z;
+        const pos = camera.position.clone().add(dir.multiplyScalar(dist));
         robot.eyes.forEach((eye) => {
-          const eyeDirX = THREE.MathUtils.clamp(
-            (pos.x - robot.group.position.x) * 0.1,
-            -0.05,
-            0.05
-          );
-          const eyeDirY = THREE.MathUtils.clamp(
-            (pos.y - (robot.group.position.y + 1.5)) * 0.1,
-            -0.05,
-            0.05
-          );
-          eye.position.x = eye.userData.initialPosition.x + eyeDirX;
-          eye.position.y = eye.userData.initialPosition.y + eyeDirY;
+          eye.position.x = eye.userData.initialPosition.x +
+            THREE.MathUtils.clamp((pos.x - robot.group.position.x) * 0.1, -0.05, 0.05);
+          eye.position.y = eye.userData.initialPosition.y +
+            THREE.MathUtils.clamp((pos.y - (robot.group.position.y + 1.5)) * 0.1, -0.05, 0.05);
+        });
+      } else if (Math.abs(spinVelocity) > 0.001) {
+        eyeAngle += 0.1;
+        robot.eyes.forEach((eye, i) => {
+          const d = i === 0 ? 1 : -1;
+          eye.position.x = eye.userData.initialPosition.x + 0.02 * Math.cos(eyeAngle * d);
+          eye.position.y = eye.userData.initialPosition.y + 0.02 * Math.sin(eyeAngle * d);
         });
       } else {
-        if (Math.abs(spinVelocity) > 0.001) {
-          // Eyes wiggle when spinning
-          eyeRotationAngle += 0.1;
-          robot.eyes.forEach((eye, index) => {
-            const direction = index === 0 ? 1 : -1; // Opposite directions for each eye
-            eye.position.x =
-              robot.eyes[index].userData.initialPosition.x +
-              0.02 * Math.cos(eyeRotationAngle * direction);
-            eye.position.y =
-              robot.eyes[index].userData.initialPosition.y +
-              0.02 * Math.sin(eyeRotationAngle * direction);
-          });
-        } else {
-          // Eyes return to default position when not spinning
-          robot.eyes.forEach((eye) => {
-            eye.position.x = THREE.MathUtils.lerp(
-              eye.position.x,
-              eye.userData.initialPosition.x,
-              0.05
-            );
-            eye.position.y = THREE.MathUtils.lerp(
-              eye.position.y,
-              eye.userData.initialPosition.y,
-              0.05
-            );
-          });
-        }
+        robot.eyes.forEach((eye) => {
+          eye.position.x = THREE.MathUtils.lerp(eye.position.x, eye.userData.initialPosition.x, 0.05);
+          eye.position.y = THREE.MathUtils.lerp(eye.position.y, eye.userData.initialPosition.y, 0.05);
+        });
       }
 
       renderer.render(scene, camera);
     };
     animate();
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
       if (canvasRef.current) {
-        canvasRef.current.removeEventListener('mousedown', onMouseDown);
-        canvasRef.current.removeEventListener('mousemove', onMouseMove);
-        canvasRef.current.removeEventListener('mouseup', onMouseUp);
-        canvasRef.current.removeEventListener('mouseleave', onMouseUp);
-
-        // Remove Touch Event Listeners
-        canvasRef.current.removeEventListener('touchstart', onTouchStart);
-        canvasRef.current.removeEventListener('touchmove', onTouchMove);
-        canvasRef.current.removeEventListener('touchend', onTouchEnd);
-        canvasRef.current.removeEventListener('touchcancel', onTouchEnd);
-
-        canvasRef.current.removeEventListener('mouseenter', onMouseEnter);
-        canvasRef.current.removeEventListener('mouseleave', onMouseLeaveCanvas);
+        const c = canvasRef.current;
+        c.removeEventListener('mousedown', onDown);
+        c.removeEventListener('mousemove', onMove);
+        c.removeEventListener('mouseup', onUp);
+        c.removeEventListener('touchstart', onTouchStart);
+        c.removeEventListener('touchmove', onTouchMove);
+        c.removeEventListener('touchend', onUp);
+        c.removeEventListener('touchcancel', onUp);
+        if (renderer.domElement) c.removeChild(renderer.domElement);
       }
-      if (renderer && renderer.domElement && canvasRef.current) {
-        canvasRef.current.removeChild(renderer.domElement);
-        renderer.dispose();
-      }
+      renderer.dispose();
       scene.environment = null;
       if (envRT) envRT.dispose();
       robot.group.traverse((child) => {
         if (child.isMesh) {
-          if (child.geometry && typeof child.geometry.dispose === 'function') {
-            child.geometry.dispose();
-          }
-          if (child.material && typeof child.material.dispose === 'function') {
-            child.material.dispose();
-          }
+          child.geometry?.dispose();
+          if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+          else child.material?.dispose();
         }
       });
     };
   }, []);
 
-  // Function to Create Robot
-  const createRobot = () => {
+  // ── Robot builder ────────────────────────────────────────────
+  function buildRobot() {
     const group = new THREE.Group();
-    group.position.y = 0; // Centered vertically
 
-    // Chassis — brushed metal with pink tint (reads more “real” under IBL)
-    const material = new THREE.MeshPhysicalMaterial({
-      color: 0xc9a8bc,
-      metalness: 0.78,
-      roughness: 0.26,
-      emissive: 0x4a2038,
-      emissiveIntensity: 0.08,
-      clearcoat: 1,
-      clearcoatRoughness: 0.06,
-      envMapIntensity: 1.25,
-      ior: 1.55,
-      sheen: 0.55,
+    // Materials
+    const bodyMat = new THREE.MeshPhysicalMaterial({
+      color: 0xd2afc4,
+      metalness: 0.68,
+      roughness: 0.22,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.07,
+      sheen: 0.5,
       sheenColor: new THREE.Color(0xf060b4),
-      sheenRoughness: 0.35,
-      side: THREE.DoubleSide,
+      sheenRoughness: 0.28,
+      envMapIntensity: 1.25,
     });
-
-    // Joint / accent rings — darker gunmetal
-    const jointMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x3a3540,
+    const darkMat = new THREE.MeshPhysicalMaterial({
+      color: 0x242030,
       metalness: 0.88,
-      roughness: 0.32,
-      clearcoat: 0.85,
-      clearcoatRoughness: 0.15,
-      envMapIntensity: 1.1,
+      roughness: 0.28,
+      clearcoat: 0.7,
+      clearcoatRoughness: 0.22,
+      envMapIntensity: 0.85,
     });
-
-    // Screen panel — glassy display
-    const screenMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x08050c,
-      metalness: 0.92,
-      roughness: 0.12,
-      clearcoat: 1,
-      clearcoatRoughness: 0.05,
-      envMapIntensity: 1.6,
+    const screenMat = new THREE.MeshPhysicalMaterial({
+      color: 0x050107,
+      roughness: 0.02,
+      metalness: 0.0,
+      transmission: 0.2,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.02,
+      envMapIntensity: 2.0,
       transparent: true,
-      opacity: 0.94,
-      side: THREE.DoubleSide,
+      opacity: 0.92,
+    });
+    const glowMat = new THREE.MeshStandardMaterial({
+      color: 0xff88cc,
+      emissive: 0xf060b4,
+      emissiveIntensity: 1.5,
     });
 
-    // Body (rounded box)
-    const bodyGeometry = new RoundedBoxGeometry(1, 1.5, 0.5, 5, 0.2);
-    const body = new THREE.Mesh(bodyGeometry, material);
-    body.position.y = 0;
-    body.castShadow = true;
-    body.receiveShadow = true;
-    group.add(body);
+    // ── Torso ──
+    const torso = new THREE.Mesh(new RoundedBoxGeometry(1.14, 1.52, 0.64, 8, 0.16), bodyMat);
+    torso.castShadow = true; torso.receiveShadow = true;
+    group.add(torso);
 
-    // Head (rounded box)
-    const headGeometry = new RoundedBoxGeometry(1.0, 1.0, 1.0, 5, 0.2); // Smaller head
-    const head = new THREE.Mesh(headGeometry, material);
-    head.position.y = 1.2; // Positioned higher on the body
-    head.castShadow = true;
-    head.receiveShadow = true;
-    body.add(head);
+    // Chest screen
+    const chestScreen = new THREE.Mesh(new RoundedBoxGeometry(0.6, 0.7, 0.05, 6, 0.05), screenMat);
+    chestScreen.position.set(0, 0.1, 0.345);
+    torso.add(chestScreen);
+    // Glow strip
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.04, 0.015), glowMat);
+    strip.position.set(0, -0.31, 0.348);
+    torso.add(strip);
+    // Two small indicator dots
+    [-0.18, 0, 0.18].forEach((x, i) => {
+      const dot = new THREE.Mesh(new THREE.CircleGeometry(0.025, 12), glowMat);
+      dot.position.set(x, 0.1, 0.025);
+      dot.material = dot.material.clone();
+      dot.material.emissiveIntensity = 0.9 + i * 0.2;
+      chestScreen.add(dot);
+    });
 
-    // Face plate (black, attached directly to the head, larger and well-centered)
-    const facePlateGeometry = new RoundedBoxGeometry(0.7, 0.6, 0.02, 5, 0.02); // Increased size
-    const facePlate = new THREE.Mesh(facePlateGeometry, screenMaterial);
-    facePlate.position.set(0, 0, 0.55); // Tight attachment
-    facePlate.castShadow = true;
-    facePlate.receiveShadow = true;
-    head.add(facePlate);
-
-    // Neck — separates head from torso
-    const neckGeom = new THREE.CylinderGeometry(0.28, 0.32, 0.22, 24);
-    const neck = new THREE.Mesh(neckGeom, jointMaterial);
-    neck.position.y = 0.78;
+    // ── Neck ──
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.18, 20), darkMat);
+    neck.position.y = 0.87;
     neck.castShadow = true;
-    neck.receiveShadow = true;
-    body.add(neck);
+    torso.add(neck);
 
-    // Shoulder hubs
-    const hubGeom = new THREE.SphereGeometry(0.11, 20, 20);
-    const leftHub = new THREE.Mesh(hubGeom, jointMaterial);
-    leftHub.position.set(-0.52, 0.32, 0.06);
-    leftHub.castShadow = true;
-    body.add(leftHub);
-    const rightHub = new THREE.Mesh(hubGeom, jointMaterial);
-    rightHub.position.set(0.52, 0.32, 0.06);
-    rightHub.castShadow = true;
-    body.add(rightHub);
+    // ── Head ──
+    const head = new THREE.Mesh(new RoundedBoxGeometry(0.98, 0.88, 0.9, 8, 0.16), bodyMat);
+    head.position.y = 1.16;
+    head.castShadow = true; head.receiveShadow = true;
+    torso.add(head);
 
-    // Antenna (subtle idle sway in animate loop)
-    const antennaStem = new THREE.CylinderGeometry(0.025, 0.035, 0.45, 12);
-    const antennaBall = new THREE.SphereGeometry(0.07, 16, 16);
-    const antennaGroup = new THREE.Group();
-    const stem = new THREE.Mesh(antennaStem, jointMaterial);
-    stem.position.y = 0.225;
-    stem.castShadow = true;
-    const ball = new THREE.Mesh(antennaBall, material);
-    ball.position.y = 0.48;
-    ball.castShadow = true;
-    antennaGroup.add(stem, ball);
-    antennaGroup.position.set(0.38, 0.62, -0.42);
-    head.add(antennaGroup);
+    // Visor
+    const visor = new THREE.Mesh(new RoundedBoxGeometry(0.74, 0.35, 0.042, 6, 0.04), screenMat);
+    visor.position.set(0, 0.07, 0.475);
+    head.add(visor);
 
-    // Eyes
-    const eyeGeometry = new THREE.CircleGeometry(0.04, 20);
-    const eyeMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffb8e8,
+    // Eye rings
+    const eyeRingGeo = new THREE.RingGeometry(0.05, 0.082, 24);
+    const lRing = new THREE.Mesh(eyeRingGeo, glowMat);
+    lRing.position.set(-0.175, 0.07, 0.026);
+    visor.add(lRing);
+    const rRing = new THREE.Mesh(eyeRingGeo, glowMat);
+    rRing.position.set(0.175, 0.07, 0.026);
+    visor.add(rRing);
+
+    // Pupils
+    const pupilGeo = new THREE.CircleGeometry(0.038, 20);
+    const pupilMat = new THREE.MeshBasicMaterial({ color: 0xffe0f5 });
+    const leftEye = new THREE.Mesh(pupilGeo, pupilMat);
+    leftEye.position.set(-0.175, 0.07, 0.03);
+    leftEye.userData.initialPosition = leftEye.position.clone();
+    visor.add(leftEye);
+    const rightEye = new THREE.Mesh(pupilGeo, pupilMat);
+    rightEye.position.set(0.175, 0.07, 0.03);
+    rightEye.userData.initialPosition = rightEye.position.clone();
+    visor.add(rightEye);
+
+    // Smile
+    const mouth = new THREE.Mesh(
+      new THREE.CircleGeometry(0.09, 20, 0, Math.PI),
+      new THREE.MeshBasicMaterial({ color: 0xff9ecf })
+    );
+    mouth.rotation.z = Math.PI;
+    mouth.position.set(0, -0.12, 0.03);
+    visor.add(mouth);
+
+    // Side ear panels
+    ['left', 'right'].forEach((side) => {
+      const ear = new THREE.Mesh(new RoundedBoxGeometry(0.09, 0.34, 0.26, 6, 0.05), darkMat);
+      ear.position.set(side === 'left' ? -0.56 : 0.56, 0.03, 0);
+      ear.castShadow = true;
+      head.add(ear);
     });
 
-    const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    leftEye.position.set(-0.15, 0.1, 0.03); // Adjusted positions
-    leftEye.userData.initialPosition = leftEye.position.clone();
-    facePlate.add(leftEye);
+    // Antenna
+    const antennaGroup = new THREE.Group();
+    antennaGroup.position.set(0.3, 0.56, 0);
+    head.add(antennaGroup);
+    const antStem = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.028, 0.36, 12), darkMat);
+    antStem.position.y = 0.18; antStem.castShadow = true;
+    antennaGroup.add(antStem);
+    const antBall = new THREE.Mesh(new THREE.SphereGeometry(0.056, 16, 16), glowMat);
+    antBall.position.y = 0.38;
+    antennaGroup.add(antBall);
 
-    const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    rightEye.position.set(0.15, 0.1, 0.03);
-    rightEye.userData.initialPosition = rightEye.position.clone();
-    facePlate.add(rightEye);
+    // ── Shoulder hubs ──
+    const shoulderGeo = new THREE.SphereGeometry(0.17, 22, 22);
+    const lHub = new THREE.Mesh(shoulderGeo, darkMat);
+    lHub.position.set(-0.68, 0.4, 0); lHub.castShadow = true;
+    torso.add(lHub);
+    const rHub = new THREE.Mesh(shoulderGeo, darkMat);
+    rHub.position.set(0.68, 0.4, 0); rHub.castShadow = true;
+    torso.add(rHub);
 
-    // Mouth
-    const mouthGeometry = new THREE.CircleGeometry(0.08, 20, 0, Math.PI);
-    const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xff9ecf });
-    const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
-    mouth.rotation.z = Math.PI; // Inverted to look like a smile
-    mouth.position.set(0, -0.15, 0.03); // Adjusted position
-    facePlate.add(mouth);
+    // ── Left arm (Group pivot for subtle sway) ──
+    const leftArm = new THREE.Group();
+    leftArm.position.set(-0.68, 0.4, 0);
+    torso.add(leftArm);
+    const lUpper = new THREE.Mesh(new RoundedBoxGeometry(0.25, 0.5, 0.25, 6, 0.08), bodyMat);
+    lUpper.geometry.translate(0, -0.25, 0); lUpper.castShadow = true;
+    leftArm.add(lUpper);
+    const lElbow = new THREE.Mesh(new THREE.SphereGeometry(0.115, 16, 16), darkMat);
+    lElbow.position.y = -0.5; leftArm.add(lElbow);
+    const lFore = new THREE.Mesh(new RoundedBoxGeometry(0.21, 0.44, 0.21, 6, 0.07), bodyMat);
+    lFore.geometry.translate(0, -0.22, 0);
+    lFore.position.y = -0.5; lFore.castShadow = true;
+    leftArm.add(lFore);
 
-    // Left Arm (Resting Arm)
-    const leftArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
-    const leftArm = new THREE.Mesh(leftArmGeometry, material);
+    // ── Right arm (Group pivot — rotation.z does the wave) ──
+    const rightArm = new THREE.Group();
+    rightArm.position.set(0.68, 0.4, 0);
+    torso.add(rightArm);
+    const rUpper = new THREE.Mesh(new RoundedBoxGeometry(0.25, 0.5, 0.25, 6, 0.08), bodyMat);
+    rUpper.geometry.translate(0, -0.25, 0); rUpper.castShadow = true;
+    rightArm.add(rUpper);
+    const rElbow = new THREE.Mesh(new THREE.SphereGeometry(0.115, 16, 16), darkMat);
+    rElbow.position.y = -0.5; rightArm.add(rElbow);
+    const rFore = new THREE.Mesh(new RoundedBoxGeometry(0.21, 0.44, 0.21, 6, 0.07), bodyMat);
+    rFore.geometry.translate(0, -0.22, 0);
+    rFore.position.y = -0.5; rFore.castShadow = true;
+    rightArm.add(rFore);
 
-    // Translate geometry to set pivot at the shoulder
-    leftArm.geometry.translate(0, -0.3, 0); // Pivot at shoulder
+    // ── Hip ──
+    const hip = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.54, 0.16, 24), darkMat);
+    hip.position.y = -0.87; hip.castShadow = true;
+    torso.add(hip);
 
-    // Set position accordingly
-    leftArm.position.set(-0.45, 0.3, 0.05); // Increased Z to move arm forward
-    leftArm.castShadow = true;
-    leftArm.receiveShadow = true;
-    body.add(leftArm);
+    // ── Legs (thigh / knee / shin / foot) ──
+    [-0.25, 0.25].forEach((x) => {
+      const thigh = new THREE.Mesh(new RoundedBoxGeometry(0.3, 0.5, 0.3, 6, 0.08), bodyMat);
+      thigh.position.set(x, -1.24, 0); thigh.castShadow = true; thigh.receiveShadow = true;
+      group.add(thigh);
+      const knee = new THREE.Mesh(new THREE.SphereGeometry(0.135, 16, 16), darkMat);
+      knee.position.set(x, -1.52, 0); group.add(knee);
+      const shin = new THREE.Mesh(new RoundedBoxGeometry(0.25, 0.46, 0.25, 6, 0.07), bodyMat);
+      shin.position.set(x, -1.78, 0); shin.castShadow = true; shin.receiveShadow = true;
+      group.add(shin);
+      const foot = new THREE.Mesh(new RoundedBoxGeometry(0.32, 0.14, 0.44, 6, 0.05), darkMat);
+      foot.position.set(x, -2.06, 0.07); foot.castShadow = true; foot.receiveShadow = true;
+      group.add(foot);
+    });
 
-    // Right Arm (Waving Arm)
-    const rightArmGeometry = new RoundedBoxGeometry(0.07, 0.6, 0.07, 5, 0.035); // Slightly reduced width
-    const rightArm = new THREE.Mesh(rightArmGeometry, material);
-    rightArm.position.set(0.475, 0.3, 0.03); // Slightly closer on X and adjusted Z
-    rightArm.castShadow = true;
-    rightArm.receiveShadow = true;
-    body.add(rightArm);
-
-    // Set the pivot point at the shoulder for rotation
-    rightArm.geometry.translate(0, -0.3, 0); // Pivot at shoulder
-    rightArm.position.y += 0.3; // Adjust position after translation
-
-    // Legs
-    const legGeometry = new RoundedBoxGeometry(0.08, 0.5, 0.08, 5, 0.04); // Smaller legs
-    const leftLeg = new THREE.Mesh(legGeometry, material);
-    leftLeg.position.set(-0.15, -0.75, 0);
-    leftLeg.castShadow = true;
-    leftLeg.receiveShadow = true;
-    body.add(leftLeg);
-
-    const rightLeg = new THREE.Mesh(legGeometry, material);
-    rightLeg.position.set(0.15, -0.75, 0);
-    rightLeg.castShadow = true;
-    rightLeg.receiveShadow = true;
-    body.add(rightLeg);
-
-    return {
-      group,
-      leftArm,
-      rightArm,
-      head,
-      eyes: [leftEye, rightEye],
-      antenna: antennaGroup,
-    };
-  };
+    return { group, leftArm, rightArm, head, eyes: [leftEye, rightEye], antenna: antennaGroup };
+  }
 
   return (
     <section id="about" className="section">
@@ -575,7 +437,6 @@ export default function About() {
 
         {/* Text + Photo */}
         <div className="md:w-1/2 flex flex-col" data-animate>
-          {/* Profile picture */}
           <div className="flex items-center gap-5 mb-7">
             <img
               src="/profilepic.jpeg"
@@ -607,23 +468,20 @@ export default function About() {
           </p>
           <div className="flex flex-wrap gap-2 mt-6">
             {['Machine Learning', 'Data Science', 'Robotics', 'Amazon'].map(tag => (
-              <span
-                key={tag}
-                className="px-3 py-1.5 text-xs rounded-full border border-pink-400/25 text-pink-200 dark:text-pink-700"
-              >
+              <span key={tag} className="px-3 py-1.5 text-xs rounded-full border border-pink-400/25 text-pink-200 dark:text-pink-700">
                 {tag}
               </span>
             ))}
           </div>
         </div>
 
-        {/* Robot animation — larger canvas for readability on mobile + desktop */}
+        {/* Robot — no border box, fully transparent */}
         <div className="md:w-1/2 w-full flex justify-center items-center" data-animate data-delay="2">
           <div
             ref={canvasRef}
-            className="w-full max-w-[min(100%,680px)] rounded-2xl border border-pink-400/20 dark:border-pink-400/25 shadow-[0_12px_48px_rgba(0,0,0,0.35)] dark:shadow-[0_12px_40px_rgba(192,25,110,0.12)] overflow-hidden bg-gradient-to-b from-zinc-900/40 to-transparent dark:from-pink-100/30"
-            style={{ height: 'clamp(400px, 62vw, 640px)' }}
-            aria-label="Animated 3D robot waving its arm — drag to rotate"
+            className="w-full max-w-[min(100%,560px)]"
+            style={{ height: 'clamp(360px, 50vw, 540px)' }}
+            aria-label="Animated 3D robot — hover to wave, drag to rotate"
           />
         </div>
       </div>
