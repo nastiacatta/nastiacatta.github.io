@@ -260,8 +260,8 @@ export default function Hero() {
     const halo = new THREE.Mesh(new THREE.SphereGeometry(2.1, 32, 32), haloMat);
     flowerGroup.add(halo);
 
-    // ── Pollen sparkle particles ──
-    const N_SPARKS = 140;
+    // ── Pollen sparkle particles (kept subtle / dim) ──
+    const N_SPARKS = 90;
     const sparkPos = new Float32Array(N_SPARKS * 3);
     const sparkMeta = [];
     for (let i = 0; i < N_SPARKS; i++) {
@@ -276,11 +276,11 @@ export default function Hero() {
     const sparkGeo = new THREE.BufferGeometry();
     sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
     const sparkMat = new THREE.PointsMaterial({
-      color: 0xffddaa,
-      size: 0.048,
+      color: 0xc9b8a8,
+      size: 0.028,
       transparent: true,
-      opacity: 0.75,
-      blending: THREE.AdditiveBlending,
+      opacity: 0.22,
+      blending: THREE.NormalBlending,
       depthWrite: false,
       sizeAttenuation: true,
     });
@@ -347,7 +347,7 @@ export default function Hero() {
       for (let i = 0; i < N_SPARKS; i++) {
         const sm = sparkMeta[i];
         sm.theta += sm.dTheta * 0.006;
-        const yWave = Math.sin(t * sm.dTheta * 1.5 + sm.phase) * 0.12;
+        const yWave = Math.sin(t * sm.dTheta * 1.5 + sm.phase) * 0.06;
         sp.setX(i, sm.r * Math.sin(sm.phi) * Math.cos(sm.theta));
         sp.setY(i, sm.r * Math.cos(sm.phi) + yWave);
         sp.setZ(i, sm.r * Math.sin(sm.phi) * Math.sin(sm.theta));
