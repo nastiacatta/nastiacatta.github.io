@@ -3,15 +3,16 @@
  * Next.js serves them at /seao2.png and /reorbit.png.
  *
  * If the grid cards show the wrong artwork for each project (e.g. PDF exports
- * were saved under the opposite filename), set this to `true`:
+ * were saved under the opposite filename), set this to `true`.
+ * Verified on disk: seao2.png = SEA-O₂ slide, reorbit.png = ReOrbit poster → keep false.
  */
-export const SWAP_SEAO2_REORBIT_COVER_FILES = true;
+export const SWAP_SEAO2_REORBIT_COVER_FILES = false;
 
 const RAW_SEAO2 = '/seao2.png';
 const RAW_REORBIT = '/reorbit.png';
 
 /** Bump when replacing PNGs so browsers/CDNs don’t keep stale thumbnails. */
-const COVER_CACHE = '?v=6';
+const COVER_CACHE = '?v=7';
 
 const seaFile = SWAP_SEAO2_REORBIT_COVER_FILES ? RAW_REORBIT : RAW_SEAO2;
 const reoFile = SWAP_SEAO2_REORBIT_COVER_FILES ? RAW_SEAO2 : RAW_REORBIT;
