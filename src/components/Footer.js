@@ -71,7 +71,7 @@ export default function Footer() {
             )}
 
             <a
-              href="https://www.linkedin.com/in/anastasia-cattaneo"
+              href="https://www.linkedin.com/in/anastasia-cattaneo-794673277/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/70 dark:text-zinc-600 hover:text-pink-300 dark:hover:text-pink-600 transition-colors"

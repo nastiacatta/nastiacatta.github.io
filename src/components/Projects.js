@@ -15,13 +15,20 @@ const projects = [
   { title: 'KEEPING WARM', href: '/keepingwarm',  imageSrc: '/keeping_warm.png' },
 ];
 
+const MASTERS_TEXT = `My master's project is to design and prototype a web-based forecasting market where individuals, firms, or public bodies can obtain high-quality predictions without anyone having to share raw data: participants submit probabilistic forecasts and wagers, the platform aggregates them into a single forecast, and then redistributes rewards using strictly proper scoring rules based on realised outcomes.
+
+My main focus is building a repeated, history-aware mechanism that combines each participant's current stake with a dynamically learned measure of forecasting skill, so that influence depends not just on money but also on past performance.
+
+I am also studying how to make the system robust to real-world problems such as intermittent participation, large-stake domination, Sybil attacks, collusion, wash trading, and attempts to manipulate outcomes, while exploring methods such as online learning, reinforcement learning, and Gaussian-process-based aggregation to improve accuracy and adaptability over time.`;
+
 export default function Projects() {
   const [vegaImgError, setVegaImgError] = useState(false);
+  const [mastersOpen, setMastersOpen] = useState(false);
 
   return (
     <div>
       {/* ── Featured: Vega Financial ───────────────────────────── */}
-      <div className="mb-14">
+      <div className="mb-6">
         <div className="featured-project-card rounded-2xl overflow-hidden">
           <div className="flex flex-col lg:flex-row">
 
@@ -72,7 +79,7 @@ export default function Projects() {
               </div>
             </div>
 
-            {/* Right: image — fixed height, image cropped to fit */}
+            {/* Right: image — fixed height, cropped to fit */}
             <div className="lg:w-1/2 relative h-64 lg:h-auto min-h-[260px] border-t lg:border-t-0 lg:border-l border-pink-400/15 bg-zinc-900/50 dark:bg-pink-100/50 overflow-hidden">
               {!vegaImgError ? (
                 <img
@@ -110,6 +117,68 @@ export default function Projects() {
         </div>
       </div>
 
+      {/* ── Master's Project: expandable accordion ────────────── */}
+      <div className="mb-14">
+        <div className="featured-project-card rounded-2xl overflow-hidden">
+          {/* Header row — always visible, click to toggle */}
+          <button
+            onClick={() => setMastersOpen(o => !o)}
+            className="w-full flex items-center justify-between p-7 md:p-8 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400"
+            aria-expanded={mastersOpen}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-5">
+              <p className="section-label !mb-0">Master&apos;s Project</p>
+              <h3
+                className="text-xl md:text-2xl font-bold text-white dark:text-zinc-900 leading-tight"
+                style={{ fontFamily: 'Syne, sans-serif' }}
+              >
+                Designing and Implementing Prediction Markets
+              </h3>
+            </div>
+
+            {/* Chevron */}
+            <span
+              className="ml-4 shrink-0 w-8 h-8 rounded-full border border-pink-400/30 flex items-center justify-center text-pink-300 dark:text-pink-600 transition-transform duration-300"
+              style={{ transform: mastersOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              aria-hidden
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+          </button>
+
+          {/* Expandable content */}
+          <div
+            className="overflow-hidden transition-all duration-500 ease-in-out"
+            style={{ maxHeight: mastersOpen ? '600px' : '0px' }}
+          >
+            <div className="px-7 md:px-8 pb-8 border-t border-pink-400/15">
+              <div className="pt-6 space-y-4">
+                {MASTERS_TEXT.split('\n\n').map((para, i) => (
+                  <p
+                    key={i}
+                    className="text-sm md:text-base text-white/75 dark:text-zinc-600 leading-relaxed"
+                  >
+                    {para}
+                  </p>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2 mt-6">
+                {['Prediction Markets', 'Online Learning', 'Reinforcement Learning', 'Gaussian Processes', 'Mechanism Design'].map(tag => (
+                  <span
+                    key={tag}
+                    className="px-2.5 py-1 text-xs rounded-full border border-pink-400/25 text-pink-200 dark:text-pink-700"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* ── Project Grid ─────────────────────────────────────────── */}
       <div id="project-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
@@ -122,7 +191,6 @@ export default function Projects() {
                 transitionSpeed={700}
                 className="card-frame rounded-xl overflow-hidden"
               >
-                {/* Use fixed-height container with Next.js fill image */}
                 <div className="relative w-full h-60">
                   <Image
                     src={project.imageSrc}
