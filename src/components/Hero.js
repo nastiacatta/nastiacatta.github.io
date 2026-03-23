@@ -53,12 +53,15 @@ export default function Hero() {
       if (!canvas) return;
 
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1500);
-      camera.position.z = 6.8;
+      const camera = new THREE.PerspectiveCamera(62, canvas.clientWidth / canvas.clientHeight, 0.1, 1500);
+      camera.position.set(0.1, 0.15, 6.5);
 
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setSize(canvas.clientWidth, canvas.clientHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.08;
 
       controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
@@ -70,14 +73,17 @@ export default function Hero() {
       controls.minAzimuthAngle = 0;
       controls.maxAzimuthAngle = 0;
 
-      // Lighting — warm pink tint
-      scene.add(new THREE.AmbientLight(0xffeef8, 0.9));
-      const dirLight = new THREE.DirectionalLight(0xff80cc, 1.2);
-      dirLight.position.set(3, 3, 3);
+      // Lighting — layered key/fill/rim for more depth
+      scene.add(new THREE.AmbientLight(0xffeef8, 0.55));
+      const dirLight = new THREE.DirectionalLight(0xff9dd8, 1.35);
+      dirLight.position.set(2.8, 4.2, 3.4);
       scene.add(dirLight);
-      const fillLight = new THREE.DirectionalLight(0xf060b4, 0.4);
-      fillLight.position.set(-3, -1, 2);
+      const fillLight = new THREE.DirectionalLight(0xf060b4, 0.62);
+      fillLight.position.set(-3.2, 0.8, 2.4);
       scene.add(fillLight);
+      const rimLight = new THREE.DirectionalLight(0xffb1e1, 0.72);
+      rimLight.position.set(0, 2.8, -3.8);
+      scene.add(rimLight);
 
       // Petal shape
       const petalShape = new THREE.Shape();
@@ -110,13 +116,18 @@ export default function Hero() {
       bendGeometry(petalGeometry, 0.28);
 
       // Vibrant pink petal material matching the palette
-      const petalMaterial = new THREE.MeshPhongMaterial({
+      const petalMaterial = new THREE.MeshPhysicalMaterial({
         color: 0xff80cc,
         emissive: 0xf060b4,
-        emissiveIntensity: 0.3,
+        emissiveIntensity: 0.22,
         side: THREE.DoubleSide,
-        shininess: 120,
-        opacity: 0.88,
+        roughness: 0.34,
+        metalness: 0.03,
+        clearcoat: 0.95,
+        clearcoatRoughness: 0.18,
+        transmission: 0.06,
+        thickness: 0.55,
+        opacity: 0.9,
         transparent: true,
       });
 
@@ -128,7 +139,7 @@ export default function Hero() {
       const petalAngle = (Math.PI * 2) / numPetals;
       const flowerGroup = new THREE.Group();
       scene.add(flowerGroup);
-      flowerGroup.scale.set(0.95, 0.95, 0.95);
+      flowerGroup.scale.set(0.98, 0.98, 0.98);
 
       for (let i = 0; i < numPetals; i++) {
         const petalMesh = new THREE.Mesh(petalGeometry, petalMaterial.clone());
@@ -218,15 +229,18 @@ export default function Hero() {
           pm.rotation.x = THREE.MathUtils.clamp(pm.rotation.x, CLOSED_ROTATION, OPEN_ROTATION);
           // Gentle individual breathing
           const phase = pg.userData.phase;
-          pm.rotation.z = Math.sin(t * 1.8 + phase) * 0.018;
-          pg.position.y = Math.sin(t * 1.2 + phase) * 0.03;
+          pm.rotation.z = Math.sin(t * 1.55 + phase) * 0.02;
+          pm.rotation.y = Math.sin(t * 0.8 + phase) * 0.01;
+          pg.position.y = Math.sin(t * 1.05 + phase) * 0.035;
           // Shimmer: pulse emissive intensity
-          pm.material.emissiveIntensity = 0.25 + Math.sin(t * 2 + phase) * 0.1;
+          pm.material.emissiveIntensity = 0.2 + Math.sin(t * 1.7 + phase) * 0.08;
         });
 
         // Pulse center glow
         centerMesh.material.emissiveIntensity = 0.7 + Math.sin(t * 2.5) * 0.25;
-        flowerGroup.rotation.y += 0.003;
+        flowerGroup.rotation.y += isHovering ? 0.0018 : 0.0028;
+        flowerGroup.rotation.x = Math.sin(t * 0.5) * 0.035;
+        flowerGroup.position.y = 0.16 + Math.sin(t * 0.75) * 0.04;
         controls.update();
         renderer.render(scene, camera);
       }

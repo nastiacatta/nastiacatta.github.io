@@ -23,7 +23,7 @@ export default function About() {
       0.1,
       1000
     );
-    camera.position.set(0, 4, 12); // Elevated and closer to the robot
+    camera.position.set(0, 4.1, 10.7); // Slightly closer so the robot reads bigger
     camera.lookAt(0, 2.5, 0); // Look at the robot's center
 
     // Renderer Setup
@@ -32,17 +32,20 @@ export default function About() {
       canvasRef.current.clientWidth,
       canvasRef.current.clientHeight
     );
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true; // Enable shadows
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
     canvasRef.current.appendChild(renderer.domElement);
 
     // Lighting — warm pink to match site palette
-    const ambientLight = new THREE.AmbientLight(0xffeef8, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffeef8, 0.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xff80cc, 1.1);
-    directionalLight.position.set(10, 20, 15);
+    const directionalLight = new THREE.DirectionalLight(0xff80cc, 1.35);
+    directionalLight.position.set(8, 16, 10);
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048; // Higher resolution shadows
     directionalLight.shadow.mapSize.height = 2048;
@@ -53,10 +56,16 @@ export default function About() {
     directionalLight.shadow.camera.top = 10;
     directionalLight.shadow.camera.bottom = -10;
     scene.add(directionalLight);
+    const fillLight = new THREE.DirectionalLight(0xffd0e8, 0.55);
+    fillLight.position.set(-7, 6, 9);
+    scene.add(fillLight);
+    const rimLight = new THREE.DirectionalLight(0xf060b4, 0.45);
+    rimLight.position.set(0, 8, -10);
+    scene.add(rimLight);
 
     // Create Robot
     const robot = createRobot();
-    robot.group.scale.set(1.2, 1.2, 1.2); // Scale down to 120%
+    robot.group.scale.set(1.35, 1.35, 1.35); // Bigger robot
     scene.add(robot.group);
 
     // Ground Plane to Receive Shadows (Transparent)
@@ -186,23 +195,26 @@ export default function About() {
 
     // Waving Arm
     let waveDirection = 1;
-    const waveSpeed = 0.01; // Reduced speed for slower waving
+    const waveSpeed = 0.012; // Slightly smoother, more lifelike wave
     const maxWaveAngleUp = (5 * Math.PI) / 6; // 150 degrees
     const maxWaveAngleDown = (5 * Math.PI) / 6 - (Math.PI / 12); // 135 degrees
 
     // Resting Arm
     let restingWaveDirection = 1;
-    const restingWaveSpeed = 0.005; // Slow speed for subtle movement
+    const restingWaveSpeed = 0.0045; // Slow speed for subtle movement
     const restingMaxWaveAngle = Math.PI / 24; // 7.5 degrees
 
     let eyeRotationAngle = 0;
+    const clock = new THREE.Clock();
 
     const animate = () => {
       requestAnimationFrame(animate);
 
+      const elapsed = clock.getElapsedTime();
+
       // Waving Arm Animation
       if (hoveredRef.current) {
-        robot.rightArm.rotation.z += waveSpeed * waveDirection;
+        robot.rightArm.rotation.z += (waveSpeed + Math.sin(elapsed * 2.2) * 0.0016) * waveDirection;
         robot.rightArm.rotation.z = THREE.MathUtils.clamp(
           robot.rightArm.rotation.z,
           maxWaveAngleDown,
@@ -249,8 +261,10 @@ export default function About() {
         );
       }
 
-      // Slight up and down motion (levitating)
-      robot.group.position.y = Math.sin(Date.now() * 0.001) * 0.05 + 2.5; // Base y-position
+      // Slight up/down + subtle body tilt for realism
+      robot.group.position.y = Math.sin(elapsed * 1.05) * 0.06 + 2.55;
+      robot.head.rotation.z = Math.sin(elapsed * 0.8) * 0.04;
+      robot.head.rotation.x = Math.sin(elapsed * 1.3) * 0.018;
 
       // Rotation with momentum
       if (isDragging) {
@@ -260,7 +274,7 @@ export default function About() {
         spinVelocity *= 0.94;
       } else {
         // Gentle idle slow rotation when at rest
-        robot.group.rotation.y += 0.0025;
+        robot.group.rotation.y += 0.0021;
         spinVelocity = 0;
       }
 
@@ -366,20 +380,23 @@ export default function About() {
     group.position.y = 0; // Centered vertically
 
     // Robot body — vibrant pink matching site palette
-    const material = new THREE.MeshStandardMaterial({
+    const material = new THREE.MeshPhysicalMaterial({
       color: 0xff80cc,
-      metalness: 0.75,
-      roughness: 0.18,
+      metalness: 0.48,
+      roughness: 0.28,
       emissive: 0xf060b4,
-      emissiveIntensity: 0.35,
+      emissiveIntensity: 0.22,
+      clearcoat: 0.9,
+      clearcoatRoughness: 0.12,
       side: THREE.DoubleSide,
     });
 
     // Screen panel — deep dark, slight pink tint
-    const screenMaterial = new THREE.MeshStandardMaterial({
+    const screenMaterial = new THREE.MeshPhysicalMaterial({
       color: 0x150d1c,
-      metalness: 0.6,
-      roughness: 0.3,
+      metalness: 0.25,
+      roughness: 0.18,
+      clearcoat: 0.6,
       side: THREE.DoubleSide,
     });
 
@@ -529,8 +546,8 @@ export default function About() {
         <div className="md:w-1/2 flex justify-center items-center" data-animate data-delay="2">
           <div
             ref={canvasRef}
-            className="w-full max-w-[520px]"
-            style={{ height: 'clamp(300px, 38vw, 460px)' }}
+            className="w-full max-w-[590px]"
+            style={{ height: 'clamp(340px, 42vw, 520px)' }}
             aria-label="Animated robot waving its arm"
           />
         </div>
