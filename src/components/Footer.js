@@ -19,15 +19,9 @@ export default function Footer() {
     <footer className="site-footer" role="contentinfo">
       <div className="max-w-6xl mx-auto px-6 md:px-10 pt-16 pb-10">
 
-        {/* Get in touch headline */}
+        {/* Get in touch */}
         <div className="mb-12">
           <p className="section-label mb-2">Get in touch</p>
-          <h2
-            className="text-3xl md:text-4xl font-bold text-white dark:text-zinc-900 mb-6 leading-tight"
-            style={{ fontFamily: 'Syne, sans-serif' }}
-          >
-            Let&apos;s work together.
-          </h2>
           <a
             href="mailto:anastasia.cattaneo@gmail.com"
             className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-full border border-pink-400/35 bg-pink-500/10 hover:bg-pink-500/20 hover:border-pink-400/55 transition-all duration-250 shadow-[0_0_30px_rgba(240,96,180,0.1)] hover:shadow-[0_0_40px_rgba(240,96,180,0.2)]"

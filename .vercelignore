@@ -1,5 +1,11 @@
-# Exclude large PDFs and duplicate files from Vercel upload
+# Exclude duplicate heavy assets from Vercel upload
+# Keep only the PDFs that are actually used by pages.
 public/*.pdf
+!public/seao2.pdf
+!public/reorbit.pdf
+!public/gizmo.pdf
+!public/innovice.pdf
+!public/exoglove.pdf
 public/* 2.*
 public/*copy*
 profilepiclinkedin.jpeg
