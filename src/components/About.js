@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 export default function About() {
   const canvasRef = useRef(null);
@@ -12,19 +13,21 @@ export default function About() {
   useEffect(() => {
     if (!canvasRef.current) return;
 
+    let envRT = null;
+
     // Scene Setup
     const scene = new THREE.Scene();
     scene.background = null; // Transparent background
 
     // Camera Setup
     const camera = new THREE.PerspectiveCamera(
-      50,
+      40,
       canvasRef.current.clientWidth / canvasRef.current.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 4.1, 10.7); // Slightly closer so the robot reads bigger
-    camera.lookAt(0, 2.5, 0); // Look at the robot's center
+    camera.position.set(0, 3.65, 7.35);
+    camera.lookAt(0, 2.35, 0);
 
     // Renderer Setup
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -37,18 +40,29 @@ export default function About() {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 1.12;
     canvasRef.current.appendChild(renderer.domElement);
 
-    // Lighting — warm pink to match site palette
-    const ambientLight = new THREE.AmbientLight(0xffeef8, 0.5);
+    // Studio-style reflections for more realistic metal / clearcoat
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    envRT = pmremGenerator.fromScene(new RoomEnvironment(), 0.04);
+    scene.environment = envRT.texture;
+    pmremGenerator.dispose();
+
+    // Lighting — balanced key + fill + rim (environment does heavy lifting)
+    const hemi = new THREE.HemisphereLight(0xfff0f8, 0x1a1220, 0.42);
+    scene.add(hemi);
+
+    const ambientLight = new THREE.AmbientLight(0xffeef8, 0.28);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xff80cc, 1.35);
-    directionalLight.position.set(8, 16, 10);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.15);
+    directionalLight.position.set(6, 14, 8);
     directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 2048; // Higher resolution shadows
+    directionalLight.shadow.mapSize.width = 2048;
     directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.bias = -0.00028;
+    directionalLight.shadow.normalBias = 0.02;
     directionalLight.shadow.camera.near = 0.5;
     directionalLight.shadow.camera.far = 50;
     directionalLight.shadow.camera.left = -10;
@@ -56,16 +70,16 @@ export default function About() {
     directionalLight.shadow.camera.top = 10;
     directionalLight.shadow.camera.bottom = -10;
     scene.add(directionalLight);
-    const fillLight = new THREE.DirectionalLight(0xffd0e8, 0.55);
-    fillLight.position.set(-7, 6, 9);
+    const fillLight = new THREE.DirectionalLight(0xffc8e8, 0.42);
+    fillLight.position.set(-8, 5, 6);
     scene.add(fillLight);
-    const rimLight = new THREE.DirectionalLight(0xf060b4, 0.45);
-    rimLight.position.set(0, 8, -10);
+    const rimLight = new THREE.DirectionalLight(0xf060b4, 0.55);
+    rimLight.position.set(0, 6, -12);
     scene.add(rimLight);
 
     // Create Robot
     const robot = createRobot();
-    robot.group.scale.set(1.35, 1.35, 1.35); // Bigger robot
+    robot.group.scale.set(2.05, 2.05, 2.05);
     scene.add(robot.group);
 
     // Ground Plane to Receive Shadows (Transparent)
@@ -262,9 +276,13 @@ export default function About() {
       }
 
       // Slight up/down + subtle body tilt for realism
-      robot.group.position.y = Math.sin(elapsed * 1.05) * 0.06 + 2.55;
-      robot.head.rotation.z = Math.sin(elapsed * 0.8) * 0.04;
-      robot.head.rotation.x = Math.sin(elapsed * 1.3) * 0.018;
+      robot.group.position.y = Math.sin(elapsed * 1.05) * 0.07 + 2.52;
+      robot.head.rotation.z = Math.sin(elapsed * 0.8) * 0.045;
+      robot.head.rotation.x = Math.sin(elapsed * 1.3) * 0.02;
+      if (robot.antenna) {
+        robot.antenna.rotation.z = Math.sin(elapsed * 2.4) * 0.12;
+        robot.antenna.rotation.x = Math.sin(elapsed * 1.9) * 0.06;
+      }
 
       // Rotation with momentum
       if (isDragging) {
@@ -361,6 +379,8 @@ export default function About() {
         canvasRef.current.removeChild(renderer.domElement);
         renderer.dispose();
       }
+      scene.environment = null;
+      if (envRT) envRT.dispose();
       robot.group.traverse((child) => {
         if (child.isMesh) {
           if (child.geometry && typeof child.geometry.dispose === 'function') {
@@ -379,24 +399,43 @@ export default function About() {
     const group = new THREE.Group();
     group.position.y = 0; // Centered vertically
 
-    // Robot body — vibrant pink matching site palette
+    // Chassis — brushed metal with pink tint (reads more “real” under IBL)
     const material = new THREE.MeshPhysicalMaterial({
-      color: 0xff80cc,
-      metalness: 0.48,
-      roughness: 0.28,
-      emissive: 0xf060b4,
-      emissiveIntensity: 0.22,
-      clearcoat: 0.9,
-      clearcoatRoughness: 0.12,
+      color: 0xc9a8bc,
+      metalness: 0.78,
+      roughness: 0.26,
+      emissive: 0x4a2038,
+      emissiveIntensity: 0.08,
+      clearcoat: 1,
+      clearcoatRoughness: 0.06,
+      envMapIntensity: 1.25,
+      ior: 1.55,
+      sheen: 0.55,
+      sheenColor: new THREE.Color(0xf060b4),
+      sheenRoughness: 0.35,
       side: THREE.DoubleSide,
     });
 
-    // Screen panel — deep dark, slight pink tint
+    // Joint / accent rings — darker gunmetal
+    const jointMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x3a3540,
+      metalness: 0.88,
+      roughness: 0.32,
+      clearcoat: 0.85,
+      clearcoatRoughness: 0.15,
+      envMapIntensity: 1.1,
+    });
+
+    // Screen panel — glassy display
     const screenMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x150d1c,
-      metalness: 0.25,
-      roughness: 0.18,
-      clearcoat: 0.6,
+      color: 0x08050c,
+      metalness: 0.92,
+      roughness: 0.12,
+      clearcoat: 1,
+      clearcoatRoughness: 0.05,
+      envMapIntensity: 1.6,
+      transparent: true,
+      opacity: 0.94,
       side: THREE.DoubleSide,
     });
 
@@ -424,9 +463,44 @@ export default function About() {
     facePlate.receiveShadow = true;
     head.add(facePlate);
 
+    // Neck — separates head from torso
+    const neckGeom = new THREE.CylinderGeometry(0.28, 0.32, 0.22, 24);
+    const neck = new THREE.Mesh(neckGeom, jointMaterial);
+    neck.position.y = 0.78;
+    neck.castShadow = true;
+    neck.receiveShadow = true;
+    body.add(neck);
+
+    // Shoulder hubs
+    const hubGeom = new THREE.SphereGeometry(0.11, 20, 20);
+    const leftHub = new THREE.Mesh(hubGeom, jointMaterial);
+    leftHub.position.set(-0.52, 0.32, 0.06);
+    leftHub.castShadow = true;
+    body.add(leftHub);
+    const rightHub = new THREE.Mesh(hubGeom, jointMaterial);
+    rightHub.position.set(0.52, 0.32, 0.06);
+    rightHub.castShadow = true;
+    body.add(rightHub);
+
+    // Antenna (subtle idle sway in animate loop)
+    const antennaStem = new THREE.CylinderGeometry(0.025, 0.035, 0.45, 12);
+    const antennaBall = new THREE.SphereGeometry(0.07, 16, 16);
+    const antennaGroup = new THREE.Group();
+    const stem = new THREE.Mesh(antennaStem, jointMaterial);
+    stem.position.y = 0.225;
+    stem.castShadow = true;
+    const ball = new THREE.Mesh(antennaBall, material);
+    ball.position.y = 0.48;
+    ball.castShadow = true;
+    antennaGroup.add(stem, ball);
+    antennaGroup.position.set(0.38, 0.62, -0.42);
+    head.add(antennaGroup);
+
     // Eyes
-    const eyeGeometry = new THREE.CircleGeometry(0.04, 16); // Smaller eyes
-    const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xffd0e8 });
+    const eyeGeometry = new THREE.CircleGeometry(0.04, 20);
+    const eyeMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffb8e8,
+    });
 
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
     leftEye.position.set(-0.15, 0.1, 0.03); // Adjusted positions
@@ -439,8 +513,8 @@ export default function About() {
     facePlate.add(rightEye);
 
     // Mouth
-    const mouthGeometry = new THREE.CircleGeometry(0.08, 16, 0, Math.PI);
-    const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xffd0e8 });
+    const mouthGeometry = new THREE.CircleGeometry(0.08, 20, 0, Math.PI);
+    const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xff9ecf });
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.rotation.z = Math.PI; // Inverted to look like a smile
     mouth.position.set(0, -0.15, 0.03); // Adjusted position
@@ -491,6 +565,7 @@ export default function About() {
       rightArm,
       head,
       eyes: [leftEye, rightEye],
+      antenna: antennaGroup,
     };
   };
 
@@ -542,13 +617,13 @@ export default function About() {
           </div>
         </div>
 
-        {/* Robot animation */}
-        <div className="md:w-1/2 flex justify-center items-center" data-animate data-delay="2">
+        {/* Robot animation — larger canvas for readability on mobile + desktop */}
+        <div className="md:w-1/2 w-full flex justify-center items-center" data-animate data-delay="2">
           <div
             ref={canvasRef}
-            className="w-full max-w-[590px]"
-            style={{ height: 'clamp(340px, 42vw, 520px)' }}
-            aria-label="Animated robot waving its arm"
+            className="w-full max-w-[min(100%,680px)] rounded-2xl border border-pink-400/20 dark:border-pink-400/25 shadow-[0_12px_48px_rgba(0,0,0,0.35)] dark:shadow-[0_12px_40px_rgba(192,25,110,0.12)] overflow-hidden bg-gradient-to-b from-zinc-900/40 to-transparent dark:from-pink-100/30"
+            style={{ height: 'clamp(400px, 62vw, 640px)' }}
+            aria-label="Animated 3D robot waving its arm — drag to rotate"
           />
         </div>
       </div>
