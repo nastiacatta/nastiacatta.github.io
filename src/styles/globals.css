@@ -38,21 +38,24 @@ a:hover {
   color: #c0196e;
 }
 
-/* ─── Nav pill (see Header.js) ───────────────────────────────────────── */
+/* ─── Nav pill ───────────────────────────────────────────────────────── */
 .site-banner {
   z-index: 1000;
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .site-banner.is-hidden {
-  transform: translateY(-110%);
+  transform: translateY(-120%);
 }
 
 .nav-pill {
-  transition: height 0.25s cubic-bezier(0.2,0.8,0.2,1),
-              background-color 0.25s ease,
-              border-color 0.25s ease,
-              box-shadow 0.25s ease;
+  transition:
+    height 0.25s cubic-bezier(0.2,0.8,0.2,1),
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.4s ease,
+    transform 0.4s ease;
 }
 
 /* ─── Sections ─────────────────────────────────────────────────────── */
@@ -82,32 +85,17 @@ a:hover {
 .section h1,
 .section h2 {
   font-family: 'Syne', system-ui, sans-serif;
-  margin-bottom: 32px;
 }
 
-.section p {
-  max-width: 800px;
-  margin-bottom: 24px;
-  line-height: 1.75;
-}
-
-.section {
-  text-align: left;
-}
-
-@media (max-width: 768px) {
-  .section h1 { font-size: 2.25rem; }
-  .section h2 { font-size: 1.75rem; }
-}
-
-/* ─── Heading accent ────────────────────────────────────────────────── */
+/* ─── Section label ─────────────────────────────────────────────────── */
 .section-label {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #f060b4;
   margin-bottom: 0.75rem;
+  display: block;
 }
 
 .dark .section-label {
@@ -119,16 +107,9 @@ a:hover {
   font-family: 'Syne', system-ui, sans-serif;
   color: #ff80cc;
   text-shadow:
-    0 0 8px rgba(240, 96, 180, 0.35),
-    0 0 20px rgba(240, 96, 180, 0.15);
+    0 0 10px rgba(240, 96, 180, 0.4),
+    0 0 26px rgba(240, 96, 180, 0.18);
   transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.neon:hover {
-  color: #ffc0e8;
-  text-shadow:
-    0 0 12px rgba(240, 96, 180, 0.5),
-    0 0 28px rgba(240, 96, 180, 0.25);
 }
 
 .dark .neon {
@@ -136,20 +117,29 @@ a:hover {
   text-shadow: none;
 }
 
-/* ─── Typewriter cursor ─────────────────────────────────────────────── */
+/* ─── Typewriter — fixed height to prevent layout shift ────────────── */
 .typewriter {
   display: inline-block;
   color: #ff80cc;
+  /* Reserve width for cursor so text doesn't jump */
+  min-width: 1ch;
 }
 
 .dark .typewriter {
   color: #c0196e;
 }
 
-.typewriter::after {
+/* Blinking caret via pseudo-element on the wrapper div */
+.typewriter-wrap::after {
   content: '|';
-  margin-left: 2px;
+  margin-left: 1px;
+  color: #f060b4;
   animation: caret 1s steps(2, start) infinite;
+  font-weight: 300;
+}
+
+.dark .typewriter-wrap::after {
+  color: #c0196e;
 }
 
 @keyframes caret {
@@ -158,22 +148,24 @@ a:hover {
 
 /* ─── "View My Work" button ─────────────────────────────────────────── */
 .view-my-work-button {
-  font-size: 1.1rem;
-  letter-spacing: 0.05em;
+  display: inline-block;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
   color: #ff99d1;
-  background: rgba(240, 96, 180, 0.12);
+  background: rgba(240, 96, 180, 0.1);
   border: 1px solid rgba(240, 96, 180, 0.3);
-  border-radius: 12px;
-  padding: 0.65rem 1.6rem;
+  border-radius: 50px;
+  padding: 0.65rem 1.8rem;
   font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
   transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .view-my-work-button:hover {
   color: #ffd4ec;
-  background: rgba(240, 96, 180, 0.22);
+  background: rgba(240, 96, 180, 0.2);
   border-color: rgba(240, 96, 180, 0.55);
-  box-shadow: 0 0 18px rgba(240, 96, 180, 0.2);
+  box-shadow: 0 0 22px rgba(240, 96, 180, 0.22);
 }
 
 .dark .view-my-work-button {
@@ -190,8 +182,8 @@ a:hover {
 }
 
 .card-frame:hover {
-  border-color: rgba(240, 96, 180, 0.45);
-  box-shadow: 0 0 22px rgba(240, 96, 180, 0.12);
+  border-color: rgba(240, 96, 180, 0.5);
+  box-shadow: 0 0 28px rgba(240, 96, 180, 0.14);
 }
 
 .dark .card-frame {
@@ -206,85 +198,41 @@ a:hover {
 /* ─── Featured project card ─────────────────────────────────────────── */
 .featured-project-card {
   background:
-    radial-gradient(circle at 8% 12%, rgba(240, 96, 180, 0.22) 0%, transparent 40%),
-    radial-gradient(circle at 92% 88%, rgba(177, 156, 217, 0.14) 0%, transparent 40%),
-    rgba(22, 17, 28, 0.92);
-  border: 1px solid rgba(240, 96, 180, 0.3);
+    radial-gradient(circle at 8% 12%, rgba(240, 96, 180, 0.2) 0%, transparent 42%),
+    radial-gradient(circle at 92% 88%, rgba(177, 156, 217, 0.12) 0%, transparent 42%),
+    rgba(20, 15, 26, 0.94);
+  border: 1px solid rgba(240, 96, 180, 0.28);
 }
 
 .dark .featured-project-card {
   background:
-    radial-gradient(circle at 8% 12%, rgba(192, 25, 110, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 92% 88%, rgba(177, 156, 217, 0.08) 0%, transparent 40%),
-    rgba(255, 238, 248, 0.92);
-  border-color: rgba(192, 25, 110, 0.25);
+    radial-gradient(circle at 8% 12%, rgba(192, 25, 110, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 92% 88%, rgba(177, 156, 217, 0.07) 0%, transparent 40%),
+    rgba(255, 238, 248, 0.94);
+  border-color: rgba(192, 25, 110, 0.22);
 }
 
 /* ─── Contact card ──────────────────────────────────────────────────── */
 .contact-card {
-  background: linear-gradient(135deg, rgba(240, 96, 180, 0.12), rgba(240, 96, 180, 0.04));
-  border: 1px solid rgba(240, 96, 180, 0.25);
+  background: linear-gradient(135deg, rgba(240, 96, 180, 0.1), rgba(240, 96, 180, 0.03));
+  border: 1px solid rgba(240, 96, 180, 0.22);
   border-radius: 1.25rem;
 }
 
 .dark .contact-card {
   background: linear-gradient(135deg, rgba(192, 25, 110, 0.06), transparent);
-  border-color: rgba(192, 25, 110, 0.2);
+  border-color: rgba(192, 25, 110, 0.18);
 }
 
-/* ─── Site footer ────────────────────────────────────────────────────── */
+/* ─── Site footer ─────────────────────────────────────────────────────── */
 .site-footer {
-  background: #070508;
-  border-top: 1px solid rgba(240, 96, 180, 0.2);
+  background: #060408;
+  border-top: 1px solid rgba(240, 96, 180, 0.18);
 }
 
 .dark .site-footer {
-  background: rgba(255, 232, 245, 0.95);
-  border-top-color: rgba(192, 25, 110, 0.2);
-}
-
-/* ─── Email vertical sidebar ─────────────────────────────────────────── */
-.email-vertical {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 40;
-}
-
-.email-link {
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  color: rgba(240, 220, 232, 0.6);
-  transition: transform 0.3s ease, color 0.3s ease;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.dark .email-link {
-  color: rgba(30, 10, 20, 0.5);
-}
-
-.email-link:hover {
-  transform: scale(1.1);
-  color: #f060b4;
-}
-
-.dark .email-link:hover {
-  color: #c0196e;
-}
-
-.vertical-line {
-  width: 1px;
-  height: 80px;
-  background: linear-gradient(to bottom, rgba(240, 96, 180, 0.5), transparent);
-}
-
-.dark .vertical-line {
-  background: linear-gradient(to bottom, rgba(192, 25, 110, 0.4), transparent);
+  background: rgba(255, 232, 245, 0.96);
+  border-top-color: rgba(192, 25, 110, 0.18);
 }
 
 /* ─── Flashlight ─────────────────────────────────────────────────────── */
@@ -327,11 +275,6 @@ a:hover {
   .flashlight { display: none; }
 }
 
-/* ─── Dark mode link override ───────────────────────────────────────── */
-.dark a {
-  color: inherit;
-}
-
 /* ─── Canvas (hero) ─────────────────────────────────────────────────── */
 #bg {
   position: relative;
@@ -339,12 +282,7 @@ a:hover {
   height: 100%;
 }
 
-/* ─── Header legacy style (overridden by pill nav) ──────────────────── */
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  background: transparent;
+/* ─── Dark mode overrides ───────────────────────────────────────────── */
+.dark a {
+  color: inherit;
 }

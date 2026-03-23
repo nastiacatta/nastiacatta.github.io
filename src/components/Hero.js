@@ -6,10 +6,10 @@ import Link from 'next/link';
 export default function Hero() {
   const canvasRef = useRef(null);
   const [text, setText] = useState('');
-  const phrases = ['Machine Learning', 'Data Science', 'Robotics'];
-  const typingSpeed = 150;
-  const deletingSpeed = 100;
-  const pauseDuration = 1000;
+  const phrases = ['Machine Learning', 'Data Science', 'Robotics', 'Full-stack'];
+  const typingSpeed = 130;
+  const deletingSpeed = 80;
+  const pauseDuration = 1800;
 
   useEffect(() => {
     let currentPhraseIndex = 0;
@@ -25,7 +25,7 @@ export default function Hero() {
         if (currentCharIndex === currentPhrase.length) {
           timeoutId = setTimeout(() => {
             isDeleting = true;
-            timeoutId = setTimeout(type, pauseDuration);
+            timeoutId = setTimeout(type, deletingSpeed);
           }, pauseDuration);
           return;
         }
@@ -58,7 +58,7 @@ export default function Hero() {
 
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
@@ -70,53 +70,62 @@ export default function Hero() {
       controls.minAzimuthAngle = 0;
       controls.maxAzimuthAngle = 0;
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-      directionalLight.position.set(0, 1, 1);
-      scene.add(directionalLight);
+      // Lighting — warm pink tint
+      scene.add(new THREE.AmbientLight(0xffeef8, 0.9));
+      const dirLight = new THREE.DirectionalLight(0xff80cc, 1.2);
+      dirLight.position.set(3, 3, 3);
+      scene.add(dirLight);
+      const fillLight = new THREE.DirectionalLight(0xf060b4, 0.4);
+      fillLight.position.set(-3, -1, 2);
+      scene.add(fillLight);
 
+      // Petal shape
       const petalShape = new THREE.Shape();
       petalShape.moveTo(0, 0);
       petalShape.bezierCurveTo(0.5, 0, 0.5, 2, 0, 3);
       petalShape.bezierCurveTo(-0.5, 2, -0.5, 0, 0, 0);
 
-      const extrudeSettings = { depth: 0.05, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 0.02, bevelThickness: 0.02 };
+      const extrudeSettings = {
+        depth: 0.06,
+        bevelEnabled: true,
+        bevelSegments: 3,
+        steps: 2,
+        bevelSize: 0.025,
+        bevelThickness: 0.025,
+      };
       const petalGeometry = new THREE.ExtrudeGeometry(petalShape, extrudeSettings);
       petalGeometry.translate(0, -1.5, 0);
 
       function bendGeometry(geometry, bendAmount) {
-        const positionAttribute = geometry.attributes.position;
-        for (let i = 0; i < positionAttribute.count; i++) {
-          const y = positionAttribute.getY(i);
-          const z = positionAttribute.getZ(i);
+        const pos = geometry.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+          const y = pos.getY(i);
+          const z = pos.getZ(i);
           const theta = y * bendAmount;
-          const sinTheta = Math.sin(theta);
-          const cosTheta = Math.cos(theta);
-          positionAttribute.setZ(i, z * cosTheta - y * sinTheta);
-          positionAttribute.setY(i, z * sinTheta + y * cosTheta);
+          pos.setZ(i, z * Math.cos(theta) - y * Math.sin(theta));
+          pos.setY(i, z * Math.sin(theta) + y * Math.cos(theta));
         }
         geometry.computeVertexNormals();
       }
-      bendGeometry(petalGeometry, 0.3);
+      bendGeometry(petalGeometry, 0.28);
 
+      // Vibrant pink petal material matching the palette
       const petalMaterial = new THREE.MeshPhongMaterial({
-        color: 0xffc0cb,
-        emissive: 0xffc0cb,
-        emissiveIntensity: 0.2,
+        color: 0xff80cc,
+        emissive: 0xf060b4,
+        emissiveIntensity: 0.3,
         side: THREE.DoubleSide,
-        shininess: 100,
-        opacity: 0.8,
+        shininess: 120,
+        opacity: 0.88,
         transparent: true,
       });
 
       const OPEN_ROTATION = Math.PI / 6;
       const CLOSED_ROTATION = -Math.PI / 2;
-      const BASE_ROTATION_SPEED = 0.01;
 
       const petals = [];
       const numPetals = 8;
       const petalAngle = (Math.PI * 2) / numPetals;
-
       const flowerGroup = new THREE.Group();
       scene.add(flowerGroup);
       flowerGroup.scale.set(1.4, 1.4, 1.4);
@@ -127,45 +136,56 @@ export default function Hero() {
         petalGroup.add(petalMesh);
 
         const angle = i * petalAngle;
-        const radius = 1.2;
-        petalGroup.position.x = radius * Math.sin(angle);
-        petalGroup.position.z = radius * Math.cos(angle);
+        petalGroup.position.x = 1.2 * Math.sin(angle);
+        petalGroup.position.z = 1.2 * Math.cos(angle);
         petalGroup.rotation.y = angle;
-
         petalMesh.rotation.x = OPEN_ROTATION;
         petalGroup.userData.targetRotationX = OPEN_ROTATION;
-        petalGroup.userData.rotationSpeed = BASE_ROTATION_SPEED + Math.random() * 0.005;
+        petalGroup.userData.rotationSpeed = 0.012 + Math.random() * 0.005;
 
         petals.push(petalGroup);
         flowerGroup.add(petalGroup);
       }
 
-      const glowVertexShader = `
+      // Glow sphere — pink
+      const glowVert = `
         varying vec3 vNormal;
         void main() {
-          vNormal = normalize( normalMatrix * normal );
-          gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `;
-      const glowFragmentShader = `
+      const glowFrag = `
         varying vec3 vNormal;
         void main() {
-          float intensity = pow( 0.6 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 2.0 );
-          gl_FragColor = vec4( 255.0/255.0, 192.0/255.0, 203.0/255.0, 0.5 ) * intensity;
+          float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
+          gl_FragColor = vec4(1.0, 0.376, 0.706, 0.55) * intensity;
         }
       `;
-      const glowMaterial = new THREE.ShaderMaterial({
-        vertexShader: glowVertexShader,
-        fragmentShader: glowFragmentShader,
-        side: THREE.BackSide,
-        blending: THREE.AdditiveBlending,
-        transparent: true,
-      });
-      const glowGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-      const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+      const glowMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(1.6, 32, 32),
+        new THREE.ShaderMaterial({
+          vertexShader: glowVert,
+          fragmentShader: glowFrag,
+          side: THREE.BackSide,
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+        })
+      );
       flowerGroup.add(glowMesh);
+      flowerGroup.position.y = 0.8;
 
-      flowerGroup.position.y = 1;
+      // Small glowing center sphere
+      const centerMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(0.28, 24, 24),
+        new THREE.MeshPhongMaterial({
+          color: 0xffd0e8,
+          emissive: 0xf060b4,
+          emissiveIntensity: 0.8,
+          shininess: 200,
+        })
+      );
+      flowerGroup.add(centerMesh);
 
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
@@ -181,32 +201,22 @@ export default function Hero() {
       const clock = new THREE.Clock();
       function animate() {
         animationFrameId = requestAnimationFrame(animate);
-        const elapsedTime = clock.getElapsedTime();
+        const t = clock.getElapsedTime();
 
         raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObject(flowerGroup, true);
-        isHovering = intersects.length > 0;
+        isHovering = raycaster.intersectObject(flowerGroup, true).length > 0;
 
-        petals.forEach((petalGroup) => {
-          const petalMesh = petalGroup.children[0];
-          petalGroup.userData.targetRotationX = isHovering ? CLOSED_ROTATION : OPEN_ROTATION;
-
-          petalMesh.rotation.x +=
-            (petalGroup.userData.targetRotationX - petalMesh.rotation.x) *
-            petalGroup.userData.rotationSpeed;
-
-          petalMesh.rotation.x = THREE.MathUtils.clamp(
-            petalMesh.rotation.x,
-            CLOSED_ROTATION,
-            OPEN_ROTATION
-          );
-
-          petalMesh.rotation.z = Math.sin(elapsedTime * 2 + petalGroup.position.x * 2) * 0.01;
-          petalGroup.position.y = Math.sin(elapsedTime * 1.5 + petalGroup.position.x * 2) * 0.02;
-          petalGroup.rotation.z = Math.sin(elapsedTime + petalGroup.position.x) * 0.02;
+        petals.forEach((pg) => {
+          const pm = pg.children[0];
+          pg.userData.targetRotationX = isHovering ? CLOSED_ROTATION : OPEN_ROTATION;
+          pm.rotation.x += (pg.userData.targetRotationX - pm.rotation.x) * pg.userData.rotationSpeed;
+          pm.rotation.x = THREE.MathUtils.clamp(pm.rotation.x, CLOSED_ROTATION, OPEN_ROTATION);
+          pm.rotation.z = Math.sin(t * 2 + pg.position.x * 2) * 0.012;
+          pg.position.y = Math.sin(t * 1.5 + pg.position.x * 2) * 0.022;
+          pg.rotation.z = Math.sin(t + pg.position.x) * 0.022;
         });
 
-        flowerGroup.rotation.y += 0.005;
+        flowerGroup.rotation.y += 0.004;
         controls.update();
         renderer.render(scene, camera);
       }
@@ -214,10 +224,9 @@ export default function Hero() {
 
       function onWindowResize() {
         if (!canvasRef.current) return;
-        const canvas = canvasRef.current;
-        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        camera.aspect = canvasRef.current.clientWidth / canvasRef.current.clientHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+        renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
       }
       window.addEventListener('resize', onWindowResize, false);
 
@@ -226,6 +235,7 @@ export default function Hero() {
         window.removeEventListener('resize', onWindowResize);
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
         if (controls) controls.dispose();
+        renderer.dispose();
       };
     }
   }, []);
@@ -233,35 +243,46 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-0"
+      className="relative h-screen flex items-center justify-center overflow-hidden"
     >
-      <div className="flex flex-col md:flex-row items-center w-full h-full px-8">
-        {/* Left Column - Intro Text */}
-        <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center">
-          <p className="section-label mb-3">Design Engineering Portfolio</p>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl neon mt-2 leading-tight" style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800 }}>
+      <div className="flex flex-col md:flex-row items-center w-full h-full max-w-6xl mx-auto px-6 md:px-10">
+
+        {/* Left Column */}
+        <div className="md:w-1/2 flex flex-col items-center md:items-start justify-center pt-20 md:pt-0">
+          <p className="section-label mb-3">Portfolio</p>
+          <h1
+            className="text-5xl md:text-6xl lg:text-7xl neon leading-tight"
+            style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800 }}
+          >
             Anastasia<br />Cattaneo
           </h1>
-          <p className="text-lg md:text-xl mt-5 text-center md:text-left text-white/80 dark:text-zinc-700 max-w-sm leading-relaxed">
-            Design Engineer with a passion for{' '}
-            <span className="typewriter font-medium">{text}</span>
-          </p>
-        </div>
 
-        {/* Right Column - Animation */}
-        <div className="md:w-1/2 relative flex flex-col items-center justify-center">
-          <canvas ref={canvasRef} id="bg" className="w-full h-full"></canvas>
+          {/* Typewriter — fixed-height line prevents layout shift */}
+          <div className="mt-5 text-center md:text-left">
+            <p className="text-lg md:text-xl text-white/70 dark:text-zinc-600">
+              Design Engineer
+            </p>
+            <div className="h-8 flex items-center mt-1">
+              <span className="typewriter-wrap font-medium text-base md:text-lg text-pink-300 dark:text-pink-600">
+                {text}
+              </span>
+            </div>
+          </div>
 
-          {/* "View My Work" button positioned higher over the canvas */}
-          <div className="absolute bottom-20 md:bottom-30">
+          <div className="mt-8">
             <Link href="/#projects" scroll={false}>
-              <a className="px-6 py-3 text-xl transition-transform transform hover:scale-105 view-my-work-button" style={{ fontSize: '24px' }}>
+              <a className="view-my-work-button">
                 View My Work
               </a>
             </Link>
           </div>
         </div>
-      </div> {/* <-- missing in your version; closes the wrapper */}
+
+        {/* Right Column — flower canvas */}
+        <div className="md:w-1/2 relative flex items-center justify-center h-[55vw] md:h-full max-h-[580px]">
+          <canvas ref={canvasRef} id="bg" className="w-full h-full" />
+        </div>
+      </div>
     </section>
   );
 }

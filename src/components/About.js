@@ -37,12 +37,12 @@ export default function About() {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
     canvasRef.current.appendChild(renderer.domElement);
 
-    // Lighting Setup
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    // Lighting — warm pink to match site palette
+    const ambientLight = new THREE.AmbientLight(0xffeef8, 0.7);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Increased intensity
-    directionalLight.position.set(10, 20, 15); // Higher position for better shadow casting
+    const directionalLight = new THREE.DirectionalLight(0xff80cc, 1.1);
+    directionalLight.position.set(10, 20, 15);
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048; // Higher resolution shadows
     directionalLight.shadow.mapSize.height = 2048;
@@ -366,24 +366,22 @@ export default function About() {
     const group = new THREE.Group();
     group.position.y = 0; // Centered vertically
 
-    // Material for the robot (bright light pink with emissive properties)
+    // Robot body — vibrant pink matching site palette
     const material = new THREE.MeshStandardMaterial({
-      color: 0xFFC0CB, // Light baby pink
-      metalness: 0.8,  // High metalness for a metallic look
-      roughness: 0.2,
-      emissive: 0xFFC0CB, // Emissive color matching the main color
-      emissiveIntensity: 0.5, // Adjust for desired brightness
-      side: THREE.DoubleSide, // Ensure both sides are rendered
-      transparent: false, // Prevent accidental transparency
+      color: 0xff80cc,
+      metalness: 0.75,
+      roughness: 0.18,
+      emissive: 0xf060b4,
+      emissiveIntensity: 0.35,
+      side: THREE.DoubleSide,
     });
 
-    // Material for the screen (black, thinner)
+    // Screen panel — deep dark, slight pink tint
     const screenMaterial = new THREE.MeshStandardMaterial({
-      color: 0x000000, // Black
-      metalness: 0.7,
-      roughness: 0.2,
-      side: THREE.DoubleSide, // Ensure both sides are rendered
-      transparent: false, // Prevent accidental transparency
+      color: 0x150d1c,
+      metalness: 0.6,
+      roughness: 0.3,
+      side: THREE.DoubleSide,
     });
 
     // Body (rounded box)
@@ -412,7 +410,7 @@ export default function About() {
 
     // Eyes
     const eyeGeometry = new THREE.CircleGeometry(0.04, 16); // Smaller eyes
-    const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink eyes
+    const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xffd0e8 });
 
     const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
     leftEye.position.set(-0.15, 0.1, 0.03); // Adjusted positions
@@ -426,7 +424,7 @@ export default function About() {
 
     // Mouth
     const mouthGeometry = new THREE.CircleGeometry(0.08, 16, 0, Math.PI);
-    const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xFFC0CB }); // Pink mouth
+    const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0xffd0e8 });
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.rotation.z = Math.PI; // Inverted to look like a smile
     mouth.position.set(0, -0.15, 0.03); // Adjusted position

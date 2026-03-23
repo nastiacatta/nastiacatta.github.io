@@ -79,8 +79,8 @@ export default function Projects() {
               </div>
             </div>
 
-            {/* Right: image — fixed height, cropped to fit */}
-            <div className="lg:w-1/2 relative h-64 lg:h-auto min-h-[260px] border-t lg:border-t-0 lg:border-l border-pink-400/15 bg-zinc-900/50 dark:bg-pink-100/50 overflow-hidden">
+            {/* Right: image — capped height, cropped to fit */}
+            <div className="lg:w-1/2 relative h-48 lg:h-auto lg:max-h-[280px] border-t lg:border-t-0 lg:border-l border-pink-400/15 bg-zinc-900/50 dark:bg-pink-100/50 overflow-hidden">
               {!vegaImgError ? (
                 <img
                   src="/VEGA.png"
