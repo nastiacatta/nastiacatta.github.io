@@ -309,10 +309,11 @@ a:hover { color: #f060b4; }
 @media (hover: hover) and (pointer: fine) {
   .featured-vega-visual:hover .vega-featured-image {
     transform: scale(1.03);
-    filter: drop-shadow(0 12px 28px rgba(240, 96, 180, 0.25));
+    /* Glow reads on black panel behind mockup */
+    filter: drop-shadow(0 8px 32px rgba(240, 96, 180, 0.35));
   }
   .dark .featured-vega-visual:hover .vega-featured-image {
-    filter: drop-shadow(0 10px 24px rgba(192, 25, 110, 0.2));
+    filter: drop-shadow(0 8px 28px rgba(255, 150, 200, 0.28));
   }
 }
 

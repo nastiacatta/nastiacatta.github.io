@@ -127,12 +127,12 @@ export default function Projects() {
               </div>
             </div>
 
-            {/* Right: VEGA.png product shot */}
-            <div className="featured-vega-visual lg:w-1/2 border-t lg:border-t-0 lg:border-l border-pink-400/15 bg-zinc-900/40 dark:bg-pink-100/40 flex items-center justify-center overflow-hidden p-4 md:p-6">
+            {/* Right: VEGA.png — panel matches asset black so no grey/pink halo */}
+            <div className="featured-vega-visual lg:w-1/2 border-t lg:border-t-0 lg:border-l border-pink-400/20 bg-black flex items-center justify-center overflow-hidden p-5 md:p-8 min-h-[min(280px,40vh)]">
               {!vegaImgError ? (
                 <div className="vega-featured-image-wrap w-full flex justify-center">
                   <img
-                    src="/VEGA.png?v=9"
+                    src="/VEGA.png?v=11"
                     alt="Vega Financial product screenshot"
                     width={1200}
                     height={800}
