@@ -6,7 +6,7 @@ import Link from 'next/link';
 export default function Hero() {
   const canvasRef = useRef(null);
   const [text, setText] = useState('');
-  const phrases = ['Machine Learning', 'Data Science', 'Robotics', 'Full-stack'];
+  const phrases = ['Business Intelligence Engineering'];
   const typingSpeed = 130;
   const deletingSpeed = 80;
   const pauseDuration = 1800;

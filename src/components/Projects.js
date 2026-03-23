@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Tilt from 'react-parallax-tilt';
 
 const projects = [
+  { title: 'DATA2PRODUCT', href: '/data2product-dashboard', imageSrc: '/logo.png' },
   { title: 'ROBOTICS',      href: '/robotics',    imageSrc: '/robotics.png' },
   { title: 'SEAO2',         href: '/seao2',        imageSrc: '/seao2.png' },
   { title: 'REORBIT',       href: '/reorbit',      imageSrc: '/reorbit.png' },
@@ -24,6 +25,41 @@ export default function Projects() {
   const [vegaImgError, setVegaImgError] = useState(false);
   const [mastersOpen, setMastersOpen] = useState(false);
   const [failedImages, setFailedImages] = useState({});
+  const [imageAttempts, setImageAttempts] = useState({});
+
+  const buildImageCandidates = (src) => {
+    if (!src || typeof src !== 'string') return [];
+    const dot = src.lastIndexOf('.');
+    if (dot === -1) return [src];
+    const base = src.slice(0, dot);
+    const ext = src.slice(dot + 1).toLowerCase();
+    const variants = new Set([src]);
+    if (ext === 'jpeg' || ext === 'jpg') {
+      variants.add(`${base}.jpg`);
+      variants.add(`${base}.jpeg`);
+    }
+    if (ext === 'png') {
+      variants.add(`${base}.jpg`);
+      variants.add(`${base}.jpeg`);
+    }
+    return [...variants];
+  };
+
+  const getCurrentImageSrc = (project) => {
+    const candidates = buildImageCandidates(project.imageSrc);
+    const attempt = imageAttempts[project.title] || 0;
+    return candidates[Math.min(attempt, candidates.length - 1)];
+  };
+
+  const handleProjectImageError = (project) => {
+    const candidates = buildImageCandidates(project.imageSrc);
+    const attempt = imageAttempts[project.title] || 0;
+    if (attempt < candidates.length - 1) {
+      setImageAttempts((prev) => ({ ...prev, [project.title]: attempt + 1 }));
+      return;
+    }
+    setFailedImages((prev) => ({ ...prev, [project.title]: true }));
+  };
 
   return (
     <div>
@@ -48,7 +84,7 @@ export default function Projects() {
                   verified developers — the same tools that move 70% of financial markets.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-5">
-                  {['Next.js', 'TypeScript', 'Prisma', 'Tailwind', 'Startup', 'Algorithmic Trading', 'Web Development'].map(tag => (
+                  {['Startup', 'Algorithmic Trading', 'Web Development'].map(tag => (
                     <span
                       key={tag}
                       className="px-2.5 py-1 text-xs rounded-full border border-pink-400/25 text-pink-200 dark:text-pink-700"
@@ -74,12 +110,12 @@ export default function Projects() {
             </div>
 
             {/* Right: VEGA screenshot — natural aspect ratio, no clipping */}
-            <div className="lg:w-1/2 border-t lg:border-t-0 lg:border-l border-pink-400/15 bg-zinc-900/40 dark:bg-pink-100/40 flex items-start justify-center overflow-hidden">
+            <div className="lg:w-1/2 border-t lg:border-t-0 lg:border-l border-pink-400/15 bg-zinc-900/40 dark:bg-pink-100/40 flex items-center justify-center overflow-hidden p-4 md:p-6">
               {!vegaImgError ? (
                 <img
                   src="/VEGA.png"
                   alt="Vega Financial screenshot"
-                  className="w-full h-auto object-contain object-top max-h-[320px]"
+                  className="w-full h-auto object-contain object-center max-h-[360px] mx-auto"
                   onError={() => setVegaImgError(true)}
                 />
               ) : (
@@ -166,11 +202,11 @@ export default function Projects() {
                   <div className="relative w-full h-52">
                     {!failedImages[project.title] ? (
                       <img
-                        src={project.imageSrc}
+                        src={getCurrentImageSrc(project)}
                         alt={project.title}
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        onError={() => setFailedImages(prev => ({ ...prev, [project.title]: true }))}
+                        onError={() => handleProjectImageError(project)}
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/80 dark:bg-pink-100/80">
